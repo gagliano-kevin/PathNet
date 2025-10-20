@@ -1,7 +1,3 @@
-Here’s a **README.md** you can use for your PathNet (MLP trained with A*). It documents the purpose, structure, usage, and details of the code you shared:
-
----
-
 # PathNet: Quantized MLP Training with A* Search
 
 This repository implements **PathNet**, a framework for training quantized multi-layer perceptrons (MLPs) using **A* search** instead of gradient descent.

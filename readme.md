@@ -1,75 +1,193 @@
-PathNet: A* Search Trainer for Quantized MLPs 🧠🗺️
+Here’s a **README.md** you can use for your PathNet (MLP trained with A*). It documents the purpose, structure, usage, and details of the code you shared:
 
-PathNet is a Python-based implementation that explores a novel approach to training a Multi-Layer Perceptron (MLP) neural network by framing the weight optimization problem as a shortest path search using the A* algorithm.
+---
 
-Instead of traditional gradient-based methods (like backpropagation), this project treats each unique combination of quantized network weights as a state in a search graph. The A* algorithm then efficiently searches this state space to find the weight configuration (the path) that minimizes the network's loss function.
+# PathNet: Quantized MLP Training with A* Search
 
-Features ✨
+This repository implements **PathNet**, a framework for training quantized multi-layer perceptrons (MLPs) using **A* search** instead of gradient descent.
+The example provided focuses on solving the **XOR problem**, but the design can be extended to more complex tasks.
 
-A* Search Optimization: Uses the heuristic-driven A* algorithm to find optimal quantized weight configurations, where the loss function acts as the heuristic ($h$) to guide the search.
+The key idea is to treat model training as a search problem in a quantized weight space. A* explores weight configurations to minimize the loss function.
 
-Quantized Weights: Implements the QuantizedMLP class to discretize network weights, creating a finite, searchable state space.
+---
 
-XOR Example: Includes a ready-to-run implementation for solving the classic XOR problem.
+## ✨ Features
 
-Flexible Trainer: The Trainer class allows for customization of quantization parameters, A* cost function variants (via update_strategy), and termination conditions.
+* **Quantized MLP**:
+  All parameters are discretized within a configurable range using a quantization factor.
 
-Hyperparameter Grid Search: The GridSearchTrainer facilitates automated testing across various hyperparameter combinations.
+* **A* Training**:
+  Instead of gradient descent, the training algorithm uses A* search to find optimal weights.
 
-Logging and Visualization: Includes methods to plot loss history and log training results to file.
+* **Overflow Handling**:
+  Parameters that exceed the allowed range are clipped or discarded.
 
-Getting Started ⚙️
+* **Search Strategies**:
+  Multiple update strategies for the A* cost functions (`f = g + h` variants).
 
-Prerequisites
+* **Logging & Visualization**:
 
-You'll need Python 3 and the following libraries:
+  * Save training logs to text files.
+  * Plot loss curves (`loss`, `g`, `f`) over iterations.
 
-pip install torch numpy matplotlib
+* **Grid Search**:
+  Run experiments across multiple hyperparameter combinations automatically.
 
+* **Model Saving/Loading**:
+  Store and reload trained models with quantization support.
 
-Quick Run (XOR Example)
+---
 
-The main script is configured to demonstrate the training process using the XOR dataset and a basic grid search.
+## 📂 Project Structure
 
-Clone the repository or save the code as pathnet_trainer.py.
+* `QuantizedMLP`:
+  Wrapper for an MLP with quantization, evaluation, and hashing capabilities.
 
-Run the script from your terminal:
+* `SearchNode`:
+  Node representation for A* search (with `g`, `h`, `f` values).
 
-python pathnet_trainer.py
+* `Trainer`:
+  Trains a quantized MLP using A* search, manages training loop, plotting, logging, and saving models.
 
+* `GridSearchTrainer`:
+  Automates experiments over multiple hyperparameter combinations.
 
-The script will:
+* **Example** (main section):
+  Demonstrates both direct training and grid search on the XOR dataset.
 
-Perform a grid search over specified hyperparameters.
+---
 
-Log the training process and final results to xor_grid_search_log.txt.
+## ⚙️ Installation
 
-Print the best loss found across all configurations.
+Clone the repo and install dependencies:
 
-Core Classes and Concepts 💡
+```bash
+git clone https://github.com/yourusername/pathnet-astar.git
+cd pathnet-astar
+pip install torch matplotlib numpy
+```
 
-QuantizedMLP
+---
 
-This class wraps a standard torch.nn.Module and enforces quantization on its weights.
+## ▶️ Usage
 
-Quantization: Weights are rounded to the nearest multiple of $\frac{1}{\text{quantization\_factor}}$. This converts the infinite, continuous space of weights into a finite, discrete, and searchable state space.
+### 1. Train a Single Model
 
-State Hashing: The get_state_hash() method converts the discrete weights into a hashable tuple, which is used by the A* algorithm to track visited states and prevent cycles.
+Example (training on XOR):
 
-SearchNode
+```python
+from pathnet import Trainer, XOR_DATASET, XOR_LABELS
+import torch.nn as nn
 
-Represents a single state in the search space.
+model = nn.Sequential(
+    nn.Linear(2, 2),
+    nn.ReLU(),
+    nn.Linear(2, 1),
+    nn.Sigmoid()
+)
 
-$\mathbf{h}$ Value (Heuristic): The immediate loss of the quantized_mlp on the training data.
+trainer = Trainer(
+    model,
+    nn.MSELoss(),
+    quantization_factor=2,
+    parameter_range=(-4, 4),
+    max_iterations=2000,
+    target_loss=0.0001,
+    update_strategy=2
+)
 
-$\mathbf{g}$ Value (Path Cost): The accumulated cost of reaching the current state from the initial weight state.
+trainer.train(XOR_DATASET, XOR_LABELS)
+trainer.plot("xor_loss.png")
+trainer.save_model("xor_model.pth")
+```
 
-$\mathbf{f}$ Value (Total Cost): $f = g + h$. This guides the priority queue during the search.
+### 2. Run Grid Search
 
-Trainer
+```python
+from pathnet import GridSearchTrainer, XOR_DATASET, XOR_LABELS
+import torch.nn as nn
 
-Implements the A* search logic.
+model = nn.Sequential(
+    nn.Linear(2, 2),
+    nn.ReLU(),
+    nn.Linear(2, 1),
+    nn.Sigmoid()
+)
 
-Neighbor Generation: The get_neighbors() function generates neighboring states by applying a small perturbation ($\pm \frac{1}{\text{quantization\_factor}}$) to a subset of the scalar weights. Each perturbation represents an action or step in the search path.
+grid_search_trainer = GridSearchTrainer(
+    models=[model],
+    loss_funcs=[nn.MSELoss()],
+    quantization_factors=[1, 2],
+    parameter_ranges=[(-5, 5)],
+    param_fractions=[1.0],
+    max_iterations=[1000],
+    log_freq=[500],
+    target_losses=[0.0001],
+    update_strategies=[2],
+    g_ini_vals=[0],
+    g_steps=[0.01],
+    alphas=[0.5],
+    scale_fs=[True],
+    debug_mlps=True
+)
 
-Update Strategies: The update_strategy parameter allows you to experiment with different $\mathbf{g}$ and $\mathbf{f}$ cost calculations, affecting the search path exploration (from fixed steps to adaptive, heuristic-scaled costs).
+grid_search_trainer.run_grid_search(XOR_DATASET, XOR_LABELS, log_filename="grid_search_results.txt")
+```
+
+---
+
+## 📊 Outputs
+
+* **Logs**:
+  Training logs saved in `.txt` files with iteration-wise metrics.
+
+* **Plots**:
+  PNG plots of loss (`h`), cost (`g`), and total cost (`f`).
+
+* **Models**:
+  Best-performing models saved in `.pth` files.
+
+---
+
+## 🔧 Key Parameters
+
+* `quantization_factor`: Controls granularity of parameter values (higher = finer).
+* `parameter_range`: Allowed weight range (tuple).
+* `param_fraction`: Fraction of weights perturbed per neighbor generation.
+* `max_iterations`: Maximum iterations for A*.
+* `target_loss`: Early stopping threshold.
+* `update_strategy`: Strategy for computing `f`. Options:
+
+  * `0`: Fixed step increase in `g`.
+  * `1`: Weighted cost scaling with `alpha`.
+  * `2`: Iteration-scaled cost.
+
+---
+
+## 📌 Example: XOR Predictions
+
+After training, predictions on the XOR dataset:
+
+```
+Input: [0,0] → ~0
+Input: [0,1] → ~1
+Input: [1,0] → ~1
+Input: [1,1] → ~0
+```
+
+---
+
+## 🚀 Future Extensions
+
+* Support for larger datasets (MNIST, etc.)
+* Parallelized search across nodes
+* Custom heuristics for `h` in A*
+
+---
+
+## 📜 License
+
+MIT License. See `LICENSE` for details.
+
+---
+

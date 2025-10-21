@@ -1,0 +1,5 @@
+Grid Search Training Log
+================================================================================
+
+Training with parameters: Quantization Factor=1, Parameter Range=(-5, 5), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.0001, Update Strategy=2, G Initial Value=0, G Step=0.01, Alpha=0.5, Scale F=True
+

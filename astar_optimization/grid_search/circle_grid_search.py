@@ -1,6 +1,6 @@
 #===================================================================================================================================
 #===================================================================================================================================
-#-------------- run this file from project root: python -m astar_optimization.simple_dataset_test.circle_test ----------------------
+#-------------- run this file from project root: python -m astar_optimization.grid_search.circle_grid_search -----------------------
 #===================================================================================================================================
 #===================================================================================================================================
 
@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
 
-from source.PathNet import Trainer
+from source.PathNet import GridSearchTrainer
 
 # Parameters for synthetic dataset
 n_samples = 1000
@@ -71,18 +71,26 @@ model = nn.Sequential(
     nn.Linear(4, 2)   
 )
 
-trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=200, log_freq=500, target_loss=0.0001, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
+grid_search_trainer = GridSearchTrainer(
+    models=[model],
+    loss_funcs=[nn.CrossEntropyLoss()],
+    quantization_factors=[1, 2],
+    #quantization_factors=[1, 2, 5],
+    parameter_ranges=[(-5, 5)],
+    #parameter_ranges=[(-4, 4), (-5, 5)],
+    param_fractions=[1.0],
+    #param_fractions=[0.5, 1.0],
+    max_iterations=[1000],
+    log_freq=[500],
+    target_losses=[0.0001],
+    update_strategies=[2],
+    #update_strategies=[0, 1, 2],
+    g_ini_vals=[0],
+    g_steps=[0.01],
+    alphas=[0.5],
+    scale_fs=[True],
+    #scale_fs=[True, False],
+    debug_mlps=True
+)
 
-trainer.train(X_train_tensor, y_train_tensor)
-
-predictions = trainer.best_node.quantized_mlp.model(X_test_tensor)
-correct = 0
-for i, prediction in enumerate(predictions):
-    predicted_class = torch.argmax(prediction).item()
-    print(f"Input: {X_test_tensor[i].numpy()}, Predicted Class: {predicted_class}, Actual: {y_test_tensor[i].item()}")
-    print(f"Raw Output: {prediction.detach().numpy()}\n")
-    if predicted_class == y_test_tensor[i].item():
-        correct += 1
-
-accuracy = correct / len(y_test_tensor)
-print(f"\n\nTest Accuracy: {accuracy * 100:.2f}%")
+grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, log_filename='circle_grid_search_log.txt')

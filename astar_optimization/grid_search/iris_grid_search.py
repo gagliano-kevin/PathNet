@@ -1,55 +1,27 @@
 #===================================================================================================================================
 #===================================================================================================================================
-#-------------- run this file from project root: python -m astar_optimization.simple_dataset_test.circle_test ----------------------
+#-------------- run this file from project root: python -m astar_optimization.grid_search.iris_grid_search ------------------------
 #===================================================================================================================================
 #===================================================================================================================================
 
 import torch
 import torch.nn as nn
-from sklearn.datasets import make_circles
+from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 import numpy as np
-import matplotlib.pyplot as plt
 
 from source.PathNet import Trainer
 
-# Parameters for synthetic dataset
-n_samples = 1000
-noise_level = 0.1
-factor_level = 0.5 
-random_seed = 42
+iris = load_iris()
+X, y = iris.data, iris.target
 
-# X will have 2 features, y will have 2 classes (0 or 1)
-# class 0: inner circle, class 1: outer circle
-X, y = make_circles(
-    n_samples=n_samples,
-    noise=noise_level, 
-    factor=factor_level,
-    random_state=random_seed
-)
+# Scaling features for better performance
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
 
-# Plot the generated dataset for visualization
-plt.figure(figsize=(6, 6))
-# Create a scatter plot where the color 'c' is determined by the label 'y'.
-# The 'coolwarm' colormap is useful for binary classification.
-plt.scatter(
-    X[:, 0], # Feature 1 (X-axis)
-    X[:, 1], # Feature 2 (Y-axis)
-    c=y, 
-    cmap=plt.cm.coolwarm,
-    edgecolor='k', # Black border around points
-    s=40 # Size of points
-)
-plt.title(f"Synthetic Circles Dataset (Noise={noise_level}, Factor={factor_level})")
-plt.xlabel("Feature 1")
-plt.ylabel("Feature 2")
-plt.grid(True, linestyle='--', alpha=0.6)
-#plt.show() 
-plt.savefig("circles_dataset.png") 
-
-# Stratify over y (labels) to maintain class proportions in train/test sets
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=random_seed, stratify=y
+    X_scaled, y, test_size=0.2, random_state=42, stratify=y
 )
 
 X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
@@ -58,18 +30,22 @@ X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
 y_test_tensor = torch.tensor(y_test, dtype=torch.long)
 
 # Info of the dataset
-print("\n--- Data Preparation Summary ---")
-print(f"Input Feature Count (input_size): {X.shape[1]}")        # Should be 2
-print(f"Output Class Count (num_classes): {len(np.unique(y))}") # Should be 2
+print("--- Data Variables Ready for Custom Model ---")
+print(f"Input Feature Count (input_size): {X_train.shape[1]}")
+print(f"Output Class Count (num_classes): {len(np.unique(y))}")
 print(f"Training Set Size: {X_train_tensor.shape[0]}")
-print(f"Test Set Size: {X_test_tensor.shape[0]}\n")
+print(f"Test Set Size: {len(X_test_tensor.shape[0])}\n")
+print(f"X_train_tensor shape: {X_train_tensor.shape}\n")
+print(f"y_train_tensor shape: {y_train_tensor.shape}\n")
+print(f"X_test_tensor shape: {X_test_tensor.shape}\n")
+print(f"y_test_tensor shape: {y_test_tensor.shape}\n")
 
-# Simple neural network model for circle classification
+# Simple neural network model for iris classification
 model = nn.Sequential(
-    nn.Linear(2, 4),  
-    nn.ReLU(),
-    nn.Linear(4, 2)   
-)
+nn.Linear(4, 4),
+nn.ReLU(),
+nn.Linear(4, 3),
+) 
 
 trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=200, log_freq=500, target_loss=0.0001, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
 

@@ -6,39 +6,14 @@
 
 import torch
 import torch.nn as nn
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-import numpy as np
+from source.PathNet import Trainer
+from source.iris_utils import get_iris_data_tensors, print_iris_data_info
 
 from source.PathNet import GridSearchTrainer
 
-iris = load_iris()
-X, y = iris.data, iris.target
+print_iris_data_info()
 
-# Scaling features for better performance
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42, stratify=y
-)
-
-X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
-y_train_tensor = torch.tensor(y_train, dtype=torch.long)
-X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
-y_test_tensor = torch.tensor(y_test, dtype=torch.long)
-
-# Info of the dataset
-print("--- Data Variables Ready for Custom Model ---")
-print(f"Input Feature Count (input_size): {X_train.shape[1]}")
-print(f"Output Class Count (num_classes): {len(np.unique(y))}")
-print(f"Training Set Size: {X_train_tensor.shape[0]}")
-print(f"Test Set Size: {X_test_tensor.shape[0]}\n")
-print(f"X_train_tensor shape: {X_train_tensor.shape}\n")
-print(f"y_train_tensor shape: {y_train_tensor.shape}\n")
-print(f"X_test_tensor shape: {X_test_tensor.shape}\n")
-print(f"y_test_tensor shape: {y_test_tensor.shape}\n")
+X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = get_iris_data_tensors()
 
 # Simple neural network model for iris classification
 model = nn.Sequential(

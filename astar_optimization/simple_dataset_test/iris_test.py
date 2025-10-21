@@ -1,3 +1,10 @@
+#===================================================================================================================================
+#===================================================================================================================================
+#-------------- run this file from project root: python -m astar_optimization.simple_dataset_test.iris_test ------------------------
+#===================================================================================================================================
+#===================================================================================================================================
+
+
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
@@ -6,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
-from v_03 import Trainer
+from source.PathNet import Trainer
 
 # --- Data Preparation Logic ---
 

@@ -1,11 +1,18 @@
+#===================================================================================================================================
+#===================================================================================================================================
+#-------------- run this file from project root: python -m astar_optimization.simple_dataset_test.circle_test ----------------------
+#===================================================================================================================================
+#===================================================================================================================================
+
 import torch
 import torch.nn as nn
-from v_03 import Trainer
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.datasets import make_circles
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
+
+from source.PathNet import Trainer
 
 # --- 1. Generate the Circles Dataset ---
 

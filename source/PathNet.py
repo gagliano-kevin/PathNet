@@ -5,6 +5,7 @@ import random
 import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
+import time
 
 """
     Simple MLP model for XOR problem
@@ -219,7 +220,7 @@ class Trainer:
     """
     A class to train a quantized MLP model using an A* search algorithm.
     """
-    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, param_fraction=1, max_iterations=1000, log_freq=1000, target_loss=0.1, update_strategy=0, g_ini_val=0.001, g_step=0.01, alpha=0.5, scale_f=True):
+    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, param_fraction=1, max_iterations=1000, log_freq=1000, target_loss=0.1, update_strategy=0, g_ini_val=0.001, g_step=0.01, alpha=0.5, scale_f=True, measure_time=True):
         self.model = model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
@@ -252,6 +253,9 @@ class Trainer:
         self.f_history = []
         self.g_history = []
 
+        self.measure_time = measure_time
+        self.training_times = []
+
     def train(self, X, Y):
         """
         Trains the quantized MLP using the A* search algorithm.
@@ -260,6 +264,10 @@ class Trainer:
             X (torch.Tensor): Input data for training.
             Y (torch.Tensor): Target labels for training.
         """
+        start_time = 0
+        if self.measure_time:
+            start_time = time.perf_counter()
+
         initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
         initial_loss = initial_mlp.evaluate(X, Y)
         initial_node = SearchNode(quantized_mlp=initial_mlp, g_val=self.g_initial_value, h_val=initial_loss)
@@ -287,6 +295,11 @@ class Trainer:
                 print(f"Goal loss achieved: {current_node.h_val}")
                 print(f"Training completed in {iteration+1} iterations.")
                 self.best_node = current_node
+                if self.measure_time:
+                    end_time = time.perf_counter()
+                    total_time = end_time - start_time
+                    self.training_times.append(total_time)
+                    print(f"Total training time: {total_time:.4f} seconds")
                 return
 
             if iteration % self.log_freq == 0:
@@ -314,6 +327,11 @@ class Trainer:
 
         print(f"Search completed after {iteration+1} iterations.")
         print(f"Best loss found: {self.best_node.h_val}")
+        if self.measure_time:
+            end_time = time.perf_counter()
+            total_time = end_time - start_time
+            self.training_times.append(total_time)
+            print(f"Total training time: {total_time:.4f} seconds")
         return 
 
     def plot(self, filename='astar_loss_plot.png'):

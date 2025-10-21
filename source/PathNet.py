@@ -1,36 +1,11 @@
 import torch
-import torch.nn as nn
+#import torch.nn as nn
 import heapq
 import random
 import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
 import time
-
-"""
-    Simple MLP model for XOR problem
-"""
-XOR_MODEL = nn.Sequential(
-    nn.Linear(2, 4),
-    nn.ReLU(),
-    nn.Linear(4, 1),
-    nn.Sigmoid()
-)
-
-
-"""
-    XOR dataset and labels
-"""
-XOR_DATASET = torch.tensor([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=torch.float32)
-XOR_LABELS = torch.tensor([[0], [1], [1], [0]], dtype=torch.float32)
-
-
-"""    
-    Loss function for XOR problem
-"""
-XOR_LOSS_FN = nn.BCELoss()
-        
-
 
 class QuantizedMLP:
     """ 
@@ -334,9 +309,9 @@ class Trainer:
             print(f"Total training time: {total_time:.4f} seconds")
         return 
 
-    def plot(self, filename='astar_loss_plot.png'):
+    def plot_training_history(self, filename='astar_loss_plot.png'):
         """
-        Plots the loss (h) and total cost (f) over iterations and saves the plot to a file.
+        Plots the loss (h), the total cost (f) and the cost per iteration over iterations and saves the plot to a file.
 
         Parameters:
             filename (str): The name of the file to save the plot.
@@ -388,7 +363,6 @@ class Trainer:
         print(f"Model loaded from {filename}")
         return quantized_mlp
 
-
     def log_to_file(self, filename='training_log.txt'):
         """
         Logs the training history to a specified file.
@@ -409,7 +383,7 @@ class GridSearchTrainer:
     """
     A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
     """
-    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, param_fractions, max_iterations, log_freq, target_losses, update_strategies, g_ini_vals, g_steps, alphas, scale_fs, debug_mlps=True):
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, param_fractions, max_iterations, log_freq, target_losses, update_strategies, g_ini_vals, g_steps, alphas, scale_fs, debug_mlps=True, measure_time=True):
         self.trainers = []
         for i in range(len(models)):
             for lf in loss_funcs:
@@ -438,11 +412,12 @@ class GridSearchTrainer:
                                                                 g_ini_val=giv,
                                                                 g_step=gs,
                                                                 alpha=a,
-                                                                scale_f=sf
+                                                                scale_f=sf,
+                                                                measure_time=measure_time
                                                             )
                                                             self.trainers.append(trainer)
     
-    def run_grid_search(self, X, Y, log_filename='grid_search_log.txt'):
+    def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=False, log_filename='grid_search_log.txt',):
         """
         Runs the grid search over all trainer configurations and logs the results.
 
@@ -455,85 +430,30 @@ class GridSearchTrainer:
         sorted_final_losses = []
 
         with open(log_filename, 'w') as log_file:
-            log_file.write("Grid Search Training Log\n")
-            log_file.write("=" * 80 + "\n\n")
+            log_file.write("=" * 32 + "\n")
+            log_file.write("\tGrid Search Training Log\n")
+            log_file.write("=" * 32 + "\n\n")
 
         for trainer in self.trainers:
-            print(f"Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}, Update Strategy={trainer.update_strategy}, G Initial Value={trainer.g_initial_value}, G Step={trainer.g_step}, Alpha={trainer.alpha}, Scale F={trainer.scale_f}")
-            with open(log_filename, 'a') as log_file:
-                log_file.write(f"Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}, Update Strategy={trainer.update_strategy}, G Initial Value={trainer.g_initial_value}, G Step={trainer.g_step}, Alpha={trainer.alpha}, Scale F={trainer.scale_f}\n\n")
-            trainer.train(X, Y)
-            heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations, trainer.target_loss, trainer.update_strategy, trainer.g_initial_value, trainer.g_step, trainer.alpha, trainer.scale_f]))
-            trainer.log_to_file(log_filename)
-            print("Training completed.\n\n")
-            with open(log_filename, 'a') as log_file:
-                log_file.write("\n\n Training completed.\n\n")
-                log_file.write("-" * 80 + "\n\n")
+            for run in range(runs_per_config):
+                print(f"(Run {run}) - Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}, Update Strategy={trainer.update_strategy}, G Initial Value={trainer.g_initial_value}, G Step={trainer.g_step}, Alpha={trainer.alpha}, Scale F={trainer.scale_f}")
+                with open(log_filename, 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}, Update Strategy={trainer.update_strategy}, G Initial Value={trainer.g_initial_value}, G Step={trainer.g_step}, Alpha={trainer.alpha}, Scale F={trainer.scale_f}\n\n")
+                trainer.train(X, Y)
+                heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations, trainer.target_loss, trainer.update_strategy, trainer.g_initial_value, trainer.g_step, trainer.alpha, trainer.scale_f]))
+                if enable_training_history_logging: trainer.log_to_file(log_filename)
+                print(f"(Run {run}) - Training completed.\n\n")
+                with open(log_filename, 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val}\n")
+                    log_file.write(f"(Run {run}) - Training Time: {trainer.training_times[-1]:.4f} seconds\n")
+                    log_file.write(f"\n(Run {run}) - Training completed.\n\n")
+                    log_file.write("-" * 150 + "\n\n")
 
         with open(log_filename, 'a') as log_file:
             log_file.write("Sorted Final Losses from Grid Search:\n")
-            log_file.write("Final Loss\t\t\t\tParameters: [Quantization Factor, Parameter Range, Param Fraction, Max Iterations, Target Loss, Update Strategy, G Initial Value, G Step, Alpha, Scale F]\n")
+            log_file.write("Final Loss\t\t\t\t\tParameters: [Quantization Factor, Parameter Range, Param Fraction, Max Iterations, Target Loss, Update Strategy, G Initial Value, G Step, Alpha, Scale F]\n")
             while sorted_final_losses:
                 loss, params = heapq.heappop(sorted_final_losses)
                 log_file.write(f"{loss}\t\t\t{params}\n")
 
 
-
-
-if __name__ == '__main__':
-
-    model = nn.Sequential(
-    nn.Linear(2, 2),
-    nn.ReLU(),
-    nn.Linear(2, 1),
-    nn.Sigmoid()
-    ) 
-    """
-    trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=2000, log_freq=1000, target_loss=0.0001, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
-
-    trainer.train(XOR_DATASET, XOR_LABELS)
-
-    trainer.plot('xor_base.png')
-
-    trainer.log_to_file('xor_base_log.txt')
-
-    predictions = trainer.best_node.quantized_mlp.model(XOR_DATASET)
-    print("\n\nPredictions on XOR dataset:")
-    print(predictions.detach().numpy())
-
-    # Print best model parameters
-    best_model = trainer.best_node.quantized_mlp.model
-    print("\n\nBest model parameters:")
-    for name, param in best_model.named_parameters():
-        print(f"{name}: {param.data}")
-
-    trainer.save_model('xor_best_model.pth')
-    quantized_mlp = trainer.load_model(model_architecture=model, filename='xor_best_model.pth', loss_fn=nn.MSELoss(), quantization_factor=2, parameter_range=(-4, 4), enable_quantization=True, debug=True)
-    quantized_mlp.evaluate(XOR_DATASET, XOR_LABELS)
-
-    print("\n\nQuantized MLP after loading from file:")
-    print(quantized_mlp)
-    """
-    grid_search_trainer = GridSearchTrainer(
-        models=[model],
-        loss_funcs=[nn.MSELoss()],
-        quantization_factors=[1, 2],
-        #quantization_factors=[1, 2, 5],
-        parameter_ranges=[(-5, 5)],
-        #parameter_ranges=[(-4, 4), (-5, 5)],
-        param_fractions=[1.0],
-        #param_fractions=[0.5, 1.0],
-        max_iterations=[1000],
-        log_freq=[500],
-        target_losses=[0.0001],
-        update_strategies=[2],
-        #update_strategies=[0, 1, 2],
-        g_ini_vals=[0],
-        g_steps=[0.01],
-        alphas=[0.5],
-        scale_fs=[True],
-        #scale_fs=[True, False],
-        debug_mlps=True
-    )
-
-    grid_search_trainer.run_grid_search(XOR_DATASET, XOR_LABELS, log_filename='xor_grid_search_log.txt')

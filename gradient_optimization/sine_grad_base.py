@@ -4,14 +4,14 @@
 #===================================================================================================================================
 #===================================================================================================================================
 
-from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions
+from source.sinusoidal_func_utils import plot_sine_predictions
 import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset, DataLoader
 
-# --- Hyperparameters for the data ---
+# Hyperparameters for the data
 NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
@@ -39,7 +39,6 @@ class SinCosDataset(Dataset):
         # Returns x, sin(x), cos(x)
         return self.x_data[idx], self.sin_y_data[idx], self.cos_y_data[idx]
 
-# Create the dataset
 dataset = SinCosDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 

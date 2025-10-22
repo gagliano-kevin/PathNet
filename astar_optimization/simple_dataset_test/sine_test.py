@@ -18,16 +18,22 @@ NOISE_LEVEL = 0.1
 X_sin, Y_sin = generate_sinusoidal_tensor(func=torch.sin, num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
 
 model = nn.Sequential(
-    nn.Linear(1, 4),  
+    nn.Linear(1, 18),  
     nn.ReLU(),
-    nn.Linear(4, 1)   
+    #nn.Tanh(),
+    nn.Linear(8, 8),
+    nn.ReLU(),
+    #nn.Tanh(),
+    nn.Linear(8, 1),
+    #nn.Tanh()
 )
 
-trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=200, log_freq=500, target_loss=0.0001, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
+trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=1000, log_freq=10, target_loss=0.0001, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
 
 trainer.train(X_sin, Y_sin)
 
 plot_sine_predictions(test_x_np=X_sin.numpy(), 
                       predicted_sin_np=trainer.best_node.quantized_mlp.model(X_sin).detach().numpy(), 
-                      true_sin_np=Y_sin.numpy())
+                      true_sin_np=Y_sin.numpy(),
+                      filename="sine_model_astar.png")
 

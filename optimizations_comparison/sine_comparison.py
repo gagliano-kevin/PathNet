@@ -18,6 +18,7 @@ NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
+ITERATIONS = 100
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- ASTAR TRAINING -----------------------------------------------------------------
@@ -26,17 +27,17 @@ NOISE_LEVEL = 0.1
 X_sin, Y_sin = generate_sinusoidal_tensor(func=torch.sin, num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
 
 model = nn.Sequential(
-    nn.Linear(1, 8),  
+    nn.Linear(1, 6),  
     nn.ReLU(),
     #nn.Tanh(),
-    nn.Linear(8, 8),
+    nn.Linear(6, 6),
     nn.ReLU(),
     #nn.Tanh(),
-    nn.Linear(8, 1),
+    nn.Linear(6, 1),
     #nn.Tanh()
 )
 
-trainer = Trainer(model, nn.MSELoss(), quantization_factor=5, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=4000, log_freq=100, target_loss=0.01, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
+trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-5, 5), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
 
 trainer.train(X_sin, Y_sin)
 
@@ -54,7 +55,7 @@ plot_sine_predictions(test_x_np=X_sin.numpy(),
 
 BATCH_SIZE = NUM_SAMPLES    # Full batch
 LEARNING_RATE = 0.001
-EPOCHS = 500
+EPOCHS = ITERATIONS
 HIDDEN_SIZE = 64
 
 dataset = SinCosDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE, NOISE_LEVEL)
@@ -96,4 +97,4 @@ plot_sine_predictions(test_x_np=dataset.x_data.numpy(),
 losses = [trainer.loss_history, loss_history]
 loss_labels = ["A-Star", "Gradient base"]
 
-plot_losses(losses, loss_labels)
+plot_losses(losses, loss_labels, "sine_loss_comparison.png")

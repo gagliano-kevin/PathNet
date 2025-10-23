@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def plot_losses(loss_lists, labels, filename="iris_loss_plot.png"):
+def plot_losses(loss_lists, labels, filename="loss_plot.png"):
     """
     Plots multiple lists of loss values on a single figure, regardless of length.
 

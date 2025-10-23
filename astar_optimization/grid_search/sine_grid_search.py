@@ -7,7 +7,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions
+from source.sinusoidal_func_utils import generate_sinusoidal_tensor
 from source.PathNet import GridSearchTrainer
 
 
@@ -41,9 +41,9 @@ grid_search_trainer = GridSearchTrainer(
     #parameter_ranges=[(-4, 4), (-5, 5)],
     param_fractions=[1.0],
     #param_fractions=[0.5, 1.0],
-    max_iterations=[100],
-    log_freq=[500],
-    target_losses=[0.0001],
+    max_iterations=[200],
+    log_freq=[50],
+    target_losses=[0.01],
     update_strategies=[2],
     #update_strategies=[0, 1, 2],
     g_ini_vals=[0],

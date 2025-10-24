@@ -357,6 +357,8 @@ class Trainer:
             # from the heap is worse than our recorded best g-cost,
             # we skip it and move on.
             current_hash = current_node.quantized_mlp.get_state_hash()
+            # (current_hash not in self.g_costs) should always be FALSE, kept for security in short-circuit logic for 
+            # the possbile key error of the second expression
             if current_hash not in self.g_costs or current_node.g_val > self.g_costs[current_hash]:
                 continue
             # --- [END CHECK] ---

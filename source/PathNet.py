@@ -209,7 +209,8 @@ class Trainer:
         self.update_strategy = update_strategy
         
         # Initial g value is zero for update strategies 1 and 2
-        self.g_initial_value = g_ini_val if update_strategy not in [1,2] else 0
+        #self.g_initial_value = g_ini_val if update_strategy not in [1,2, 3] else 0
+        self.g_initial_value = g_ini_val
 
         # Parameter used only for update strategy 0
         self.g_step = g_step
@@ -296,7 +297,7 @@ class Trainer:
                     g = current_node.g_val + (1/self.max_iterations)
                     f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
                     # Update strategy 3 is a test version with non-constant step size, that tries to improve update strategy 1
-                elif self.update_strategy is 3:
+                elif self.update_strategy == 3:
                     g = current_node.g_val + (1/(self.max_iterations*np.log10(initial_node.quantized_mlp.possible_congigurations))) * (self.alpha * h/current_node.h_val + (1-self.alpha) * h/initial_node.h_val)**max(1, np.log10(iteration+1))
                     f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
                 # Exception of type KeyError is prevented by prior checking if state_hash is not in visited (short-circuit logic)
@@ -353,7 +354,8 @@ class Trainer:
                 break
 
             current_f, current_node = heapq.heappop(self.open_set)
-            
+
+            #print(f"Current node:\nloss: {current_node.h_val} \tf: {current_node.f_val} \tg: {current_node.g_val}\n")
 
             current_hash = current_node.quantized_mlp.get_state_hash()
             # CHECK FOR STALE NODES
@@ -398,6 +400,8 @@ class Trainer:
                     g = current_node.g_val + (1/np.log(initial_node.quantized_mlp.possible_congigurations)) * (self.alpha * h/current_node.h_val + (1-self.alpha) * h/initial_node.h_val)
                 elif self.update_strategy == 2:
                     g = current_node.g_val + (1/self.max_iterations)
+                elif self.update_strategy == 3:
+                    g = current_node.g_val + (1/(self.max_iterations*np.log10(initial_node.quantized_mlp.possible_congigurations))) * (self.alpha * h/current_node.h_val + (1-self.alpha) * h/initial_node.h_val)**max(1, np.log10(iteration+1))
 
                 # Check if the neighbor state has not been visited yet or if this path offers a better g-cost (reinsertion case of the same MLP state to the open set)
                 if state_hash not in self.g_costs or g < self.g_costs[state_hash]:  
@@ -410,6 +414,7 @@ class Trainer:
 
                     # Create and push the new search node onto the open set, could be a real new state or an improved path to an existing state
                     new_node = SearchNode(neighbor_mlp, g_val=g, h_val=h, f_val=f, parent=current_node)
+                    #print(f"Adding neighbor node:\nloss: {h} \tf: {f} \tg: {g}\n")
                     heapq.heappush(self.open_set, (new_node.f_val, new_node))
 
         print(f"Search completed after {iteration+1} iterations.")

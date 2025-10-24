@@ -222,7 +222,7 @@ class Trainer:
 
         self.open_set = []
         self.visited = {}       # in the future could be deleted, used in the original A* implementation
-        self.g_costs = {}       # used in the corrected A* implementation
+        self.g_costs = {}       # used in the corrected A* implementation, it represents the best g-cost found so far for each MLP state
         self.best_node = None
 
         self.loss_history = []
@@ -311,7 +311,13 @@ class Trainer:
         return 
 
 
-    
+# updated version in order to fix A* algorithm implementation for the update_strategy 1, that generates non-constant g values 
+# so it's possible to find better paths to already visited states (h is constant for a given state, but g could be an improving value
+# due to the non-constant step size)    
+# visited map is replaced by g_costs map that stores the best g-cost found so far for each state
+# the check for stale nodes is added when popping from the open set, that could contain multiple entries for the same state with different g-costs and
+# it garantees that only the best path to each state is expanded, and the others are skipped
+# also the neighbor check is updated to compare g-costs instead of f-costs, due to the fact that g-costs can improve over time for the same state in update_strategy 1
     def train(self, X, Y):
         """
         Trains the quantized MLP using a corrected A* search algorithm.

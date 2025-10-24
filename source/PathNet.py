@@ -221,7 +221,8 @@ class Trainer:
         self.scale_f = scale_f
 
         self.open_set = []
-        self.visited = {}
+        self.visited = {}       # in the future could be deleted, used in the original A* implementation
+        self.g_costs = {}       # used in the corrected A* implementation
         self.best_node = None
 
         self.loss_history = []
@@ -231,7 +232,7 @@ class Trainer:
         self.measure_time = measure_time
         self.training_times = []
 
-    def train(self, X, Y):
+    def train_original(self, X, Y):
         """
         Trains the quantized MLP using the A* search algorithm.
 
@@ -308,6 +309,118 @@ class Trainer:
             self.training_times.append(total_time)
             print(f"Total training time: {total_time:.4f} seconds")
         return 
+
+
+    
+    def train(self, X, Y):
+        """
+        Trains the quantized MLP using a corrected A* search algorithm.
+
+        Parameters:
+            X (torch.Tensor): Input data for training.
+            Y (torch.Tensor): Target labels for training.
+        """
+        start_time = 0
+        if self.measure_time:
+            start_time = time.perf_counter()
+
+        # This map stores the *best g-cost* (lowest cost) found so far for each state.
+        # This replaces the previous 'visited' map which incorrectly stored f-cost.
+        #self.g_costs = {}      # Moved to __init__
+
+        initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
+        initial_loss = initial_mlp.evaluate(X, Y)
+        initial_node = SearchNode(quantized_mlp=initial_mlp, g_val=self.g_initial_value, h_val=initial_loss)
+        initial_hash = initial_mlp.get_state_hash()
+
+        heapq.heappush(self.open_set, (initial_node.f_val, initial_node))
+        # Store the initial g-cost for the starting state
+        self.g_costs[initial_hash] = initial_node.g_val
+        self.best_node = initial_node
+
+        for iteration in range(self.max_iterations):
+            if not self.open_set:
+                print("Open set is empty. Terminating search.")
+                break
+
+            current_f, current_node = heapq.heappop(self.open_set)
+            
+            # --- [A* CORRECTNESS CHECK] ---
+            # Check if this node is "stale". A stale node is one we've
+            # already found a *better* (lower g-cost) path to. If the g-cost
+            # from the heap is worse than our recorded best g-cost,
+            # we skip it and move on.
+            current_hash = current_node.quantized_mlp.get_state_hash()
+            if current_hash not in self.g_costs or current_node.g_val > self.g_costs[current_hash]:
+                continue
+            # --- [END CHECK] ---
+
+            self.loss_history.append(current_node.h_val)
+            self.f_history.append(current_node.f_val)
+            self.g_history.append(current_node.g_val)
+
+            if current_node.h_val < self.best_node.h_val:
+                self.best_node = current_node
+                print(f"Iteration {iteration+1}: New best loss = {self.best_node.h_val}")
+
+            if current_node.h_val <= self.target_loss:
+                print(f"Goal loss achieved: {current_node.h_val}")
+                print(f"Training completed in {iteration+1} iterations.")
+                self.best_node = current_node
+                if self.measure_time:
+                    end_time = time.perf_counter()
+                    total_time = end_time - start_time
+                    self.training_times.append(total_time)
+                    print(f"Total training time: {total_time:.4f} seconds")
+                return
+
+            if (iteration + 1) % self.log_freq == 0:
+                print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
+
+            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.param_fraction)
+
+            for neighbor_mlp, h in neighbors:
+                if neighbor_mlp.overflow: continue
+                state_hash = neighbor_mlp.get_state_hash()
+
+                # 1. Calculate the new g-cost (cost-to-come) for this neighbor
+                g = 0.0 # Default
+                if self.update_strategy == 0:
+                    g = current_node.g_val + self.g_step
+                elif self.update_strategy == 1:
+                    g = current_node.g_val + (1/np.log(initial_node.quantized_mlp.possible_congigurations)) * (self.alpha * h/current_node.h_val + (1-self.alpha) * h/initial_node.h_val)
+                elif self.update_strategy == 2:
+                    g = current_node.g_val + (1/self.max_iterations)
+
+                # --- [A* CORE LOGIC] ---
+                # 2. Check if this new path to the neighbor is better (lower g-cost)
+                #    than any path we've found before.
+                if state_hash not in self.g_costs or g < self.g_costs[state_hash]:
+                    
+                    # 3. This is a better path. Record the new best g-cost.
+                    self.g_costs[state_hash] = g
+                    
+                    # 4. Calculate the f-cost (g + h) based on this new, better g-cost
+                    f = 0.0 # Default
+                    if self.update_strategy == 0:
+                        f = g + h
+                    elif self.update_strategy in [1, 2]:
+                        f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
+                    
+                    # 5. Push the new node (with the better path) onto the open set
+                    new_node = SearchNode(neighbor_mlp, g_val=g, h_val=h, f_val=f, parent=current_node)
+                    heapq.heappush(self.open_set, (new_node.f_val, new_node))
+
+        print(f"Search completed after {iteration+1} iterations.")
+        print(f"Best loss found: {self.best_node.h_val}")
+        if self.measure_time:
+            end_time = time.perf_counter()
+            total_time = end_time - start_time
+            self.training_times.append(total_time)
+            print(f"Total training time: {total_time:.4f} seconds")
+        return
+
+
 
     def plot_training_history(self, filename='astar_loss_plot.png'):
         """

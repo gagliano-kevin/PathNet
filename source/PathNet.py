@@ -290,10 +290,14 @@ class Trainer:
                     g = current_node.g_val + self.g_step
                     f = g + h
                 elif self.update_strategy == 1:
-                    g = current_node.g_val + (1/np.log(initial_node.quantized_mlp.possible_congigurations)) * (self.alpha * h/current_node.h_val + (1-self.alpha) * h/initial_node.h_val)
+                    g = current_node.g_val + (1/np.log10(initial_node.quantized_mlp.possible_congigurations)) * (self.alpha * h/current_node.h_val + (1-self.alpha) * h/initial_node.h_val)
                     f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
                 elif self.update_strategy == 2:
                     g = current_node.g_val + (1/self.max_iterations)
+                    f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
+                    # Update strategy 3 is a test version with non-constant step size, that tries to improve update strategy 1
+                elif self.update_strategy is 3:
+                    g = current_node.g_val + (1/(self.max_iterations*np.log10(initial_node.quantized_mlp.possible_congigurations))) * (self.alpha * h/current_node.h_val + (1-self.alpha) * h/initial_node.h_val)**max(1, np.log10(iteration+1))
                     f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
                 # Exception of type KeyError is prevented by prior checking if state_hash is not in visited (short-circuit logic)
                 if state_hash not in self.visited or f < self.visited[state_hash]:
@@ -340,7 +344,6 @@ class Trainer:
         initial_hash = initial_mlp.get_state_hash()
 
         heapq.heappush(self.open_set, (initial_node.f_val, initial_node))
-        # Store the initial g-cost for the starting state
         self.g_costs[initial_hash] = initial_node.g_val
         self.best_node = initial_node
 
@@ -351,17 +354,13 @@ class Trainer:
 
             current_f, current_node = heapq.heappop(self.open_set)
             
-            # --- [A* CORRECTNESS CHECK] ---
-            # Check if this node is "stale". A stale node is one we've
-            # already found a *better* (lower g-cost) path to. If the g-cost
-            # from the heap is worse than our recorded best g-cost,
-            # we skip it and move on.
+
             current_hash = current_node.quantized_mlp.get_state_hash()
+            # CHECK FOR STALE NODES
             # (current_hash not in self.g_costs) should always be FALSE, kept for security in short-circuit logic for 
             # the possbile key error of the second expression
             if current_hash not in self.g_costs or current_node.g_val > self.g_costs[current_hash]:
                 continue
-            # --- [END CHECK] ---
 
             self.loss_history.append(current_node.h_val)
             self.f_history.append(current_node.f_val)
@@ -391,8 +390,8 @@ class Trainer:
                 if neighbor_mlp.overflow: continue
                 state_hash = neighbor_mlp.get_state_hash()
 
-                # 1. Calculate the new g-cost (cost-to-come) for this neighbor
-                g = 0.0 # Default
+                # New g-cost (cost-to-come) for this neighbor
+                g = 0.0 
                 if self.update_strategy == 0:
                     g = current_node.g_val + self.g_step
                 elif self.update_strategy == 1:
@@ -400,22 +399,16 @@ class Trainer:
                 elif self.update_strategy == 2:
                     g = current_node.g_val + (1/self.max_iterations)
 
-                # --- [A* CORE LOGIC] ---
-                # 2. Check if this new path to the neighbor is better (lower g-cost)
-                #    than any path we've found before.
-                if state_hash not in self.g_costs or g < self.g_costs[state_hash]:
-                    
-                    # 3. This is a better path. Record the new best g-cost.
+                # Check if the neighbor state has not been visited yet or if this path offers a better g-cost (reinsertion case of the same MLP state to the open set)
+                if state_hash not in self.g_costs or g < self.g_costs[state_hash]:  
                     self.g_costs[state_hash] = g
-                    
-                    # 4. Calculate the f-cost (g + h) based on this new, better g-cost
-                    f = 0.0 # Default
+                    f = 0.0 
                     if self.update_strategy == 0:
                         f = g + h
                     elif self.update_strategy in [1, 2]:
                         f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
-                    
-                    # 5. Push the new node (with the better path) onto the open set
+
+                    # Create and push the new search node onto the open set, could be a real new state or an improved path to an existing state
                     new_node = SearchNode(neighbor_mlp, g_val=g, h_val=h, f_val=f, parent=current_node)
                     heapq.heappush(self.open_set, (new_node.f_val, new_node))
 

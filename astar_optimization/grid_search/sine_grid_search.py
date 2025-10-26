@@ -29,27 +29,30 @@ model = nn.Sequential(
     nn.ReLU(),
     #nn.Tanh(),
     nn.Linear(6, 1),
-    #nn.Tanh()
+    nn.Tanh()
     )
 
 grid_search_trainer = GridSearchTrainer(
     models=[model],
     loss_funcs=[nn.MSELoss()],
-    quantization_factors=[1, 2],
-    #quantization_factors=[1, 2, 5],
-    parameter_ranges=[(-5, 5)],
-    #parameter_ranges=[(-4, 4), (-5, 5)],
-    param_fractions=[1.0],
-    #param_fractions=[0.5, 1.0],
-    max_iterations=[200],
-    log_freq=[50],
+    #quantization_factors=[1, 2],
+    quantization_factors=[1, 2, 5, 10],
+    #parameter_ranges=[(-5, 5)],
+    parameter_ranges=[(-3, 3), (-5, 5)],
+    #param_fractions=[1.0],
+    param_fractions=[1.0, 0.5],
+    #max_iterations=[200],
+    max_iterations=[4000, 2000, 1000],
+    log_freq=[100],
     target_losses=[0.01],
-    update_strategies=[2],
-    #update_strategies=[0, 1, 2],
+    #target_losses=[0.01, 0.001],
+    #update_strategies=[2],
+    update_strategies=[0, 1, 2, 3],
     g_ini_vals=[0],
-    g_steps=[0.01],
+    #g_steps=[0.01],
+    g_steps=[0.001],
     alphas=[0.5],
-    scale_fs=[True],
+    scale_fs=[False],
     #scale_fs=[True, False],
     debug_mlps=True
 )

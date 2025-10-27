@@ -575,4 +575,100 @@ class GridSearchTrainer:
                 loss, params = heapq.heappop(sorted_final_losses)
                 log_file.write(f"{loss}\t\t\t{params}\n")
 
+                
 
+# Same as GridSearchTrainer but storing only the parameters for each trainer configuration
+# Test class for reducing memory usage when a large number of configurations is needed
+class LightGridSearchTrainer:
+    """
+    A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
+    """
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, param_fractions, max_iterations, log_freq, target_losses, update_strategies, g_ini_vals, g_steps, alphas, scale_fs, debug_mlps=True, measure_time=True):
+        self.trainers_params = []
+        for i in range(len(models)):
+            for lf in loss_funcs:
+                for qf in quantization_factors:
+                    for pr in parameter_ranges:
+                        for pf in param_fractions:
+                            for mi in max_iterations:
+                                for lfq in log_freq:
+                                    for tl in target_losses:
+                                        for us in update_strategies:
+                                            for giv in g_ini_vals:
+                                                for gs in g_steps:
+                                                    for a in alphas:
+                                                        for sf in scale_fs:
+                                                            self.trainers_params.append((
+                                                                models[i],
+                                                                lf,
+                                                                qf,
+                                                                pr,
+                                                                debug_mlps,
+                                                                pf,
+                                                                mi,
+                                                                lfq,
+                                                                tl,
+                                                                us,
+                                                                giv,
+                                                                gs,
+                                                                a,
+                                                                sf,
+                                                                measure_time
+                                                            ))
+
+    
+    def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=False, log_filename='grid_search_log.txt',):
+        """
+        Runs the grid search over all trainer configurations and logs the results.
+
+        Parameters:
+            X (torch.Tensor): Input data for training.
+            Y (torch.Tensor): Target labels for training.
+            log_filename (str): Filename to log the training results.
+        """
+
+        sorted_final_losses = []
+
+        with open(log_filename, 'w') as log_file:
+            log_file.write("=" * 32 + "\n")
+            log_file.write("\tGrid Search Training Log\n")
+            log_file.write("=" * 32 + "\n\n")
+
+        for param_config in self.trainers_params:
+            for run in range(runs_per_config):
+                trainer = Trainer(
+                    model=param_config[0],
+                    loss_fn=param_config[1],
+                    quantization_factor=param_config[2],
+                    parameter_range=param_config[3],
+                    debug_mlp=param_config[4],
+                    param_fraction=param_config[5],
+                    max_iterations=param_config[6],
+                    log_freq=param_config[7],
+                    target_loss=param_config[8],
+                    update_strategy=param_config[9],
+                    g_ini_val=param_config[10],
+                    g_step=param_config[11],
+                    alpha=param_config[12],
+                    scale_f=param_config[13],
+                    measure_time=param_config[14]
+                )
+                print(f"(Run {run}) - Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}, Update Strategy={trainer.update_strategy}, G Initial Value={trainer.g_initial_value}, G Step={trainer.g_step}, Alpha={trainer.alpha}, Scale F={trainer.scale_f}")
+                with open(log_filename, 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}, Update Strategy={trainer.update_strategy}, G Initial Value={trainer.g_initial_value}, G Step={trainer.g_step}, Alpha={trainer.alpha}, Scale F={trainer.scale_f}\n\n")
+                trainer.train(X, Y)
+                heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations, trainer.target_loss, trainer.update_strategy, trainer.g_initial_value, trainer.g_step, trainer.alpha, trainer.scale_f]))
+                if enable_training_history_logging: trainer.log_to_file(log_filename)
+                print(f"(Run {run}) - Training completed.\n\n")
+                with open(log_filename, 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val}\n")
+                    log_file.write(f"(Run {run}) - Training Time: {trainer.training_times[-1]:.4f} seconds\n")
+                    log_file.write(f"\n(Run {run}) - Training completed.\n\n")
+                    log_file.write("-" * 150 + "\n\n")
+
+        with open(log_filename, 'a') as log_file:
+            log_file.write("Sorted Final Losses from Grid Search:\n")
+            log_file.write("Final Loss\t\t\t\t\tParameters: [Quantization Factor, Parameter Range, Param Fraction, Max Iterations, Target Loss, Update Strategy, G Initial Value, G Step, Alpha, Scale F]\n")
+            while sorted_final_losses:
+                loss, params = heapq.heappop(sorted_final_losses)
+                log_file.write(f"{loss}\t\t\t{params}\n")

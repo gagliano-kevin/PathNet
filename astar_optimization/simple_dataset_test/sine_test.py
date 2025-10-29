@@ -4,7 +4,8 @@
 #===================================================================================================================================
 #===================================================================================================================================
 from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions
-from source.PathNet import Trainer
+#from source.PathNet import Trainer
+from source.SimplePathNet import Trainer
 
 import torch
 import torch.nn as nn
@@ -37,10 +38,10 @@ model = nn.Sequential(
     nn.Tanh(),
 
     nn.Linear(8, 1),
-    nn.Tanh() # CRITICAL: Tanh bounds the output to (-1, 1), matching the sine range.
+    nn.Tanh() # Tanh bounds the output to (-1, 1), matching the sine range.
 )
 
-trainer = Trainer(model, nn.MSELoss(), quantization_factor=5, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=1000, log_freq=50, target_loss=0.1, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=False)
+trainer = Trainer(model, nn.MSELoss(), quantization_factor=5, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=1000, log_freq=50, target_loss=0.1, update_strategy=0, g_ini_val=0, g_step=None, alpha=0.5, scale_f=False)
 
 trainer.train(X_sin, Y_sin)
 

@@ -8,7 +8,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 from source.sinusoidal_func_utils import generate_sinusoidal_tensor
-from source.PathNet import GridSearchTrainer
+#from source.PathNet import GridSearchTrainer
+from source.SimplePathNet import LightGridSearchTrainer, GridSearchTrainer
 
 
 NUM_SAMPLES = 1000
@@ -32,7 +33,8 @@ model = nn.Sequential(
     nn.Tanh()
     )
 
-grid_search_trainer = GridSearchTrainer(
+# Version of the grid search trainer with PathNet
+"""grid_search_trainer = GridSearchTrainer(
     models=[model],
     loss_funcs=[nn.MSELoss()],
     #quantization_factors=[1, 2],
@@ -54,6 +56,22 @@ grid_search_trainer = GridSearchTrainer(
     alphas=[0.5],
     scale_fs=[False],
     #scale_fs=[True, False],
+    debug_mlps=True
+)"""
+
+
+# Version of the grid search trainer with SimplePathNet
+
+#grid_search_trainer = LightGridSearchTrainer(
+grid_search_trainer = GridSearchTrainer(
+    models=[model],
+    loss_funcs=[nn.MSELoss()],
+    quantization_factors=[1, 10],
+    parameter_ranges=[(-3, 3)],
+    param_fractions=[1.0],
+    max_iterations=[100],
+    log_freq=[100],
+    target_losses=[0.01],
     debug_mlps=True
 )
 

@@ -305,7 +305,7 @@ class Trainer:
                 if neighbor_mlp.overflow: continue
                 state_hash = neighbor_mlp.get_state_hash()
 
-                h = h - self.target_loss  # Adjusted h to represent the deviation from the target loss
+                h = h - self.target_loss  # Adjusted h to represent the distaaìnce to the goal
 
                 # New g-cost (cost-to-come) for this neighbor
                 g = 0.0 
@@ -321,14 +321,9 @@ class Trainer:
                 # Check if the neighbor state has not been visited yet or if this path offers a better g-cost (reinsertion case of the same MLP state to the open set)
                 if state_hash not in self.g_costs or g < self.g_costs[state_hash]:  
                     self.g_costs[state_hash] = g
-                    f = 0.0 
-                    if self.update_strategy == 0:
-                        f = g + h
-                    elif self.update_strategy in [1, 2]:
-                        f = max(0, 1-(self.target_loss/h))*g + h if self.scale_f else g + h
 
                     # Create and push the new search node onto the open set, could be a real new state or an improved path to an existing state
-                    new_node = SearchNode(neighbor_mlp, g_val=g, h_val=h, f_val=f, parent=current_node)
+                    new_node = SearchNode(neighbor_mlp, g_val=g, h_val=h, parent=current_node)
                     #print(f"Adding neighbor node:\nloss: {h} \tf: {f} \tg: {g}\n")
                     heapq.heappush(self.open_set, (new_node.f_val, new_node))
 

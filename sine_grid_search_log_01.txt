@@ -1,0 +1,166 @@
+================================
+	Grid Search Training Log
+================================
+
+(Run 0) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.3749877417087555
+(Run 0) - Training Time: 106.7243 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.3749877417087555
+(Run 1) - Training Time: 99.7825 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.3749877417087555
+(Run 0) - Training Time: 304.9540 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.3749877417087555
+(Run 1) - Training Time: 320.2109 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.3506322109699249
+(Run 0) - Training Time: 105.4866 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.3506322109699249
+(Run 1) - Training Time: 100.3054 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.04012640357017517
+(Run 0) - Training Time: 303.8483 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.04012640357017517
+(Run 1) - Training Time: 303.2704 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.49606292486190795
+(Run 0) - Training Time: 321.0860 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.49606292486190795
+(Run 1) - Training Time: 293.5038 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.377271910905838
+(Run 0) - Training Time: 909.9450 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=1, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.377271910905838
+(Run 1) - Training Time: 946.0392 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.36762215733528136
+(Run 0) - Training Time: 297.8600 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=1000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.36636294960975646
+(Run 1) - Training Time: 262.7127 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 0) - Best Loss: 0.04287240445613861
+(Run 0) - Training Time: 776.4389 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-4, 4), Param Fraction=1.0, Max Iterations=3000, Target Loss=0.01
+
+(Run 1) - Best Loss: 0.05525473296642303
+(Run 1) - Training Time: 811.7605 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sorted Final Losses from Grid Search:
+Final Loss					Parameters: [Quantization Factor, Parameter Range, Param Fraction, Max Iterations, Target Loss]
+0.04012640357017517			[10, (-4, 4), 1.0, 3000, 0.01]		xs_moodel
+0.04012640357017517			[10, (-4, 4), 1.0, 3000, 0.01]		xs_model
+0.04287240445613861			[10, (-4, 4), 1.0, 3000, 0.01]		s_model
+0.05525473296642303			[10, (-4, 4), 1.0, 3000, 0.01]		s_model
+0.3506322109699249			[10, (-4, 4), 1.0, 1000, 0.01]
+0.3506322109699249			[10, (-4, 4), 1.0, 1000, 0.01]
+0.36636294960975646			[10, (-4, 4), 1.0, 1000, 0.01]
+0.36762215733528136			[10, (-4, 4), 1.0, 1000, 0.01]
+0.3749877417087555			[1, (-4, 4), 1.0, 1000, 0.01]
+0.3749877417087555			[1, (-4, 4), 1.0, 1000, 0.01]
+0.3749877417087555			[1, (-4, 4), 1.0, 3000, 0.01]
+0.3749877417087555			[1, (-4, 4), 1.0, 3000, 0.01]
+0.377271910905838			[1, (-4, 4), 1.0, 3000, 0.01]
+0.377271910905838			[1, (-4, 4), 1.0, 3000, 0.01]
+0.49606292486190795			[1, (-4, 4), 1.0, 1000, 0.01]
+0.49606292486190795			[1, (-4, 4), 1.0, 1000, 0.01]

@@ -22,14 +22,25 @@ ITERATIONS = 100
 X_train_tensor, y_train_tensor = generate_sinusoidal_tensor(func=torch.sin, num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
 
 
-model = nn.Sequential(
-    nn.Linear(1, 6),  
+xs_model = nn.Sequential(
+    nn.Linear(1, 4),  
     nn.ReLU(),
     #nn.Tanh(),
-    nn.Linear(6, 6),
+    nn.Linear(4, 4),
     nn.ReLU(),
     #nn.Tanh(),
-    nn.Linear(6, 1),
+    nn.Linear(4, 1),
+    nn.Tanh()
+    )
+
+s_model = nn.Sequential(
+    nn.Linear(1, 8),  
+    nn.ReLU(),
+    #nn.Tanh(),
+    nn.Linear(8, 8),
+    nn.ReLU(),
+    #nn.Tanh(),
+    nn.Linear(8, 1),
     nn.Tanh()
     )
 
@@ -62,14 +73,15 @@ model = nn.Sequential(
 
 # Version of the grid search trainer with SimplePathNet
 
-#grid_search_trainer = LightGridSearchTrainer(
-grid_search_trainer = GridSearchTrainer(
-    models=[model],
+grid_search_trainer = LightGridSearchTrainer(
+#grid_search_trainer = GridSearchTrainer(
+    models=[xs_model, s_model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[1, 10],
-    parameter_ranges=[(-3, 3)],
+    parameter_ranges=[(-4, 4)],
     param_fractions=[1.0],
-    max_iterations=[100],
+    #max_iterations=[1000, 3000],
+    max_iterations=[20],
     log_freq=[100],
     target_losses=[0.01],
     debug_mlps=True

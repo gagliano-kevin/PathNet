@@ -422,6 +422,7 @@ class GridSearchTrainer:
         for trainer in self.trainers:
             for run in range(runs_per_config):
                 print(f"(Run {run}) - Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}")
+                print(f"Model: {str(trainer.model)}\n")
                 with open(log_filename, 'a') as log_file:
                     log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}\n\n")
                 trainer.train(X, Y)
@@ -504,10 +505,12 @@ class LightGridSearchTrainer:
                     measure_time=param_config[9]
                 )
                 print(f"(Run {run}) - Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}")
+                print(f"Model: {str(trainer.model)}\n")
                 with open(log_filename, 'a') as log_file:
                     log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}\n\n")
+                    log_file.write(f"Model: {str(trainer.model)}\n\n")
                 trainer.train(X, Y)
-                heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations, trainer.target_loss]))
+                heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [str(trainer.model), trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations, trainer.target_loss]))
                 if enable_training_history_logging: trainer.log_to_file(log_filename)
                 print(f"(Run {run}) - Training completed.\n\n")
                 with open(log_filename, 'a') as log_file:
@@ -518,7 +521,7 @@ class LightGridSearchTrainer:
 
         with open(log_filename, 'a') as log_file:
             log_file.write("Sorted Final Losses from Grid Search:\n")
-            log_file.write("Final Loss\t\t\t\t\tParameters: [Quantization Factor, Parameter Range, Param Fraction, Max Iterations, Target Loss]\n")
+            log_file.write("Final Loss\t\t\t\t\tParameters: [Model, Quantization Factor, Parameter Range, Param Fraction, Max Iterations, Target Loss]\n")
             while sorted_final_losses:
                 loss, params = heapq.heappop(sorted_final_losses)
                 log_file.write(f"{loss}\t\t\t{params}\n")

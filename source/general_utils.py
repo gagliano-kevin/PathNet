@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-
+# used in: optimizations_comparison.sine_comparison
 def plot_losses(loss_lists, labels, filename="loss_plot.png"):
     """
     Plots multiple lists of loss values on a single figure, regardless of length.

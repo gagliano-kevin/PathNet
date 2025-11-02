@@ -47,6 +47,8 @@ trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(
 
 trainer.train(X_sin, Y_sin)
 
+trainer.plot_training_history("test.png")
+
 plot_sine_predictions(test_x_np=X_sin.numpy(), 
                       predicted_sin_np=trainer.best_node.quantized_mlp.model(X_sin).detach().numpy(), 
                       true_sin_np=Y_sin.numpy(),

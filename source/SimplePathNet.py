@@ -6,6 +6,8 @@ import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
 import time
+import json
+import pandas as pd
 
 class QuantizedMLP:
     """ 
@@ -253,16 +255,16 @@ class Trainer:
             if current_hash not in self.g_costs or current_node.g_val > self.g_costs[current_hash]:
                 continue
 
-            self.loss_history.append(current_node.h_val)
+            self.loss_history.append(current_node.h_val + self.target_loss)
             self.f_history.append(current_node.f_val)
             self.g_history.append(current_node.g_val)
 
             if current_node.h_val < self.best_node.h_val:
                 self.best_node = current_node
-                print(f"Iteration {iteration+1}: New best loss = {self.best_node.h_val}")
+                print(f"Iteration {iteration+1}: New best loss = {self.best_node.h_val + self.target_loss}")
 
             if current_node.h_val <= self.target_loss:
-                print(f"Goal loss achieved: {current_node.h_val}")
+                print(f"Goal loss achieved: {current_node.h_val + self.target_loss} <= {self.target_loss}")
                 print(f"Training completed in {iteration+1} iterations.")
                 self.best_node = current_node
                 if self.measure_time:
@@ -273,7 +275,7 @@ class Trainer:
                 return
 
             if (iteration + 1) % self.log_freq == 0:
-                print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
+                print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val + self.target_loss}")
 
             neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.param_fraction)
 
@@ -296,7 +298,7 @@ class Trainer:
                     heapq.heappush(self.open_set, (new_node.f_val, new_node))
 
         print(f"Search completed after {iteration+1} iterations.")
-        print(f"Best loss found: {self.best_node.h_val}")
+        print(f"Best loss found: {self.best_node.h_val + self.target_loss}")
         if self.measure_time:
             end_time = time.perf_counter()
             total_time = end_time - start_time
@@ -312,12 +314,12 @@ class Trainer:
             filename (str): The name of the file to save the plot.
         """
         plt.figure(figsize=(10, 6))
-        plt.plot(self.loss_history, label='Loss (h) per Iteration')
+        plt.plot(self.loss_history, label='Loss (h + target_loss) per Iteration')
         plt.plot(self.f_history, label='Total Cost (f) per Iteration')
         plt.plot(self.g_history, label='Cost g per Iteration')
         plt.xlabel('Number of Iterations')
         plt.ylabel('Value')
-        plt.title('Loss (h) and Total Cost (f) Over Iterations with A*')
+        plt.title('Loss (h + target_loss), Total Cost (f) and Cost (g) Over Iterations with A*')
         plt.legend()
         plt.grid(True)
         plt.savefig(filename)
@@ -366,10 +368,10 @@ class Trainer:
             filename (str): The name of the file to log the training history.
         """
         with open(filename, 'a') as f:
-            f.write("Iteration\tLoss (h)\tTotal Cost (f)\tCost g\n")
+            f.write("Iteration\tLoss (h + target_loss)\tTotal Cost (f)\tCost g\n")
             for i in range(len(self.loss_history)):
                 f.write(f"{i+1}\t{self.loss_history[i]}\t{self.f_history[i]}\t{self.g_history[i]}\n")
-            f.write(f"\nBest Loss: {self.best_node.h_val}\n\n")
+            f.write(f"\nBest Loss: {self.best_node.h_val + self.target_loss}\n\n")
         print(f"Training log saved to {filename}")
 
 
@@ -525,3 +527,315 @@ class LightGridSearchTrainer:
             while sorted_final_losses:
                 loss, params = heapq.heappop(sorted_final_losses)
                 log_file.write(f"{loss}\t\t\t{params}\n")
+
+
+    def run_grid_search_json_log(self, X, Y, runs_per_config=1, enable_training_history_logging=True, log_filename='grid_search_results.json'):
+            """
+            Runs the grid search over all trainer configurations and logs the results to a JSON file.
+
+            Parameters:
+                X (torch.Tensor): Input data for training.
+                Y (torch.Tensor): Target labels for training.
+                log_filename (str): Filename for the JSON log file.
+            
+            Returns:
+                list: The list of results dictionaries.
+            """
+            
+            # Lista che conterrà tutti i dizionari di risultato (JSON-serializzabili)
+            grid_search_results = []
+            
+            print("\n" + "=" * 50)
+            print("\tGrid Search (JSON Logging)")
+            print("=" * 50)
+            
+            for config_index, param_config in enumerate(self.trainers_params):
+                # Decomposizione della tupla per maggiore leggibilità
+                (model_class, loss_fn, qf, pr, debug_mlp, pf, mi, lfq, tl, measure_time) = param_config
+                
+                # Dizionario degli iperparametri (serializzabile)
+                # USIAMO str() PER RENDERE GLI OGGETTI PYTORCH SERIALIZZABILI IN JSON
+                hyperparams_dict = {
+                    "model_type": str(model_class),
+                    "loss_fn": str(loss_fn),
+                    "quantization_factor": qf,
+                    "parameter_range": pr,
+                    "param_fraction": pf,
+                    "max_iterations": mi,
+                    "log_freq": lfq,
+                    "target_loss": tl,
+                    "debug_mlp": debug_mlp,
+                    "measure_time": measure_time
+                }
+
+                for run in range(runs_per_config):
+                    # Inizializza il Trainer con i parametri attuali
+                    trainer = Trainer(
+                        model=model_class,
+                        loss_fn=loss_fn,
+                        quantization_factor=qf,
+                        parameter_range=pr,
+                        debug_mlp=debug_mlp,
+                        param_fraction=pf,
+                        max_iterations=mi,
+                        log_freq=lfq,
+                        target_loss=tl,
+                        measure_time=measure_time
+                    )
+                    
+                    run_label = f"Config {config_index+1}/{len(self.trainers_params)} (Run {run+1}/{runs_per_config})"
+                    print(f"\n--- {run_label} ---")
+                    print(f"HPs: QF={qf}, PR={pr}, PF={pf}, MaxIter={mi}, TL={tl}")
+
+                    # Esegui l'addestramento
+                    trainer.train(X, Y)
+
+                    # 1. Cattura le metriche finali
+                    final_loss = trainer.best_node.h_val
+                    training_time = trainer.training_times[-1] if trainer.training_times else 0.0
+
+                    # 2. Costruisci il risultato per questa singola esecuzione
+                    run_result = {
+                        "config_index": config_index,
+                        "run_number": run,
+                        "hyperparameters": hyperparams_dict,
+                        "metrics": {
+                            "final_loss": final_loss,
+                            "training_time_seconds": training_time
+                        }
+                    }
+                    
+                    # 3. Aggiungi la cronologia se l'opzione è attiva
+                    if enable_training_history_logging:
+                        run_result["loss_history"] = trainer.loss_history
+                        run_result["f_history"] = trainer.f_history
+                        run_result["g_history"] = trainer.g_history
+
+                    # 4. Aggiungi il risultato alla lista globale
+                    grid_search_results.append(run_result)
+                    
+                    print(f"COMPLETED: Best Loss: {final_loss:.6f} | Time: {training_time:.2f}s")
+            
+            # -----------------------------------------------------------
+            # SCRITTURA FINALE SU FILE JSON
+            # -----------------------------------------------------------
+            print("\n" + "-" * 50)
+            print(f"Grid Search terminata. Scrivendo {len(grid_search_results)} risultati in {log_filename}...")
+            
+            with open(log_filename, 'w') as f:
+                # Usiamo indent=4 per formattare il JSON e renderlo leggibile
+                json.dump(grid_search_results, f, indent=4)
+                
+            print("Scrittura JSON completata.")
+            
+            # Codice per visualizzare i migliori risultati (non necessario per il file, ma utile per l'utente)
+            sorted_results = sorted(grid_search_results, key=lambda x: x["metrics"]["final_loss"])
+            print("\nTop 5 Risultati (Ordinati per Loss):")
+            for i, res in enumerate(sorted_results[:5]):
+                hps = res['hyperparameters']
+                print(f"  {i+1}. Loss: {res['metrics']['final_loss']:.6f} | QF: {hps['quantization_factor']}, PF: {hps['param_fraction']}, Iter: {hps['max_iterations']}")
+                
+            return grid_search_results
+
+
+
+    def run_grid_search_logger(self, X, Y, runs_per_config=1, enable_training_history_logging=True, log_filename='grid_search_results'):
+        """
+        Runs the grid search over all trainer configurations and logs the results to a JSON file.
+
+        Parameters:
+            X (torch.Tensor): Input data for training.
+            Y (torch.Tensor): Target labels for training.
+            log_filename (str): Filename for the JSON log file.
+        
+        Returns:
+            list: The list of results dictionaries.
+        """
+        
+        # List to hold all dictionary results
+        grid_search_results = []
+
+        with open(log_filename + '.txt', 'w') as log_file:
+            log_file.write("=" * 32 + "\n")
+            log_file.write("\tGrid Search Training Log\n")
+            log_file.write("=" * 32 + "\n\n")
+        
+        print("\n" + "=" * 50)
+        print("\tGrid Search")
+        print("=" * 50)
+        
+        for config_index, param_config in enumerate(self.trainers_params):
+            (model_class, loss_fn, qf, pr, debug_mlp, pf, mi, lfq, tl, measure_time) = param_config
+            
+            hyperparams_dict = {
+                "model_type": str(model_class),
+                "loss_fn": str(loss_fn),
+                "quantization_factor": qf,
+                "parameter_range": pr,
+                "param_fraction": pf,
+                "max_iterations": mi,
+                "log_freq": lfq,
+                "target_loss": tl,
+                "debug_mlp": debug_mlp,
+                "measure_time": measure_time
+            }
+
+            for run in range(runs_per_config):
+                trainer = Trainer(
+                    model=model_class,
+                    loss_fn=loss_fn,
+                    quantization_factor=qf,
+                    parameter_range=pr,
+                    debug_mlp=debug_mlp,
+                    param_fraction=pf,
+                    max_iterations=mi,
+                    log_freq=lfq,
+                    target_loss=tl,
+                    measure_time=measure_time
+                )
+                
+                run_label = f"Config {config_index+1}/{len(self.trainers_params)} (Run {run+1}/{runs_per_config})"
+                print(f"\n--- {run_label} ---")
+                print(f"HPs: QF={qf}, PR={pr}, PF={pf}, MaxIter={mi}, TL={tl}")
+
+                with open(log_filename + '.txt', 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}\n\n")
+                    log_file.write(f"Model: {str(trainer.model)}\n\n")
+
+                trainer.train(X, Y)
+
+                final_loss = trainer.best_node.h_val + trainer.target_loss
+                training_time = trainer.training_times[-1] if trainer.training_times else 0.0
+
+                run_result = {
+                    "config_index": config_index,
+                    "run_number": run,
+                    "hyperparameters": hyperparams_dict,
+                    "metrics": {
+                        "final_loss": final_loss,
+                        "training_time_seconds": training_time
+                    }
+                }
+                
+                if enable_training_history_logging:
+                    run_result["loss_history"] = trainer.loss_history
+                    run_result["f_history"] = trainer.f_history
+                    run_result["g_history"] = trainer.g_history
+
+                grid_search_results.append(run_result)
+                
+                print(f"COMPLETED: Best Loss: {final_loss:.6f} | Time: {training_time:.2f}s")
+
+                with open(log_filename + '.txt', 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val + trainer.target_loss}\n")
+                    log_file.write(f"(Run {run}) - Training Time: {trainer.training_times[-1]:.4f} seconds\n")
+                    log_file.write(f"\n(Run {run}) - Training completed.\n\n")
+                    log_file.write("-" * 150 + "\n\n")
+        
+        print("\n" + "-" * 50)
+        print(f"Grid Search completed. Writing {len(grid_search_results)} results in {log_filename + '.json'}...")
+        
+        with open(log_filename + '.json', 'w') as f:
+            json.dump(grid_search_results, f, indent=4)
+            
+        print("JSON write completed.")
+        
+        sorted_results = sorted(grid_search_results, key=lambda x: x["metrics"]["final_loss"])
+        with open(log_filename + '.txt', 'a') as log_file:
+            log_file.write("Sorted Final Losses from Grid Search:\n")
+            for i, res in enumerate(sorted_results):
+                hps = res['hyperparameters']
+                log_file.write(f"{i+1}. Loss: {res['metrics']['final_loss']:.6f}\n")
+                log_file.write(f"Model: {hps['model_type']}\n")
+                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, PF: {hps['param_fraction']}, Iter: {hps['max_iterations']}, TL: {hps['target_loss']}\n\n")
+        
+        return grid_search_results
+    
+    
+
+    def plot_grid_search_trend(self, log_filename='grid_search_results', metric='loss_history'):
+        """
+        Reads the JSON log file and plots the loss trend (loss vs. iteration) for each run.
+        
+        Parameters:
+            log_filename (str): The filename prefix for the JSON results file.
+            metric (str): The key in the run_result dictionary containing the list of losses 
+                          (e.g., 'loss_history').
+        """
+        if 'pd' not in globals() or 'plt' not in globals():
+            print("Error: pandas and matplotlib must be imported to plot the grid search trend.")
+            return
+
+        json_file = log_filename if log_filename.endswith('.json') else log_filename + '.json'
+
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
+        
+        if not results:
+            print("No results found in the JSON file.")
+            return
+
+        plt.figure(figsize=(14, 8))
+        
+        print(f"\nGenerating trend plot for history key '{metric}'...")
+        
+        plotted_runs = 0
+        for run_result in results:
+            history_list = run_result.get(metric) 
+            
+            if history_list and isinstance(history_list, list) and history_list:
+                try:
+                    history_df = pd.DataFrame({
+                        'iteration': range(1, len(history_list) + 1),
+                        'history_value': history_list          
+                    })
+                    
+                    # Labels for the plot legend
+                    hps = run_result["hyperparameters"]
+                    label = (
+                        f"Config Index {run_result['config_index']} - Run N° {run_result['run_number']} "
+                        f"[PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, PF: {hps['param_fraction']}, MI: {hps['max_iterations']}]"
+                    )
+                    
+                    # X = iteration, Y = history_value
+                    plt.plot(history_df['iteration'], history_df['history_value'], label=label, alpha=0.8, linewidth=1.5)
+                    plotted_runs += 1
+
+                except Exception as e:
+                    print(f"Warning: Error plotting run {run_result['config_index']}-{run_result['run_number']}: {e}")
+                    continue
+
+
+        if plotted_runs == 0:
+            print(f"No useful history data found in the JSON file for key '{metric}'.")
+            plt.close() 
+            return
+        
+        metric2name = {
+            'loss_history': 'Loss',
+            'f_history': 'Total Cost (f)',
+            'g_history': 'Cost (g)'
+        }
+        metric_fullname = metric2name.get(metric)
+        
+        # Plot customization
+        plt.title(f'{metric_fullname} Trend Across Grid Search Runs', fontsize=16)
+        plt.xlabel('Iteration (Number of Steps)', fontsize=14)
+        plt.ylabel(f'{metric_fullname} Value', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.6)
+        
+        # Legend outside the plot
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameter Configurations") 
+        plt.tight_layout(rect=[0, 0, 1.00, 1]) # needed to avoid cutting off the legend
+        #plt.show()
+        plt.savefig(log_filename + '_loss_trend.png', dpi=300)
+
+        print("Plot saved as " + log_filename + "_loss_trend.png\n")
+        print("-" * 50)

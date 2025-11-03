@@ -77,14 +77,18 @@ grid_search_trainer = LightGridSearchTrainer(
 #grid_search_trainer = GridSearchTrainer(
     models=[xs_model, s_model],
     loss_funcs=[nn.MSELoss()],
-    quantization_factors=[1, 10],
-    parameter_ranges=[(-4, 4)],
-    param_fractions=[1.0],
+    quantization_factors=[1, 10, 100],
+    parameter_ranges=[(-5, 5), (-10, 10)],
+    param_fractions=[0.5, 1.0],
     #max_iterations=[1000, 3000],
-    max_iterations=[20],
+    max_iterations=[1000, 5000, 10000],
     log_freq=[100],
-    target_losses=[0.01],
+    target_losses=[0.001],
     debug_mlps=True
 )
 
-grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=False, log_filename='sine_grid_search_log.txt')
+#grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=False, log_filename='sine_grid_search_log.txt')
+
+grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_grid_search_log_test_01')
+
+grid_search_trainer.plot_grid_search_trend(log_filename="sine_grid_search_log_test_01", metric="loss_history")

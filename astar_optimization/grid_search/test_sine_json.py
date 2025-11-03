@@ -89,9 +89,9 @@ grid_search_trainer = LightGridSearchTrainer(
     debug_mlps=True
 )
 
-grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_grid_search_log_test')
+grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_grid_search_log_test_01')
 
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_grid_search_log_test", metric="f_history")
+grid_search_trainer.plot_grid_search_trend(log_filename="sine_grid_search_log_test_01", metric="loss_history")
 
 
 

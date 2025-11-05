@@ -1,0 +1,179 @@
+================================
+	Grid Search Training Log
+================================
+
+(Run 0) - Training with parameters: Quantization Factor=1, Parameter Range=(-5, 5), Param Fraction=1.0, Max Iterations=5000, Target Loss=0.01
+
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+
+(Run 0) - Best Loss: 0.38494443893432617
+(Run 0) - Training Time: 438.2418 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=1, Parameter Range=(-5, 5), Param Fraction=1.0, Max Iterations=5000, Target Loss=0.01
+
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+
+(Run 1) - Best Loss: 0.38809746503829956
+(Run 1) - Training Time: 439.3489 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-5, 5), Param Fraction=1.0, Max Iterations=5000, Target Loss=0.01
+
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+
+(Run 0) - Best Loss: 0.36974385380744934
+(Run 0) - Training Time: 436.5510 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-5, 5), Param Fraction=1.0, Max Iterations=5000, Target Loss=0.01
+
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+
+(Run 1) - Best Loss: 0.36974385380744934
+(Run 1) - Training Time: 430.6324 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=100, Parameter Range=(-5, 5), Param Fraction=1.0, Max Iterations=5000, Target Loss=0.01
+
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+
+(Run 0) - Best Loss: 0.509892463684082
+(Run 0) - Training Time: 435.3226 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=100, Parameter Range=(-5, 5), Param Fraction=1.0, Max Iterations=5000, Target Loss=0.01
+
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+
+(Run 1) - Best Loss: 0.509892463684082
+(Run 1) - Training Time: 429.5553 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sorted Final Losses from Grid Search:
+1. Loss: 0.369744
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+QF: 10, PR: (-5, 5), PF: 1.0, Iter: 5000, TL: 0.01
+
+2. Loss: 0.369744
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+QF: 10, PR: (-5, 5), PF: 1.0, Iter: 5000, TL: 0.01
+
+3. Loss: 0.384944
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+QF: 1, PR: (-5, 5), PF: 1.0, Iter: 5000, TL: 0.01
+
+4. Loss: 0.388097
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+QF: 1, PR: (-5, 5), PF: 1.0, Iter: 5000, TL: 0.01
+
+5. Loss: 0.509892
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+QF: 100, PR: (-5, 5), PF: 1.0, Iter: 5000, TL: 0.01
+
+6. Loss: 0.509892
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=4, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=4, out_features=4, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=4, out_features=1, bias=True)
+  (5): Tanh()
+)
+QF: 100, PR: (-5, 5), PF: 1.0, Iter: 5000, TL: 0.01
+

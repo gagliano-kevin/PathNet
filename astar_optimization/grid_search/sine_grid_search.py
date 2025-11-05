@@ -121,7 +121,7 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_grid_search_log_te
 # TESTING ONLY MAX ITERATIONS PARAMETER: 1000, 5000, 10000
 
 grid_search_trainer = LightGridSearchTrainer(
-    models=[xs_model, s_model],
+    models=[xs_model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
     parameter_ranges=[(-5, 5)],
@@ -144,7 +144,7 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_max_iteration
 #TESTING ONLY QUANTIZATION FACTOR PARAMETER: 1, 10, 100
 
 grid_search_trainer = LightGridSearchTrainer(
-    models=[xs_model, s_model],
+    models=[xs_model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[1, 10, 100],
     parameter_ranges=[(-5, 5)],
@@ -167,7 +167,7 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_quantization_
 #TESTING ONLY PARAMETER RANGE PARAMETER: -3 to 3, -5 to 5, -10 to 10
 
 grid_search_trainer = LightGridSearchTrainer(
-    models=[xs_model, s_model],
+    models=[xs_model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
     parameter_ranges=[(-3, 3), (-5, 5), (-10, 10)],
@@ -190,7 +190,7 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_parameter_ran
 #TESTING ONLY PARAM FRACTION PARAMETER: 0.25, 0.5, 1.0
 
 grid_search_trainer = LightGridSearchTrainer(
-    models=[xs_model, s_model],
+    models=[xs_model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
     parameter_ranges=[(-5, 5)],
@@ -213,7 +213,7 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_param_fractio
 #TESTING ONLY TARGET LOSS PARAMETER: 0.1, 0.01, 0.001
 
 grid_search_trainer = LightGridSearchTrainer(
-    models=[xs_model, s_model],
+    models=[xs_model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
     parameter_ranges=[(-5, 5)],

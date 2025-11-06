@@ -4,9 +4,10 @@
 #===================================================================================================================================
 #===================================================================================================================================
 
-from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinCosDataset, SinusoidalMLP
+from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinCosDataset, SinusoidalMLP, SinusoidalMLP_tanh_out
 from source.general_utils import plot_losses
-from source.PathNet import Trainer
+#from source.PathNet import Trainer
+from source.SimplePathNet import Trainer
 
 import torch
 import torch.nn as nn
@@ -18,7 +19,7 @@ NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
-ITERATIONS = 100
+ITERATIONS = 5000
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- ASTAR TRAINING -----------------------------------------------------------------
@@ -37,14 +38,27 @@ model = nn.Sequential(
     #nn.Tanh()
 )
 
-trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-5, 5), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
+xs_model = nn.Sequential(
+    nn.Linear(1, 4),  
+    nn.ReLU(),
+    #nn.Tanh(),
+    nn.Linear(4, 4),
+    nn.ReLU(),
+    #nn.Tanh(),
+    nn.Linear(4, 1),
+    nn.Tanh()
+    )
+
+#trainer = Trainer(xs_model, nn.MSELoss(), quantization_factor=2, parameter_range=(-5, 5), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
+
+trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, measure_time=True)
 
 trainer.train(X_sin, Y_sin)
 
 plot_sine_predictions(test_x_np=X_sin.numpy(), 
                       predicted_sin_np=trainer.best_node.quantized_mlp.model(X_sin).detach().numpy(), 
                       true_sin_np=Y_sin.numpy(),
-                      filename="sine_model_astar.png")
+                      filename="sine_model_astar_5k_iters.png")
 
 
 
@@ -56,13 +70,14 @@ plot_sine_predictions(test_x_np=X_sin.numpy(),
 BATCH_SIZE = NUM_SAMPLES    # Full batch
 LEARNING_RATE = 0.001
 EPOCHS = ITERATIONS
-HIDDEN_SIZE = 64
+HIDDEN_SIZE = 4
 
 dataset = SinCosDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE, NOISE_LEVEL)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     
 sin_model = SinusoidalMLP(hidden_size=HIDDEN_SIZE)
+sin_model_tanh_out = SinusoidalMLP_tanh_out(hidden_size=HIDDEN_SIZE)
 criterion = nn.MSELoss()
 sin_optimizer = torch.optim.Adam(sin_model.parameters(), lr=LEARNING_RATE)
 
@@ -87,7 +102,7 @@ print("Sine model training finished.")
 plot_sine_predictions(test_x_np=dataset.x_data.numpy(), 
                       predicted_sin_np=sin_model(dataset.x_data).detach().numpy(), 
                       true_sin_np=dataset.sin_y_data.numpy(),
-                      filename="sine_model_grad_base.png")
+                      filename="sine_model_grad_base_5k_iters.png")
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
@@ -97,4 +112,4 @@ plot_sine_predictions(test_x_np=dataset.x_data.numpy(),
 losses = [trainer.loss_history, loss_history]
 loss_labels = ["A-Star", "Gradient base"]
 
-plot_losses(losses, loss_labels, "sine_loss_comparison.png")
+plot_losses(losses, loss_labels, "sine_loss_comparison_5k_iters.png")

@@ -23,8 +23,23 @@ class SinCosDataset(Dataset):
     def __getitem__(self, idx):
         # Returns x, sin(x), cos(x)
         return self.x_data[idx], self.sin_y_data[idx], self.cos_y_data[idx]
+    
 
 
+class SinusoidalMLP_tanh_out(nn.Module):
+    def __init__(self, input_size=1, hidden_size=64, output_size=1):
+        super(SinusoidalMLP_tanh_out, self).__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_size, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, output_size),
+            nn.Tanh()
+        )
+
+    def forward(self, x):
+        return self.net(x)
 
 class SinusoidalMLP(nn.Module):
     def __init__(self, input_size=1, hidden_size=64, output_size=1):

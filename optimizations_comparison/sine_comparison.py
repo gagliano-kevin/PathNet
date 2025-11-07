@@ -21,7 +21,7 @@ NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
-ITERATIONS = 5000
+ITERATIONS = 1000
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- ASTAR TRAINING -----------------------------------------------------------------
@@ -57,12 +57,12 @@ trainer = Trainer(xs_model, nn.MSELoss(), quantization_factor=10, parameter_rang
 
 trainer.train(X_sin, Y_sin)
 
-trainer.log_to_file("sine_model_astar_5k_iters_log.txt")
+trainer.log_to_file("sine_model_astar_1k_iters_log.txt")
 
 plot_sine_predictions(test_x_np=X_sin.numpy(), 
                       predicted_sin_np=trainer.best_node.quantized_mlp.model(X_sin).detach().numpy(), 
                       true_sin_np=Y_sin.numpy(),
-                      filename="sine_model_astar_5k_iters.png")
+                      filename="sine_model_astar_1k_iters.png")
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ end_time = time.time()
 training_time = end_time - start_time
 print(f"Sine model training time: {training_time:.2f} seconds")
 
-with open("sine_model_grad_base_5k_iters_log.txt", "w") as f:
+with open("sine_model_grad_base_1k_iters_log.txt", "w") as f:
     for i, loss in enumerate(loss_history):
         f.write(f"Iteration {i+1}: Loss = {loss}\n")
     f.write(f"\n\nTotal training time (seconds): {training_time:.2f}\n")
@@ -118,7 +118,7 @@ print("Sine model training finished.")
 plot_sine_predictions(test_x_np=dataset.x_data.numpy(), 
                       predicted_sin_np=sin_model(dataset.x_data).detach().numpy(), 
                       true_sin_np=dataset.sin_y_data.numpy(),
-                      filename="sine_model_grad_base_5k_iters.png")
+                      filename="sine_model_grad_base_1k_iters.png")
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -128,4 +128,4 @@ plot_sine_predictions(test_x_np=dataset.x_data.numpy(),
 losses = [trainer.loss_history, loss_history]
 loss_labels = ["A-Star", "Gradient base"]
 
-plot_losses(losses, loss_labels, "sine_loss_comparison_5k_iters.png")
+plot_losses(losses, loss_labels, "sine_loss_comparison_1k_iters.png")

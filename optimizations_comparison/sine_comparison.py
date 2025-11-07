@@ -53,7 +53,7 @@ xs_model = nn.Sequential(
 
 #trainer = Trainer(xs_model, nn.MSELoss(), quantization_factor=2, parameter_range=(-5, 5), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
 
-trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, measure_time=True)
+trainer = Trainer(xs_model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, measure_time=True)
 
 trainer.train(X_sin, Y_sin)
 

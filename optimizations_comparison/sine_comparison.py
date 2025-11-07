@@ -9,6 +9,8 @@ from source.general_utils import plot_losses
 #from source.PathNet import Trainer
 from source.SimplePathNet import Trainer
 
+import time
+
 import torch
 import torch.nn as nn
 import numpy as np
@@ -55,11 +57,12 @@ trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(
 
 trainer.train(X_sin, Y_sin)
 
+trainer.log_to_file("sine_model_astar_5k_iters_log.txt")
+
 plot_sine_predictions(test_x_np=X_sin.numpy(), 
                       predicted_sin_np=trainer.best_node.quantized_mlp.model(X_sin).detach().numpy(), 
                       true_sin_np=Y_sin.numpy(),
                       filename="sine_model_astar_5k_iters.png")
-
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -83,6 +86,8 @@ sin_optimizer = torch.optim.Adam(sin_model.parameters(), lr=LEARNING_RATE)
 
 loss_history = []
 
+start_time = time.time()
+
 print("Starting training for Sine model...")
 for epoch in range(EPOCHS):
     total_loss = 0
@@ -97,6 +102,17 @@ for epoch in range(EPOCHS):
 
     if (epoch + 1) % 10 == 0:
         print(f'Sine Epoch [{epoch+1}/{EPOCHS}], Loss: {total_loss / len(dataloader):.6f}')
+
+
+end_time = time.time()
+training_time = end_time - start_time
+print(f"Sine model training time: {training_time:.2f} seconds")
+
+with open("sine_model_grad_base_5k_iters_log.txt", "w") as f:
+    for i, loss in enumerate(loss_history):
+        f.write(f"Iteration {i+1}: Loss = {loss}\n")
+    f.write(f"\n\nTotal training time (seconds): {training_time:.2f}\n")
+
 print("Sine model training finished.")
 
 plot_sine_predictions(test_x_np=dataset.x_data.numpy(), 
@@ -104,10 +120,10 @@ plot_sine_predictions(test_x_np=dataset.x_data.numpy(),
                       true_sin_np=dataset.sin_y_data.numpy(),
                       filename="sine_model_grad_base_5k_iters.png")
 
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 losses = [trainer.loss_history, loss_history]
 loss_labels = ["A-Star", "Gradient base"]

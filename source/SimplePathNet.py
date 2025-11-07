@@ -372,6 +372,7 @@ class Trainer:
             for i in range(len(self.loss_history)):
                 f.write(f"{i+1}\t{self.loss_history[i]}\t{self.f_history[i]}\t{self.g_history[i]}\n")
             f.write(f"\nBest Loss: {self.best_node.h_val + self.target_loss}\n\n")
+            f.write(f"Training Times (seconds): {self.training_times}\n")
         print(f"Training log saved to {filename}")
 
 

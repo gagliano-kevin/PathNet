@@ -193,7 +193,7 @@ print(f"| Min Loss    | {astar_min:.6f}     | {grad_min:.6f}              |")
 print(f"| Max Loss    | {astar_max:.6f}     | {grad_max:.6f}              |")
 print("=========================================================================================")
 
-with open("sine_training_statistics_summary.txt", "w") as f:
+with open(f"sine_training_statistics_summary_{RUNS}_runs.txt", "w") as f:
     f.write("=========================================================================================\n")
     f.write(f"| STATISTICAL SUMMARY over {RUNS} Runs |\n")
     f.write("=========================================================================================\n")
@@ -206,6 +206,8 @@ with open("sine_training_statistics_summary.txt", "w") as f:
     f.write(f"| Min Loss    | {astar_min:.6f}     | {grad_min:.6f}              |\n")
     f.write(f"| Max Loss    | {astar_max:.6f}     | {grad_max:.6f}              |\n")
     f.write("=========================================================================================\n")
+
+print(f"\nSaved statistical summary to 'sine_training_statistics_summary_{RUNS}_runs.txt'\n")
 
 
 # 2. TIME SERIES ANALYSIS (for Mean/Std Dev Plot)

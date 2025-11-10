@@ -152,25 +152,3 @@ for run in range(RUNS):
 plot_losses(losses, loss_labels, f"sine_loss_comparison_{ITERATIONS}_iters.png")
 
 
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------
-# AVG LOSS COMPUTATION
-
-"""a_star_avg_loss = 0
-
-for run in range(RUNS):
-    a_star_avg_loss += ASTAR_METRICS["final_losses"][run]
-
-a_star_avg_loss = a_star_avg_loss / RUNS"""
-
-#-----------------------------------------------------------------
-
-"""grad_avg_loss = 0
-
-for run in range(RUNS):
-    a_star_avg_loss += GRAD_METRICS["final_losses"][run]
-
-grad_avg_loss = grad_avg_loss / RUNS
-"""
-
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------
-# VARIANCE OF THE LOSS

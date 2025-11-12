@@ -115,6 +115,3 @@ class IrisMLP(nn.Module):
         # (it handles the softmax internally for better numerical stability)
         out = self.fc3(x)
         return out
-
-if __name__ == "__main__":
-    print_iris_data_info()

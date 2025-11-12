@@ -126,31 +126,3 @@ def plot_cosine_predictions(test_x_np: np.ndarray,
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.show()
-
-# ==============================================================================
-# Example of how to call these methods (assuming you have your data ready)
-# ==============================================================================
-
-"""if __name__ == '__main__':
-    # 1. Generate dummy data for demonstration
-    MIN_ANGLE = 0
-    MAX_ANGLE = 4 * np.pi
-    TEST_SAMPLES = 500
-    
-    test_x_np = np.linspace(MIN_ANGLE, MAX_ANGLE, TEST_SAMPLES)
-    
-    # True values
-    true_sin_np = np.sin(test_x_np)
-    true_cos_np = np.cos(test_x_np)
-    
-    # Simulated (predicted) values 
-    # (A good model's predictions would be very close to true values)
-    predicted_sin_np = true_sin_np + np.random.normal(0, 0.05, TEST_SAMPLES)
-    predicted_cos_np = true_cos_np - np.random.normal(0, 0.05, TEST_SAMPLES)
-
-    # 2. Call the separate plotting functions
-    print("Plotting Sine Predictions:")
-    plot_sine_predictions(test_x_np, predicted_sin_np, true_sin_np)
-
-    print("Plotting Cosine Predictions:")
-    plot_cosine_predictions(test_x_np, predicted_cos_np, true_cos_np)"""

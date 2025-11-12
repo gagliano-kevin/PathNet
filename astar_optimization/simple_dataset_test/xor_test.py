@@ -6,7 +6,8 @@
 
 import torch
 import torch.nn as nn
-from source.PathNet import Trainer
+from source.SimplePathNet import Trainer
+
 
 """
     Simple MLP model for XOR problem
@@ -38,7 +39,9 @@ nn.Linear(2, 1),
 nn.Sigmoid()
 ) 
 
-trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=2000, log_freq=1000, target_loss=0.0001, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
+
+
+trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=2000, log_freq=1000, target_loss=0.0001)
 
 trainer.train(XOR_DATASET, XOR_LABELS)
 

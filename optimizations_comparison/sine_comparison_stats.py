@@ -6,7 +6,6 @@
 
 from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinCosDataset, SinusoidalMLP, SinusoidalMLP_tanh_out
 from source.general_utils import plot_losses
-#from source.PathNet import Trainer
 from source.SimplePathNet import Trainer
 
 import time

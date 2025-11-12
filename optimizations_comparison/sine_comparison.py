@@ -6,7 +6,6 @@
 
 from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinCosDataset, SinusoidalMLP, SinusoidalMLP_tanh_out
 from source.general_utils import plot_losses
-#from source.PathNet import Trainer
 from source.SimplePathNet import Trainer
 
 import time
@@ -50,9 +49,6 @@ xs_model = nn.Sequential(
     nn.Linear(4, 1),
     nn.Tanh()
     )
-
-#trainer = Trainer(xs_model, nn.MSELoss(), quantization_factor=2, parameter_range=(-5, 5), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, update_strategy=2, g_ini_val=0, g_step=0.01, alpha=0.5, scale_f=True)
-
 
 trainer = Trainer(xs_model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, measure_time=True)
 

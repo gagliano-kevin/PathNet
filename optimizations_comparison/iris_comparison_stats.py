@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 # --- GLOBAL CONFIGURATION ---
 RUNS = 10           # Number of times to run the experiment for statistical analysis
-MAX_ITERATIONS = 5000 # Number of iterations/epochs for both methods
+MAX_ITERATIONS = 2500 # Number of iterations/epochs for both methods
 
 # Assuming Iris dataset has 4 features and 3 classes
 INPUT_SIZE = 4

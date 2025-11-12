@@ -10,9 +10,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
 # Assuming these utilities exist in your project structure
-from source.PathNet import Trainer
-# Assuming source.general_utils is where plot_losses lives if needed
-# from source.general_utils import plot_losses 
+# from source.PathNet import Trainer (Assuming PathNet Trainer handles A-Star logic)
+from source.SimplePathNet import Trainer # Using SimplePathNet Trainer as fallback if PathNet is unavailable
 
 from sklearn.datasets import make_circles
 from sklearn.model_selection import train_test_split
@@ -23,7 +22,7 @@ import matplotlib.pyplot as plt
 
 # --- GLOBAL CONFIGURATION ---
 RUNS = 10           # Number of times to run the experiment for statistical analysis
-MAX_ITERATIONS = 20 # Number of iterations/epochs for both methods
+MAX_ITERATIONS = 1000 # Number of iterations/epochs for both methods (This value will be overridden if any run exceeds it)
 LEARNING_RATE = 0.01
 
 # Dataset parameters
@@ -105,18 +104,13 @@ for run in range(RUNS):
     ) 
 
     trainer = Trainer(model, nn.CrossEntropyLoss(), 
-                      quantization_factor=2, 
-                      parameter_range=(-4, 4), 
+                      quantization_factor=10, 
+                      parameter_range=(-10, 10), 
                       debug_mlp=True, 
                       param_fraction=1.0, 
                       max_iterations=MAX_ITERATIONS, 
                       log_freq=50, 
                       target_loss=0.0001, 
-                      update_strategy=2, 
-                      g_ini_val=0, 
-                      g_step=0.01, 
-                      alpha=0.5, 
-                      scale_f=True,
                       measure_time=True) 
 
     trainer.train(X_train_tensor, y_train_tensor)
@@ -129,7 +123,6 @@ for run in range(RUNS):
     final_loss_astar = trainer.best_node.h_val 
     ASTAR_METRICS["final_losses"].append(final_loss_astar)
 
-    # Note: You can add logging here if needed: trainer.log_to_file(...)
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------- GRADIENT BASE TRAINING ---------------------------------------------------------------
@@ -176,12 +169,37 @@ for run in range(RUNS):
     GRAD_METRICS["training_times"].append(training_time)
     GRAD_METRICS["final_losses"].append(loss_history[-1])
 
-    # Note: You can add logging here if needed: with open(...)
-
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- STATISTICAL ANALYSIS & PLOTTING ------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# --- ALIGNMENT FIX: DETERMINE GLOBAL MAX LENGTH FOR PLOTTING ---
+
+all_losses = ASTAR_METRICS["losses"] + GRAD_METRICS["losses"]
+# Find the maximum length across all runs/methods (e.g., 1000 from the error trace)
+global_max_len = max(len(l) for l in all_losses) if all_losses else MAX_ITERATIONS 
+
+def pad_losses(losses_list, target_len):
+    """Pads all loss histories in the list up to the target_len with NaN."""
+    padded_array = np.full((len(losses_list), target_len), np.nan)
+    for i, l in enumerate(losses_list):
+        padded_array[i, :len(l)] = l
+    return padded_array
+
+# Pad both arrays to the global maximum length (e.g., 1000)
+astar_losses_array = pad_losses(ASTAR_METRICS["losses"], global_max_len)
+grad_losses_array = pad_losses(GRAD_METRICS["losses"], global_max_len)
+
+# --- CALCULATE MEAN/STD DEV ---
+
+# Calculate mean and standard deviation across all runs for each iteration (now safe due to equal length)
+astar_mean_loss = np.nanmean(astar_losses_array, axis=0)
+astar_std_loss = np.nanstd(astar_losses_array, axis=0)
+
+grad_mean_loss = np.nanmean(grad_losses_array, axis=0)
+grad_std_loss = np.nanstd(grad_losses_array, axis=0)
 
 
 # --- 1. FINAL LOSS STATS (for Summary Table and Box Plot) ---
@@ -242,40 +260,19 @@ with open(f"circle_training_statistics_summary_{RUNS}_runs.txt", "w") as f:
 print(f"\nSaved statistical summary to 'circle_training_statistics_summary_{RUNS}_runs.txt'\n")
 
 
-# --- 2. TIME SERIES ANALYSIS (for Mean/Std Dev Plot) ---
-
-def align_and_convert_losses(losses_list):
-    """Converts a list of loss histories (which may have different lengths) into a padded NumPy array."""
-    max_len = max(len(l) for l in losses_list)
-    padded_array = np.full((len(losses_list), max_len), np.nan)
-    for i, l in enumerate(losses_list):
-        padded_array[i, :len(l)] = l
-    return padded_array
-
-astar_losses_array = align_and_convert_losses(ASTAR_METRICS["losses"])
-grad_losses_array = align_and_convert_losses(GRAD_METRICS["losses"])
-
-# Calculate mean and standard deviation across all runs for each iteration
-astar_mean_loss = np.nanmean(astar_losses_array, axis=0)
-astar_std_loss = np.nanstd(astar_losses_array, axis=0)
-
-grad_mean_loss = np.nanmean(grad_losses_array, axis=0)
-grad_std_loss = np.nanstd(grad_losses_array, axis=0)
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-# --- PLOTTING FUNCTIONS ---
+# --- PLOTTING FUNCTIONS (No changes needed here as the input arrays are now correctly aligned) ---
 
 def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, filename="circle_mean_loss_comparison_with_std.png"):
     """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
     
-    # Create an array of iteration numbers
+    # epochs is now correctly determined by the global maximum length
     epochs = np.arange(len(astar_mean)) + 1
     
     plt.figure(figsize=(10, 6))
 
     # Plot A-Star (Novel)
     plt.plot(epochs, astar_mean, label='A-Star (Mean Loss)', color='blue')
-    # Use fill_between to show the standard deviation band
     plt.fill_between(epochs, astar_mean - astar_std, astar_mean + astar_std, 
                      alpha=0.2, color='blue', label='A-Star ($\pm 1 \sigma$)')
 

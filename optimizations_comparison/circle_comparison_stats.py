@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 
 # --- GLOBAL CONFIGURATION ---
 RUNS = 10           # Number of times to run the experiment for statistical analysis
-MAX_ITERATIONS = 1000 # Number of iterations/epochs for both methods (This value will be overridden if any run exceeds it)
+MAX_ITERATIONS = 2500 # Number of iterations/epochs for both methods (This value will be overridden if any run exceeds it)
 LEARNING_RATE = 0.01
 
 # Dataset parameters

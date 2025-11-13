@@ -47,7 +47,7 @@ plt.grid(True, linestyle='--', alpha=0.6)
 #plt.show() 
 plt.savefig("circles_dataset.png") 
 
-# Stratify over y (labels) to maintain class proportions in train/test sets
+"""# Stratify over y (labels) to maintain class proportions in train/test sets
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=random_seed, stratify=y
 )
@@ -85,4 +85,4 @@ for i, prediction in enumerate(predictions):
         correct += 1
 
 accuracy = correct / len(y_test_tensor)
-print(f"\n\nTest Accuracy: {accuracy * 100:.2f}%")
+print(f"\n\nTest Accuracy: {accuracy * 100:.2f}%")"""

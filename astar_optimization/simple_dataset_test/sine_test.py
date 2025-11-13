@@ -3,14 +3,14 @@
 #-------------- run this file from project root: python -m astar_optimization.simple_dataset_test.sine_test ----------------------
 #===================================================================================================================================
 #===================================================================================================================================
-from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions
+from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, plot_sine_data
 from source.SimplePathNet import Trainer
 
 import torch
 import torch.nn as nn
 import numpy as np
 
-NUM_SAMPLES = 10000
+NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
@@ -29,7 +29,7 @@ X_sin, Y_sin = generate_sinusoidal_tensor(func=torch.sin, num_samples=NUM_SAMPLE
 )"""
 
 
-model = nn.Sequential(
+"""model = nn.Sequential(
     nn.Linear(1, 8),
     nn.Tanh(), 
 
@@ -51,3 +51,6 @@ plot_sine_predictions(test_x_np=X_sin.numpy(),
                       true_sin_np=Y_sin.numpy(),
                       filename="sine_model_astar_test.png")
 
+"""
+
+plot_sine_data(X_sin, Y_sin, filename="sine_dataset.png")

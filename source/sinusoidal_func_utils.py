@@ -73,8 +73,18 @@ def generate_sinusoidal_tensor(func, num_samples, min_angle, max_angle, noise_le
     
     return X, Y
 
+def plot_sine_data(X: torch.Tensor, Y: torch.Tensor, filename="sine_data.png"):
+    """Plots the noisy sine data."""
+    plt.figure(figsize=(7, 5))
+    plt.scatter(X.numpy(), Y.numpy(), s=10, color='blue', alpha=0.6, label='Noisy Data')
+    plt.title('Noisy Sine Data')
+    plt.xlabel('Angle (x)')
+    plt.ylabel('sin(x) with noise')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.savefig(filename)
 
-
+    
 def plot_sine_predictions(test_x_np: np.ndarray, 
                           predicted_sin_np: np.ndarray, 
                           true_sin_np: np.ndarray, 

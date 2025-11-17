@@ -4,9 +4,9 @@
 #===================================================================================================================================
 #===================================================================================================================================
 
-from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinCosDataset, SinusoidalMLP, SinusoidalMLP_tanh_out
+from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinCosDataset, SinusoidalMLP, plot_final_loss_distribution, plot_mean_loss_with_std
 from source.general_utils import plot_losses
-from source.SimplePathNet import Trainer
+from source.PathNet import Trainer
 
 import time
 
@@ -91,7 +91,7 @@ dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 for run in range(RUNS):
     
-    sin_model_tanh_out = SinusoidalMLP_tanh_out(hidden_size=HIDDEN_SIZE)
+    sin_model_tanh_out = SinusoidalMLP(hidden_size=HIDDEN_SIZE)
     criterion = nn.MSELoss()
     sin_optimizer = torch.optim.Adam(sin_model_tanh_out.parameters(), lr=LEARNING_RATE)
 
@@ -153,12 +153,7 @@ for run in range(RUNS):
 plot_losses(losses, loss_labels, f"sine_loss_comparison_{ITERATIONS}_iters.png")
 
 
-#----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-# --- STATISTICAL ANALYSIS ---
-
-# 1. FINAL LOSS STATS (for Summary Table and Box Plot)
+# FINAL LOSS STATS (for Summary Table and Box Plot)
 astar_final_losses = np.array(ASTAR_METRICS["final_losses"])
 astar_training_times = np.array(ASTAR_METRICS["training_times"])
 grad_final_losses = np.array(GRAD_METRICS["final_losses"])
@@ -217,9 +212,6 @@ with open(f"sine_training_statistics_summary_{RUNS}_runs.txt", "w") as f:
 
 print(f"\nSaved statistical summary to 'sine_training_statistics_summary_{RUNS}_runs.txt'\n")
 
-
-# 2. TIME SERIES ANALYSIS (for Mean/Std Dev Plot)
-
 # Convert list of lists of losses into numpy arrays, padding with NaNs if necessary
 # This ensures all runs, even if stopped early, can be aggregated correctly.
 def align_and_convert_losses(losses_list):
@@ -232,77 +224,15 @@ def align_and_convert_losses(losses_list):
 astar_losses_array = align_and_convert_losses(ASTAR_METRICS["losses"])
 grad_losses_array = align_and_convert_losses(GRAD_METRICS["losses"])
 
-# Calculate mean and standard deviation across all runs for each iteration
+# mean and standard deviation across all runs for each iteration
 astar_mean_loss = np.nanmean(astar_losses_array, axis=0)
 astar_std_loss = np.nanstd(astar_losses_array, axis=0)
 
 grad_mean_loss = np.nanmean(grad_losses_array, axis=0)
 grad_std_loss = np.nanstd(grad_losses_array, axis=0)
 
-#----------------------------------------------------------------------------------------------------------------------------------------------------------
-# --- PLOTTING FUNCTIONS ---
-
-def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, iterations, filename="mean_loss_comparison_with_std.png"):
-    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
-    
-    # Create an array of iteration numbers
-    epochs = np.arange(len(astar_mean)) + 1
-    
-    plt.figure(figsize=(10, 6))
-
-    # Plot A-Star (Novel)
-    plt.plot(epochs, astar_mean, label='A-Star (Mean Loss)', color='blue')
-    plt.fill_between(epochs, astar_mean - astar_std, astar_mean + astar_std, 
-                     alpha=0.2, color='blue', label='A-Star ($\pm 1 \sigma$)')
-
-    # Plot Gradient Descent (Classic)
-    plt.plot(epochs, grad_mean, label='Gradient Descent (Mean Loss)', color='red')
-    plt.fill_between(epochs, grad_mean - grad_std, grad_mean + grad_std, 
-                     alpha=0.2, color='red', label='Gradient Descent ($\pm 1 \sigma$)')
-
-    plt.title(f'Mean Training Loss Comparison over {RUNS} Runs')
-    plt.xlabel('Epochs / Iterations')
-    plt.ylabel('Mean MSE Loss')
-    plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-def plot_final_loss_distribution(astar_final_losses, grad_final_losses, filename="final_loss_boxplot.png"):
-    """Plots a Box-and-Whisker plot of the final performance metric."""
-    
-    data = [astar_final_losses, grad_final_losses]
-    labels = ['A-Star (Novel)', 'Gradient Descent (Classic)']
-    
-    plt.figure(figsize=(8, 6))
-    
-    # FIX: medianprops must be a top-level keyword argument, separate from boxprops.
-    plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
-                boxprops=dict(facecolor='lightblue'),
-                medianprops=dict(color='darkred'))
-    
-    # Add individual points (jitter) to show all run results
-    for i, losses in enumerate(data):
-        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
-        plt.scatter(x, losses, color='black', alpha=0.6, s=10)
-
-    plt.title(f'Distribution of Final Loss over {RUNS} Runs')
-    plt.ylabel('Final MSE Loss')
-    plt.xticks(ticks=[1, 2], labels=labels)
-    plt.grid(axis='y', linestyle='--', alpha=0.6)
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-# --- EXECUTE PLOTTING ---
-
-# 1. Plot Mean Loss with Standard Deviation Shading
+# mean loss with standard deviation shading
 plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss, ITERATIONS)
 
-# 2. Plot Box and Whisker of Final Losses
+# box and whisker of final losses
 plot_final_loss_distribution(astar_final_losses, grad_final_losses)

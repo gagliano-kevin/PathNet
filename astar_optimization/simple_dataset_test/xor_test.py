@@ -8,10 +8,6 @@ import torch
 import torch.nn as nn
 from source.SimplePathNet import Trainer
 
-
-"""
-    Simple MLP model for XOR problem
-"""
 XOR_MODEL = nn.Sequential(
     nn.Linear(2, 4),
     nn.ReLU(),
@@ -19,18 +15,10 @@ XOR_MODEL = nn.Sequential(
     nn.Sigmoid()
 )
 
-"""
-    XOR dataset and labels
-"""
 XOR_DATASET = torch.tensor([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=torch.float32)
 XOR_LABELS = torch.tensor([[0], [1], [1], [0]], dtype=torch.float32)
 
-
-"""    
-    Loss function for XOR problem
-"""
 XOR_LOSS_FN = nn.BCELoss()
-
 
 model = nn.Sequential(
 nn.Linear(2, 2),
@@ -38,7 +26,6 @@ nn.ReLU(),
 nn.Linear(2, 1),
 nn.Sigmoid()
 ) 
-
 
 
 trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=2000, log_freq=1000, target_loss=0.0001)

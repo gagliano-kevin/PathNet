@@ -35,7 +35,7 @@ NUM_EPOCHS = 100
 loss_history = []
 
 print("Starting Training...")
-model.train() # Set the model to training mode
+model.train()                               # Set the model to training mode
 
 initial_time = time.perf_counter()
 
@@ -46,9 +46,9 @@ for epoch in range(NUM_EPOCHS):
         loss = criterion(outputs, y_batch)
         
         # Backward pass and optimization
-        optimizer.zero_grad() # Clear gradients from previous step
-        loss.backward()       # Compute gradient of the loss w.r.t model parameters
-        optimizer.step()      # Update the parameters
+        optimizer.zero_grad()               # Clear gradients from previous step
+        loss.backward()                     # Compute gradient of the loss w.r.t model parameters
+        optimizer.step()                    # Update the parameters
 
     loss_history.append(loss.item())
     
@@ -60,8 +60,8 @@ print("Training Complete.")
 print(f"Total Training Time: {time.perf_counter() - initial_time:.2f} seconds\n\n")
 
 # Evaluation
-model.eval()                # Set the model to evaluation mode (disables dropout, etc.)
-with torch.no_grad():       # Disable gradient calculation for efficiency
+model.eval()                             # Set the model to evaluation mode (disables dropout, etc.)
+with torch.no_grad():                       # Disable gradient calculation for efficiency
     test_outputs = model(X_test_tensor)
     # Get the predicted class by finding the index of the max log-probability
     _, predicted = torch.max(test_outputs.data, 1)

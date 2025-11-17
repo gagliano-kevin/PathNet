@@ -30,10 +30,10 @@ sin_optimizer = torch.optim.Adam(sin_model.parameters(), lr=LEARNING_RATE)
 print("Starting training for Sine model...")
 for epoch in range(EPOCHS):
     total_loss = 0
-    for x_batch, sin_y_batch, cos_y_batch in dataloader:    # Only using sin_y_batch for sine model
+    for x_batch, sin_y_batch, cos_y_batch in dataloader:        # Only using sin_y_batch for sine model
         sin_optimizer.zero_grad()
         predictions = sin_model(x_batch)
-        loss = criterion(predictions, sin_y_batch) # Target is sin_y_batch
+        loss = criterion(predictions, sin_y_batch)              # Target is sin_y_batch
         loss.backward()
         sin_optimizer.step()
         total_loss += loss.item()

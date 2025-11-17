@@ -8,21 +8,16 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
-
-# Assuming these utilities exist in your project structure
-# from source.PathNet import Trainer (Assuming PathNet Trainer handles A-Star logic)
-from source.SimplePathNet import Trainer # Using SimplePathNet Trainer as fallback if PathNet is unavailable
-
-from sklearn.datasets import make_circles
-from sklearn.model_selection import train_test_split
+from source.PathNet import Trainer 
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from source.circle_utils import get_circle_data_tensors, pad_losses, plot_mean_loss_with_std, plot_final_loss_distribution
 
 
 # --- GLOBAL CONFIGURATION ---
-RUNS = 10           # Number of times to run the experiment for statistical analysis
-MAX_ITERATIONS = 2500 # Number of iterations/epochs for both methods (This value will be overridden if any run exceeds it)
+RUNS = 10                   # Number of times to run the experiment for statistical analysis
+MAX_ITERATIONS = 2500       # Number of iterations/epochs for both methods (This value will be overridden if any run exceeds it)
 LEARNING_RATE = 0.01
 
 # Dataset parameters
@@ -55,32 +50,6 @@ LOG_FILE_GRAD = "circle_model_grad_base_multiple_runs"
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DATA SETUP ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-def get_circle_data_tensors():
-    """Generates and splits the circle dataset, returning PyTorch tensors."""
-    X, y = make_circles(
-        n_samples=N_SAMPLES,
-        noise=NOISE_LEVEL, 
-        factor=FACTOR_LEVEL,
-        random_state=RANDOM_SEED
-    )
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=RANDOM_SEED, stratify=y
-    )
-
-    X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
-    y_train_tensor = torch.tensor(y_train, dtype=torch.long)
-    X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
-    y_test_tensor = torch.tensor(y_test, dtype=torch.long)
-    
-    print("\n--- Data Preparation Summary ---")
-    print(f"Input Feature Count (input_size): {X.shape[1]}")
-    print(f"Output Class Count (num_classes): {len(np.unique(y))}")
-    print(f"Training Set Size: {X_train_tensor.shape[0]}")
-    print(f"Test Set Size: {X_test_tensor.shape[0]}\n")
-    
-    return X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor
 
 X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = get_circle_data_tensors()
 
@@ -181,13 +150,6 @@ all_losses = ASTAR_METRICS["losses"] + GRAD_METRICS["losses"]
 # Find the maximum length across all runs/methods (e.g., 1000 from the error trace)
 global_max_len = max(len(l) for l in all_losses) if all_losses else MAX_ITERATIONS 
 
-def pad_losses(losses_list, target_len):
-    """Pads all loss histories in the list up to the target_len with NaN."""
-    padded_array = np.full((len(losses_list), target_len), np.nan)
-    for i, l in enumerate(losses_list):
-        padded_array[i, :len(l)] = l
-    return padded_array
-
 # Pad both arrays to the global maximum length (e.g., 1000)
 astar_losses_array = pad_losses(ASTAR_METRICS["losses"], global_max_len)
 grad_losses_array = pad_losses(GRAD_METRICS["losses"], global_max_len)
@@ -261,66 +223,6 @@ print(f"\nSaved statistical summary to 'circle_training_statistics_summary_{RUNS
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-# --- PLOTTING FUNCTIONS (No changes needed here as the input arrays are now correctly aligned) ---
-
-def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, filename="circle_mean_loss_comparison_with_std.png"):
-    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
-    
-    # epochs is now correctly determined by the global maximum length
-    epochs = np.arange(len(astar_mean)) + 1
-    
-    plt.figure(figsize=(10, 6))
-
-    # Plot A-Star (Novel)
-    plt.plot(epochs, astar_mean, label='A-Star (Mean Loss)', color='blue')
-    plt.fill_between(epochs, astar_mean - astar_std, astar_mean + astar_std, 
-                     alpha=0.2, color='blue', label='A-Star ($\pm 1 \sigma$)')
-
-    # Plot Gradient Descent (Classic)
-    plt.plot(epochs, grad_mean, label='Gradient Descent (Mean Loss)', color='red')
-    plt.fill_between(epochs, grad_mean - grad_std, grad_mean + grad_std, 
-                     alpha=0.2, color='red', label='Gradient Descent ($\pm 1 \sigma$)')
-
-    plt.title(f'Mean Training Cross-Entropy Loss Comparison on Circles over {RUNS} Runs')
-    plt.xlabel('Epochs / Iterations')
-    plt.ylabel('Mean Cross-Entropy Loss')
-    plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-def plot_final_loss_distribution(astar_final_losses, grad_final_losses, filename="circle_final_loss_boxplot.png"):
-    """Plots a Box-and-Whisker plot of the final performance metric."""
-    
-    data = [astar_final_losses, grad_final_losses]
-    labels = ['A-Star (Novel)', 'Gradient Descent (Classic)']
-    
-    plt.figure(figsize=(8, 6))
-    
-    # Boxplot showing median, IQR, and range
-    plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
-                boxprops=dict(facecolor='lightblue'),
-                medianprops=dict(color='darkred'))
-    
-    # Add individual points (jitter) to show all run results
-    for i, losses in enumerate(data):
-        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
-        plt.scatter(x, losses, color='black', alpha=0.6, s=10)
-
-    plt.title(f'Distribution of Final Cross-Entropy Loss on Circles over {RUNS} Runs')
-    plt.ylabel('Final Cross-Entropy Loss')
-    plt.xticks(ticks=[1, 2], labels=labels)
-    plt.grid(axis='y', linestyle='--', alpha=0.6)
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-# --- EXECUTE PLOTTING ---
 
 # 1. Plot Mean Loss with Standard Deviation Shading
 plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss)

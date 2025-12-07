@@ -1,7 +1,7 @@
 # PathNet: Quantized MLP Training with A* Search
 
 This repository implements **PathNet**, a framework for training quantized multi-layer perceptrons (MLPs) using **A* search** instead of gradient descent.
-The example provided focuses on solving the **XOR problem**, but the design can be extended to more complex tasks.
+The examples provided is focused on solving classification and regression tasks on simple/small datasets, but the design can be extended to more complex tasks.
 
 The key idea is to treat model training as a search problem in a quantized weight space. A* explores weight configurations to minimize the loss function.
 
@@ -17,9 +17,6 @@ The key idea is to treat model training as a search problem in a quantized weigh
 
 * **Overflow Handling**:
   Parameters that exceed the allowed range are clipped or discarded.
-
-* **Search Strategies**:
-  Multiple update strategies for the A* cost functions (`f = g + h` variants).
 
 * **Logging & Visualization**:
 
@@ -48,20 +45,6 @@ The key idea is to treat model training as a search problem in a quantized weigh
 * `GridSearchTrainer`:
   Automates experiments over multiple hyperparameter combinations.
 
-* **Example** (main section):
-  Demonstrates both direct training and grid search on the XOR dataset.
-
----
-
-## ⚙️ Installation
-
-Clone the repo and install dependencies:
-
-```bash
-git clone https://github.com/yourusername/pathnet-astar.git
-cd pathnet-astar
-pip install torch matplotlib numpy
-```
 
 ---
 
@@ -89,7 +72,6 @@ trainer = Trainer(
     parameter_range=(-4, 4),
     max_iterations=2000,
     target_loss=0.0001,
-    update_strategy=2
 )
 
 trainer.train(XOR_DATASET, XOR_LABELS)
@@ -119,11 +101,6 @@ grid_search_trainer = GridSearchTrainer(
     max_iterations=[1000],
     log_freq=[500],
     target_losses=[0.0001],
-    update_strategies=[2],
-    g_ini_vals=[0],
-    g_steps=[0.01],
-    alphas=[0.5],
-    scale_fs=[True],
     debug_mlps=True
 )
 
@@ -152,24 +129,6 @@ grid_search_trainer.run_grid_search(XOR_DATASET, XOR_LABELS, log_filename="grid_
 * `param_fraction`: Fraction of weights perturbed per neighbor generation.
 * `max_iterations`: Maximum iterations for A*.
 * `target_loss`: Early stopping threshold.
-* `update_strategy`: Strategy for computing `f`. Options:
-
-  * `0`: Fixed step increase in `g`.
-  * `1`: Weighted cost scaling with `alpha`.
-  * `2`: Iteration-scaled cost.
-
----
-
-## 📌 Example: XOR Predictions
-
-After training, predictions on the XOR dataset:
-
-```
-Input: [0,0] → ~0
-Input: [0,1] → ~1
-Input: [1,0] → ~1
-Input: [1,1] → ~0
-```
 
 ---
 
@@ -180,10 +139,3 @@ Input: [1,1] → ~0
 * Custom heuristics for `h` in A*
 
 ---
-
-## 📜 License
-
-MIT License. See `LICENSE` for details.
-
----
-

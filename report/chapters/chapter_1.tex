@@ -1,0 +1,59 @@
+
+\chapter{The A* Search Algorithm}
+\label{chap:astar_intro}
+
+\section{Overview and Context}
+The \textbf{A* (A-star) search algorithm} is a cornerstone of Artificial Intelligence and computer science, highly effective for pathfinding and optimal graph traversal. Developed in 1968 by Hart, Nilsson, and Raphael as an extension of Dijkstra's algorithm, A* is classified as an \textit{informed search} or \textit{best-first search} method. Unlike uninformed searches, A* strategically explores the solution space by using estimated knowledge about the goal, enabling it to efficiently find the shortest path between a start and goal node. Its classical applications include video game pathfinding, network routing, and logistical planning.
+
+\section{The Evaluation Function $f(n)$}
+The central innovation of the A* algorithm lies in its heuristic evaluation function, $f(n)$, which estimates the total cost of the path from the starting point through the current node $n$ to the goal. This function is defined as the sum of two components: the true cost from the start, $g(n)$, and the estimated cost to the goal, $h(n)$.
+
+$$f(n) = g(n) + h(n)$$
+
+\subsection{Path Cost ($g(n)$)}
+The function $g(n)$ represents the actual cost of the path taken from the initial starting node to the current node $n$. This is a known, objective value and is a direct measure of the work done so far. In traditional pathfinding, $g(n)$ might be the distance traveled; in optimization problems like the one discussed in this report, $g(n)$ represents the product between the initial loss and the percentage of search iterations performed.
+
+\subsection{Heuristic Estimate ($h(n)$)}
+The function $h(n)$ is the heuristic estimate of the cost from the current node $n$ to the final goal node. A heuristic is an educated guess that guides the search towards the most promising regions of the search space. The effectiveness and properties of the A* algorithm are highly dependent on the quality of this heuristic.
+
+The heuristic $h(n)$ must satisfy the following critical property to guarantee optimality:
+
+\begin{itemize}
+    \item \textbf{Admissibility:} A heuristic $h(n)$ is admissible if it never overestimates the true cost to reach the goal, meaning for all nodes $n$, $h(n) \le h^*(n)$, where $h^*(n)$ is the true minimum cost from $n$ to the goal.
+\end{itemize}
+If an admissible heuristic is used, A* is guaranteed to find the optimal (lowest-cost) path, provided a path exists.
+
+\section{Algorithm Mechanics}
+A* operates by iteratively expanding nodes, maintaining two key data structures:
+
+\begin{itemize}
+    \item \textbf{Open Set (or Frontier):} A priority queue containing nodes that have been generated but not yet fully explored. Nodes in the open set are prioritized based on their calculated $f(n)$ value.
+    \item \textbf{Closed Set:} A set containing nodes that have already been fully expanded. This prevents the algorithm from revisiting and reprocessing the same node multiple times.
+\end{itemize}
+
+The core loop of the A* algorithm is as follows:
+\begin{enumerate}
+    \item Initialize the Open Set with the starting node.
+    \item While the Open Set is not empty:
+    \begin{itemize}
+        \item Select and remove the node $n$ from the Open Set with the lowest $f(n)$ value.
+        \item If $n$ is the goal state, terminate the search and reconstruct the path.
+        \item Otherwise, generate all successors of $n$. For each successor $s$:
+        \begin{itemize}
+            \item Calculate $g(s)$ and $f(s)$.
+            \item If $s$ is already in the Open or Closed set, check if the newly found path to $s$ (via $n$) is cheaper. If so, update its $g(n)$ and $f(n)$ values and potentially re-prioritize it in the Open Set.
+            \item If $s$ is new, add it to the Open Set.
+        \end{itemize}
+        \item Add $n$ to the Closed Set.
+    \end{itemize}
+\end{enumerate}
+
+\section{Properties of A*}
+The A* search algorithm is known for two key theoretical properties:
+
+\begin{itemize}
+    \item \textbf{Completeness:} If a solution path exists from the start node to the goal node, A* is guaranteed to find it, provided the branching factor is finite and edge costs are non-negative.
+    \item \textbf{Optimality:} A* is optimally efficient and guaranteed to find the lowest-cost path if the heuristic function $h(n)$ is admissible. This makes it a preferred method for problems where minimizing the cost (or, in the context of this project, minimizing the training error) is paramount.
+\end{itemize}
+
+The adaptation of A* from a simple pathfinding tool to a machine learning optimization technique, as explored in this report, requires careful consideration of the state space, the definition of the path cost $g(n)$, and the design of an effective, possibly admissible heuristic $h(n)$.

@@ -1,0 +1,41 @@
+\chapter{The Multilayer Perceptron and Traditional Training Methods}
+\label{chap:mlp_intro}
+
+\section{Multilayer Perceptron (MLP) Architecture}
+The Multilayer Perceptron (MLP) is a fundamental class of feed-forward artificial neural networks. It is distinguished by having one or more \textit{hidden layers} between the input layer and the output layer, which allows the network to learn complex, non-linear relationships between inputs and outputs.
+
+\subsection{Neuron Structure and Function}
+The basic unit of the MLP is the artificial neuron, which receives a set of inputs, each associated with a synaptic weight. The neuron performs two main operations:
+\begin{enumerate}
+    \item \textbf{Weighted Aggregation:} It calculates the weighted sum of the inputs, to which a \textit{bias} ($\beta$) is added:
+    $$z = \left(\sum_{i=1}^{m} w_i x_i\right) + \beta$$
+    where $x_i$ are the inputs, $w_i$ are the weights, and $m$ is the number of inputs.
+    \item \textbf{Activation Function:} It applies a non-linear activation function ($\sigma$) to the aggregated result to produce the neuron's output ($a$):
+    $$a = \sigma(z)$$
+\end{enumerate}
+
+\subsection{The Cost Function}
+Training an MLP is an optimization problem that aims to minimize the error between the network's predicted output and the desired target output. This error is quantified by the \textit{cost function} (or loss function).
+
+\section{The Standard Training Method: Backpropagation}
+Traditionally, the MLP is trained using the \textbf{Backpropagation} (error retro-propagation) algorithm, which is based on the \textit{Gradient Descent} method.
+
+\subsection{Gradient Descent}
+Gradient Descent is an iterative algorithm that adjusts the network's weights to move in the direction where the cost function decreases most rapidly. The weight update rule is given by:
+$$w_{i, \text{new}} = w_{i, \text{old}} - \eta \frac{\partial E}{\partial w_i}$$
+where $\eta$ is the \textit{learning rate} and $\frac{\partial E}{\partial w_i}$ is the gradient, which is the partial derivative of the error with respect to the weight $w_i$.
+
+\subsection{Error Backpropagation}
+Backpropagation is the efficient mechanism used to calculate this gradient. It utilizes the chain rule of differential calculus, propagating the error (and thus the gradient) backward, from the output layer to the hidden layers and finally to the input layer. This allows for the determination of the exact contribution of each weight to the total error, making the optimization scalable for deep networks.
+
+\section{Motivation for the A* Approach (Limitations of Backpropagation)}
+Despite its effectiveness, Backpropagation has several critical limitations that motivate the exploration of alternative optimization methods, such as A\*:
+
+\begin{itemize}
+    \item \textbf{Local Minima:} Gradient Descent tends to get trapped in local minima or flat regions (plateaus) of the cost surface, preventing the network from achieving the global optimal solution.
+    \item \textbf{Parameter Sensitivity:} The performance of Backpropagation is highly dependent on the correct selection of the $\eta$ hyperparameter (learning rate). A value that is too high can cause oscillations, while a value that is too low makes training excessively slow.
+    \item \textbf{Local Nature:} Backpropagation is a purely local algorithm, guided only by the gradient information at the current point. It lacks the global "vision" of the cost surface that an informed search algorithm like A* possesses.
+\end{itemize}
+
+This report proposes to frame the MLP training not as a continuous descent problem, but as a \textit{pathfinding problem in the quantize weight space}, where A* can potentially overcome the local exploration limitations of Backpropagation, albeit at the expense of algorithmic training efficiency.
+

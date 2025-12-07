@@ -1,0 +1,52 @@
+\documentclass[12pt]{report}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{bm}
+\usepackage{multicol}
+
+\usepackage{listings}
+\usepackage{subcaption}
+
+
+% Increase font size and spacing of the table of contents
+\usepackage{tocloft}
+\renewcommand{\cftchapfont}{\large\bfseries}
+\renewcommand{\cftsecfont}{\large}
+\renewcommand{\cftsubsecfont}{\large}
+\setlength{\cftbeforechapskip}{1.2em} % Adjust spacing between chapters
+\setlength{\cftbeforesecskip}{0.7em} % Adjust spacing between sections
+\setlength{\cftbeforesubsecskip}{0.7em} % Adjust spacing between subsec
+
+
+\usepackage{float} % IMPORTANT FOR FIXING IMAGES AND TABLE IN RENDERING
+
+\begin{document}
+
+\input{title}
+
+% Front matter
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+% Main matter
+\pagenumbering{arabic}
+
+\input{chapters/chapter_1}
+
+\input{chapters/chapter_2}
+
+\input{chapters/chapter_3}
+
+\input{chapters/chapter_4}
+
+
+
+
+\input{chapters/conclusions}
+
+
+\end{document}

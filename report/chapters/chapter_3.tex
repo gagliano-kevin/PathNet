@@ -15,7 +15,7 @@ $$w_{i, \text{quantized}} = \text{round}(w_i \cdot Q) / Q$$
 The number of potential discrete weight configurations defines the size of the search space. To manage the complexity and avoid instability, the parameters are constrained to a defined numerical range $[\text{min\_range}, \text{max\_range}]$.
 
 The total number of possible states is: 
-$$(\text{min\_range} + \text{max\_range} + 1)^{\text{\# network parameters}}$$
+$$[\text{Q} (\text{min\_range} + \text{max\_range}) + 1]^{\text{\# network parameters}}$$
 
 \subsection{State Representation and Hashing}
 In the A* implementation, the efficacy of the algorithm relies on quickly checking if a particular weight configuration has been visited before, or if a better path to that configuration has been found. This requires a unique, hashable identifier for each state.

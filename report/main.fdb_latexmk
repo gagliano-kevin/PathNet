@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1765464910.55217 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765464918.8526 0
+["pdflatex"] 1765469596.16642 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765469604.30733 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/kevin/Desktop/PathNet/report/main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -152,7 +152,7 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762526963.27681 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762527140 8214665 b63933ffebe73c8733810b8a3bee343b ""
   "chapters/chapter_1.tex" 1763058802.12311 4803 cf220f2fae3d18678b8109dd89ef84e5 ""
-  "chapters/chapter_2.tex" 1763058838.74698 3825 0e3754166d4dc539ea20f8f6c67e62b4 ""
+  "chapters/chapter_2.tex" 1765469595.68652 3816 d907b0f47d84074d84ad47077f2d2a3f ""
   "chapters/chapter_3.tex" 1765464910.15785 9810 713ee091df2d51617ab2f5865edd2024 ""
   "chapters/chapter_4.tex" 1763060547.32855 49663 2885e4ebe91ce2fe4a3650caee9161b4 ""
   "chapters/conclusions.tex" 1763307000.47835 8286 aed6974cb930a666a939978395341b45 ""
@@ -176,9 +176,9 @@
   "figures/sine_tests/sine_test_parameter_range_loss_trend.png" 1762523336 347964 c8fea3cad910ff7849f510919af012a3 ""
   "figures/sine_tests/sine_test_quantization_factor_loss_trend.png" 1762523336 308171 9577e9c88b2fd5792e1a6925fa354a8e ""
   "figures/sine_tests/sine_test_target_loss_loss_trend.png" 1762523336 333062 49095538fc2fc72d97a8f7367eab7ab0 ""
-  "main.aux" 1765464918.66821 16662 827b07f2f62f8f64789fc49ed21fb615 "pdflatex"
+  "main.aux" 1765469604.15405 16662 827b07f2f62f8f64789fc49ed21fb615 "pdflatex"
   "main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
-  "main.toc" 1765464918.67193 5185 bb4c195b4baa4dd515b5a84831722eda "pdflatex"
+  "main.toc" 1765469604.15715 5185 bb4c195b4baa4dd515b5a84831722eda "pdflatex"
   "title.tex" 1762523336 751 5b1fd8077fc72f04cc940e5361bf7352 ""
   (generated)
   "main.aux"

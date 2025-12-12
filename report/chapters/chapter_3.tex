@@ -70,7 +70,6 @@ By selecting the node with the minimum $f(n)$, the algorithm seeks a balance bet
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\noindent \textbf{Critical Analysis of Admissibility}
 \subsection{Admissibility Analysis}
 
 \noindent In standard A* search, $h(n)$ must be admissible ($h(n) \le h^*(n)$, never overestimating the true minimum path cost) to guarantee finding the optimal solution.
@@ -81,7 +80,54 @@ By selecting the node with the minimum $f(n)$, the algorithm seeks a balance bet
     \item Since the minimum number of steps required to eliminate the remaining loss is unknown a priori and bears no guaranteed mathematical relationship to the loss value itself, $h(n)$ cannot reliably be confirmed as a lower bound for $h^*(n)$.
 \end{enumerate}
 
-%\noindent \textbf{Role of $g(n)$ (Non-Optimality):}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Consistency Analysis}
+\label{sec:consistency_analysis}
+
+Consistency, also known as the triangle inequality property, is a stricter condition than admissibility. A heuristic $h(n)$ is consistent if, for every node $n$ and any successor node $n'$ connected by a transition with cost $c(n, n')$, the following condition is met:
+
+$$h(n) \le c(n, n') + h(n')$$
+
+In the context of this training framework, the formal consistency condition translates to:
+$$L(n) - L_{\text{target}} \le \Delta g + (L(n') - L_{\text{target}})$$
+
+Where:
+\begin{itemize}
+    \item $h(n) = L(n) - L_{\text{target}}$ (Heuristic estimate from $n$).
+    \item $c(n, n') = \Delta g$ (Fixed transition cost).
+    \item $h(n') = L(n') - L_{\text{target}}$ (Heuristic estimate from successor $n'$).
+\end{itemize}
+
+By simplifying the inequality, we derive the necessary condition for consistency in terms of the loss values:
+
+$$\textbf{Consistency Condition: } L(n) \le \Delta g + L(n')$$
+
+\noindent This requires that the loss of the parent node $L(n)$ must be less than or equal to the loss of the successor node $L(n')$ plus the constant edge cost $\Delta g$. Rearranging for the change in loss $\Delta L = L(n') - L(n)$:
+
+$$\Delta L \ge -\Delta g$$
+
+\noindent The consistency requirement dictates that the change in loss from one step to the next ($\Delta L$) must not be a reduction greater than the fixed transition cost $\Delta g$.
+
+\noindent \textbf{Analysis of Consistency Violation:}
+
+The consistency condition is highly unlikely to be met and is generally violated in this framework due to two primary scenarios arising from the non-convex loss landscape:
+
+\begin{enumerate}
+    \item \textbf{Significant Loss Improvement ($\Delta L < -\Delta g$):}
+    If a minimal weight modification (costing $\Delta g$) results in a rapid descent on the loss landscape, the loss can decrease significantly: $L(n') \ll L(n)$.
+    If the absolute magnitude of this loss reduction $(L(n) - L(n'))$ is greater than the fixed, small cost $\Delta g$, then $\Delta L < -\Delta g$, and the consistency condition fails.
+    \item \textbf{Loss Increase ($\Delta L > 0$):}
+    If the weight modification moves the network into a higher-loss region, then $L(n') > L(n)$, meaning $\Delta L > 0$. Since $\Delta g$ is a positive constant, $\Delta L \ge -\Delta g$ is satisfied in this case. However, this scenario leads to a different type of problem: it demonstrates that the successor $n'$ has a higher $h$-value than $n$, and since $\Delta g$ is positive, it can create a path where $f(n') > f(n)$, forcing the algorithm to backtrack, which is the very situation consistency is meant to manage.
+\end{enumerate}
+
+\noindent \textbf{Conclusion on Consistency:} Since the cost $\Delta g$ is a fixed constant and the change in loss $\Delta L$ is highly variable and often non-monotonic in a neural network, the consistency property cannot be guaranteed. A single transition can easily cause the optimal cost-to-go estimate to drop by more than $\Delta g$ (Scenario 1), or increase, which requires the Graph Search A* implementation (using both Open and Closed Sets) with the ability to re-open nodes to ensure the optimal path is located.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 \subsection{Role of $g(n)$}
 
 \noindent Since admissibility is ignored, the purpose of $g(n)$ shifts from ensuring global optimality to controlling local exploration. The $g(n)$ term acts both as an iteration counter and as a penalty term, preventing the search from becoming overly greedy and stuck:
@@ -91,7 +137,6 @@ By selecting the node with the minimum $f(n)$, the algorithm seeks a balance bet
 \end{itemize}
 The search thus functions as a Loss-Guided Best-First Search with an Iteration-Based Cost Penalty, trading the A*'s guarantee of optimality for a controlled, non-greedy exploration strategy that helps escape local minima.
 
-%\noindent \textbf{Search Termination}
 \subsection{Search Termination}
 
 \noindent Crucially, the search terminates when a goal state is reached, defined by the condition $L(n) \le L_{\text{target}}$, which translates to $h(n) \le 0$. If $L(n) < L_{\text{target}}$, $h(n)$ becomes negative, indicating that the network has surpassed the required goal threshold. Since the search halts immediately upon finding any state where $h(n) \le 0$, the negative heuristic does not represent a practical problem.

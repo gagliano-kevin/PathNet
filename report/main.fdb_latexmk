@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1765531648.4874 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765531653.0743 0
+["pdflatex"] 1765561087.63794 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765561092.52295 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/kevin/Desktop/PathNet/report/main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -151,9 +151,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762526963.27681 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762527140 8214665 b63933ffebe73c8733810b8a3bee343b ""
-  "chapters/chapter_1.tex" 1765531643.64372 6502 a5cc379f6658f95290026a454b3959bf ""
+  "chapters/chapter_1.tex" 1765559380.9316 9866 566dca8bfa9f1df1a153dd32e701690c ""
   "chapters/chapter_2.tex" 1765469633.14787 3816 d907b0f47d84074d84ad47077f2d2a3f ""
-  "chapters/chapter_3.tex" 1765531299.84308 9845 21ce552a8378c0557a7ce35679a72833 ""
+  "chapters/chapter_3.tex" 1765561087.40938 13298 bdf62583d9d8ba827b94bc537d4857fb ""
   "chapters/chapter_4.tex" 1763060547.32855 49663 2885e4ebe91ce2fe4a3650caee9161b4 ""
   "chapters/conclusions.tex" 1763307000.47835 8286 aed6974cb930a666a939978395341b45 ""
   "figures/LOGO_UNISI_VERTICALE_NERO_0.pdf" 1762523336 317420 0fd7c19e2c74e4b82b58ccf968648f7e ""
@@ -176,9 +176,9 @@
   "figures/sine_tests/sine_test_parameter_range_loss_trend.png" 1762523336 347964 c8fea3cad910ff7849f510919af012a3 ""
   "figures/sine_tests/sine_test_quantization_factor_loss_trend.png" 1762523336 308171 9577e9c88b2fd5792e1a6925fa354a8e ""
   "figures/sine_tests/sine_test_target_loss_loss_trend.png" 1762523336 333062 49095538fc2fc72d97a8f7367eab7ab0 ""
-  "main.aux" 1765531652.97783 16770 92d8f424527c3f850c0beab2bc1e658e "pdflatex"
+  "main.aux" 1765561092.42438 17428 a61fd2d1a54bb2a9c16285ad1913febc "pdflatex"
   "main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
-  "main.toc" 1765531652.9802 5252 2ec495cbb7e1f4e65c8a6b596ff9eb3c "pdflatex"
+  "main.toc" 1765561092.42638 5605 368682183560dd1ef714de280154fdeb "pdflatex"
   "title.tex" 1762523336 751 5b1fd8077fc72f04cc940e5361bf7352 ""
   (generated)
   "main.aux"

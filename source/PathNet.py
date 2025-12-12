@@ -230,7 +230,6 @@ class Trainer:
         initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
         initial_loss = initial_mlp.evaluate(X, Y)
 
-        #g_step = initial_loss / self.max_iterations 
         g_step = (initial_loss - self.target_loss) / self.max_iterations
 
         initial_node = SearchNode(quantized_mlp=initial_mlp, g_val=0, h_val=initial_loss-self.target_loss)
@@ -250,7 +249,7 @@ class Trainer:
             current_hash = current_node.quantized_mlp.get_state_hash()
             # CHECK FOR STALE NODES
             # (current_hash not in self.g_costs) should always be FALSE, kept for security in short-circuit logic for 
-            # the possbile key error of the second expression
+            # the possible key error of the second expression
             if current_hash not in self.g_costs or current_node.g_val > self.g_costs[current_hash]:
                 continue
 

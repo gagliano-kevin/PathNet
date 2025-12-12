@@ -23,18 +23,17 @@ The heuristic $h(n)$ must satisfy the following critical property to guarantee o
 \end{itemize}
 If an admissible heuristic is used, A* is guaranteed to find the optimal (lowest-cost) path, provided a path exists.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                                            % NEED TO BE CHECKED!!
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{Consistency (Monotonicity)}
-The condition of \textbf{consistency} is a stronger requirement than admissibility. A heuristic $h(n)$ is consistent if, for every node $n$ and every successor node $n'$ connected by an edge with cost $c(n, n')$, the estimated cost from $n$ to the goal is less than or equal to the cost of moving to $n'$ plus the estimated cost from $n'$ to the goal.
+\subsubsection{Consistency}
+The condition of consistency is a stronger requirement than admissibility. A heuristic $h(n)$ is consistent if, for every node $n$ and every successor node $n'$ connected by an edge with cost $c(n, n')$, the estimated cost from $n$ to the goal is less than or equal to the cost of moving to $n'$ plus the estimated cost from $n'$ to the goal.
 
 $$\textbf{Consistency Condition: } h(n) \le c(n, n') + h(n')$$
 Consistency implies admissibility, provided $h(\text{goal}) = 0$. When a consistent heuristic is used, A* is guaranteed to find the optimal path without needing to re-open nodes (re-examine a node already in the Closed Set), because the $f$-cost along any optimal path is monotonically non-decreasing.
 
 \begin{itemize}
-    \item \textbf{Optimality Guarantee:} If the heuristic $h(n)$ is $\textbf{admissible}$ (and edge costs are non-negative), A* is guaranteed to find the optimal (lowest-cost) path. If the heuristic is $\textbf{consistent}$, A* is also guaranteed to be optimal and more efficient, as it never needs to process a node more than once.
+    \item \textbf{Optimality Guarantee:} If the heuristic $h(n)$ is admissible (and edge costs are non-negative), A* is guaranteed to find the optimal (lowest-cost) path. If the heuristic is consistent, A* is also guaranteed to be optimal and more efficient, as it never needs to process a node more than once.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,16 +53,19 @@ The core loop of the A* algorithm is as follows:
     \begin{itemize}
         \item Select and remove the node $n$ from the Open Set with the lowest $f(n)$ value.
         \item If $n$ is the goal state, terminate the search and reconstruct the path.
+        \item Move $n$ from the Open Set to the Closed Set.
         \item Otherwise, generate all successors of $n$. For each successor $s$:
         \begin{itemize}
-            \item Calculate $g(s)$ and $f(s)$.
-            \item If $s$ is already in the Open or Closed set, check if the newly found path to $s$ (via $n$) is cheaper. If so, update its $g(n)$ and $f(n)$ values and potentially re-prioritize it in the Open Set.
-            \item If $s$ is new, add it to the Open Set.
+            \item Calculate the cost of the path to $s$ via $n$: $g_{\text{new}}(s) = g(n) + \text{cost}(n, s)$.
+            \item \textbf{Path Evaluation and Update:}
+            \begin{itemize}
+                \item If $s$ is in the Open Set, check if $g_{\text{new}}(s) < g(s)$. If true, update $g(s)$ to $g_{\text{new}}(s)$, re-calculate $f(s) = g(s) + h(s)$, and update its priority in the Open Set.
+                \item If $s$ is in the Closed Set, check if $g_{\text{new}}(s) < g(s)$. If true, this means a cheaper path to $s$ has been found. Update $g(s)$ to $g_{\text{new}}(s)$, re-calculate $f(s) = g(s) + h(s)$, and move $s$ back from the Closed Set to the Open Set for re-expansion.
+                \item If $s$ is not in either set, it is a newly discovered node. Set its parent to $n$, set $g(s) = g_{\text{new}}(s)$, calculate $f(s) = g(s) + h(s)$, and add it to the Open Set.
+            \end{itemize}
         \end{itemize}
-        \item Add $n$ to the Closed Set.
     \end{itemize}
 \end{enumerate}
-
 \section{Properties of A*}
 The A* search algorithm is known for two key theoretical properties:
 
@@ -73,3 +75,39 @@ The A* search algorithm is known for two key theoretical properties:
 \end{itemize}
 
 The adaptation of A* from a simple pathfinding tool to a machine learning optimization technique, as explored in this report, requires careful consideration of the state space, the definition of the path cost $g(n)$, and the design of an effective, possibly admissible heuristic $h(n)$.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Tree Search vs. Graph Search}
+\label{sec:tree_vs_graph}
+
+The problem space solved by A* is fundamentally a graph, yet the search strategy can be executed either as a Tree Search or a Graph Search. The difference lies entirely in how the algorithm handles states (nodes) that can be reached via multiple distinct paths, a common occurrence in graphs with cycles or multiple connecting routes.
+
+\subsection{Tree Search A*}
+The Tree Search variant treats every path to a state as a unique node in the search tree.
+
+\begin{itemize}
+    \item \textbf{Mechanism:} Does not utilize a Closed Set. A node is generated and expanded without checking if an identical state has been reached previously via a different path.
+    \item \textbf{Consequence:} This avoids the memory overhead of the Closed Set but leads to the redundant expansion of identical states, severely impacting time efficiency, especially in graphs with many cycles or alternative routes.
+    \item \textbf{Optimality:} Only guaranteed if the graph is a tree (no repeated states), or if the memory consumption of the Closed Set is an absolute bottleneck.
+\end{itemize}
+
+
+\subsection{Graph Search A*}
+The Graph Search variant is the standard implementation of A* because it explicitly tracks visited states to avoid redundant work.
+
+\begin{itemize}
+    \item \textbf{Mechanism:} Utilizes both the Open Set and the Closed Set to ensure that, ideally, no state is expanded more than once.
+    \item \textbf{Efficiency:} Significantly more time-efficient than Tree Search, as it avoids re-exploring entire subgraphs.
+    \item \textbf{Consistency Impact:}
+    \begin{itemize}
+        \item If the heuristic $h(n)$ is \textbf{consistent}, a node is guaranteed to be reached via the optimal path when it is first placed in the Closed Set. Therefore, no node ever needs to be re-opened.
+        \item If $h(n)$ is only \textbf{admissible} (or in our case, if both admissibility and consistency are violated), the optimal path to a state might be discovered *after* the state has already been placed in the Closed Set. This necessitates the re-opening mechanism.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Implementation Choice}
+In the context of this project, which adapts A* for machine learning optimization, given the experimental nature of the heuristic $h(n)$ and the $g(n)$ cost definition based on training loss, neither strict \textbf{admissibility} nor \textbf{consistency} can be guaranteed.
+Therefore, the implementation utilizes the Graph Search A* algorithm, characterized by the explicit use of both the Open Set and the Closed Set. Crucially, the algorithm includes the necessary logic to re-open nodes from the Closed Set if a new, cheaper path to that node is discovered. This ensures the best possible path is found despite the non-ideal properties of the custom heuristic.

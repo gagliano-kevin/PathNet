@@ -7,117 +7,118 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1.2}The Evaluation Function $f(n)$}{1}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2.1}Path Cost ($g(n)$)}{1}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2.2}Heuristic Estimate ($h(n)$)}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {1.3}Algorithm Mechanics}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Consistency (Monotonicity)}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}Algorithm Mechanics}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {1.4}Properties of A*}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {2}The Multilayer Perceptron and Traditional Training Methods}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}The Multilayer Perceptron and Traditional Training Methods}{5}{}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:mlp_intro}{{2}{4}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.1}Multilayer Perceptron (MLP) Architecture}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Neuron Structure and Function}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}The Cost Function}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.2}The Standard Training Method: Backpropagation}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Gradient Descent}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Error Backpropagation}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2.3}Motivation for the A* Approach (Limitations of Backpropagation)}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}The A* Search Framework for MLP Training}{7}{}\protected@file@percent }
+\newlabel{chap:mlp_intro}{{2}{5}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Multilayer Perceptron (MLP) Architecture}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Neuron Structure and Function}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}The Cost Function}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}The Standard Training Method: Backpropagation}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Gradient Descent}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Error Backpropagation}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Motivation for the A* Approach (Limitations of Backpropagation)}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}The A* Search Framework for MLP Training}{8}{}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:astar_framework}{{3}{7}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Discretization of the Weight Space}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Quantized State Definition}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}State Representation and Hashing}{8}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Search Node and Transition Definition}{8}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}The Search Node}{8}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Defining Transitions (Neighbors)}{8}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}A* Cost Function Adaptation for Training}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Heuristic Function $h(n)$: Distance to Target Loss}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Path Cost $g(n)$: Accumulated Iterative Cost}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.3}Total Evaluation Function $f(n)$}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.4}Admissibility Analysis}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.5}Role of $g(n)$}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.6}Search Termination}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Experimental Methodology and Results}{12}{}\protected@file@percent }
+\newlabel{chap:astar_framework}{{3}{8}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Discretization of the Weight Space}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Quantized State Definition}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}State Representation and Hashing}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Search Node and Transition Definition}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}The Search Node}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Defining Transitions (Neighbors)}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}A* Cost Function Adaptation for Training}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Heuristic Function $h(n)$: Distance to Target Loss}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Path Cost $g(n)$: Accumulated Iterative Cost}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.3}Total Evaluation Function $f(n)$}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.4}Admissibility Analysis}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.5}Role of $g(n)$}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.6}Search Termination}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Experimental Methodology and Results}{13}{}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:results}{{4}{12}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Experimental Methodology}{12}{}\protected@file@percent }
-\newlabel{sec:experimental_methodology}{{4.1}{12}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}MLP Architecture and Evaluation}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Three-Stage Comparative Protocol}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Stage 1: Hyperparameter Grid Search and Sensitivity Analysis}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Stage 2: A* Training with Optimal Configuration}{13}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Stage 3: Backpropagation Baseline and Comparison}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Synthetic Dataset: One-Dimensional Sine Function Regression}{15}{}\protected@file@percent }
-\newlabel{sec:sine_regression}{{4.2}{15}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Dataset Generation and Objective}{15}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Plot of the noisy sine dataset}}{16}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Stage 1: Grid Search Findings}{16}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Plot of the loss trend in function of Quantization Factor}}{17}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Impact of Quantization Factor on Sine Regression Performance (Other HPs Fixed)}}{18}{}\protected@file@percent }
+\newlabel{chap:results}{{4}{13}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Experimental Methodology}{13}{}\protected@file@percent }
+\newlabel{sec:experimental_methodology}{{4.1}{13}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}MLP Architecture and Evaluation}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Three-Stage Comparative Protocol}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Stage 1: Hyperparameter Grid Search and Sensitivity Analysis}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Stage 2: A* Training with Optimal Configuration}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Stage 3: Backpropagation Baseline and Comparison}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Synthetic Dataset: One-Dimensional Sine Function Regression}{16}{}\protected@file@percent }
+\newlabel{sec:sine_regression}{{4.2}{16}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Dataset Generation and Objective}{16}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Plot of the noisy sine dataset}}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Stage 1: Grid Search Findings}{17}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Plot of the loss trend in function of Quantization Factor}}{18}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Impact of Quantization Factor on Sine Regression Performance (Other HPs Fixed)}}{19}{}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:sine_gs_q_impact}{{4.1}{18}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Plot of the loss trend in function of Parameter Range}}{19}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces Impact of Parameter Range on Sine Regression Performance (Other HPs Fixed)}}{19}{}\protected@file@percent }
-\newlabel{tab:sine_gs_q_impact}{{4.2}{19}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Plot of the loss trend in function of Parameter Fraction}}{21}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Impact of Parameter Fraction on Sine Regression Performance (Other HPs Fixed)}}{21}{}\protected@file@percent }
-\newlabel{tab:sine_gs_q_impact}{{4.3}{21}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Plot of the loss trend in function of Target Loss}}{22}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Impact of Target Loss on Sine Regression Performance (Other HPs Fixed)}}{23}{}\protected@file@percent }
-\newlabel{tab:sine_gs_q_impact}{{4.4}{23}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Plot of the loss trend in function of Max Iterations}}{24}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces Impact of Max Iterations on Sine Regression Performance (Other HPs Fixed)}}{24}{}\protected@file@percent }
-\newlabel{tab:sine_gs_q_impact}{{4.5}{24}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{25}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.4}Comparison with Gradient Descent: $I_{\text  {max}} = 1,000$}{26}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {1,000}$ Iterations. This plot illustrates the average loss over ten independent runs for both A* Search (Novel) and Gradient Descent (Classic), with the shaded region representing $\pm 1$ standard deviation. It highlights convergence speed and the consistency of each algorithm's performance over time.}}{27}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {1,000}$ Iterations. This box plot summarizes the distribution of the terminal loss values achieved by A* Search (Novel) and Gradient Descent (Classic) over ten independent runs. The box represents the interquartile range (IQR), the central line indicates the median, and whiskers show the range of results (excluding outliers).}}{28}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=1,000$ Iterations}}{29}{}\protected@file@percent }
-\newlabel{tab:1k_stats}{{4.6}{29}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.5}Comparison with Gradient Descent: $I_{\text  {max}} = 5,000$}{30}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {5,000}$ Iterations. This plot illustrates the average loss over ten independent runs for both A* Search (Novel) and Gradient Descent (Classic), with the shaded region representing $\pm 1$ standard deviation. It highlights convergence speed and the consistency of each algorithm's performance over time.}}{30}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {5,000}$ Iterations. This box plot summarizes the distribution of the terminal loss values achieved by A* Search (Novel) and Gradient Descent (Classic) over ten independent runs. The box represents the interquartile range (IQR), the central line indicates the median, and whiskers show the range of results (excluding outliers).}}{31}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.7}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=5,000$ Iterations}}{32}{}\protected@file@percent }
-\newlabel{tab:5k_stats}{{4.7}{32}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Classic Dataset: Iris Flower Classification}{33}{}\protected@file@percent }
-\newlabel{sec:iris_classification}{{4.3}{33}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Dataset and Objective}{33}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Stage 1: Optimal Hyperparameters}{33}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}Stage 2 \& 3: Training and Comparative Analysis}{34}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Comparison with Gradient Descent: $I_{\text  {max}} = 1,000$}{34}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {1,000}$ Iterations (Iris Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{34}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.12}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {1,000}$ Iterations (Iris Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{35}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.8}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=1,000$ Iterations (Iris Dataset)}}{36}{}\protected@file@percent }
-\newlabel{tab:iris_1k_stats}{{4.8}{36}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}Comparison with Gradient Descent: $I_{\text  {max}} = 2,500$}{37}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.13}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {2,500}$ Iterations (Iris Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{37}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.14}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {2,500}$ Iterations (Iris Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{38}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.9}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=2,500$ Iterations (Iris Dataset)}}{39}{}\protected@file@percent }
-\newlabel{tab:iris_2_5k_stats}{{4.9}{39}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Non-Linear Dataset: Concentric Circles Classification}{40}{}\protected@file@percent }
-\newlabel{sec:circle_classification}{{4.4}{40}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Dataset Generation and Objective}{40}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.15}{\ignorespaces Plot of the circles dataset}}{41}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Stage 1: Optimal Hyperparameters}{41}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}Stage 2 \& 3: Training and Comparative Analysis}{41}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.4}Comparison with Gradient Descent: $I_{\text  {max}} = 1000$}{42}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.16}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {1000}$ Iterations (Circle Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{42}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.17}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {1000}$ Iterations (Circle Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{43}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.10}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=1000$ Iterations (Circle Dataset)}}{44}{}\protected@file@percent }
-\newlabel{tab:circle_1000_stats}{{4.10}{44}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.5}Comparison with Gradient Descent: $I_{\text  {max}} = 2,500$}{44}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.18}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {2,500}$ Iterations (Circle Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{45}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.19}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {2,500}$ Iterations (Circle Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{46}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.11}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=2,500$ Iterations (Circle Dataset)}}{47}{}\protected@file@percent }
-\newlabel{tab:circle_2500_stats}{{4.11}{47}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}Conclusion and Future Work}{48}{}\protected@file@percent }
-\newlabel{sec:conclusion}{{4.5}{48}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Summary of A* Framework Performance}{48}{}\protected@file@percent }
-\newlabel{sec:astar_summary}{{4.5.1}{48}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}Summary of Comparative Findings}{50}{}\protected@file@percent }
-\newlabel{sec:comparative_findings}{{4.5.2}{50}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}Future Work}{50}{}\protected@file@percent }
-\newlabel{sec:future_work}{{4.5.3}{50}{}{}{}}
-\gdef \@abspage@last{55}
+\newlabel{tab:sine_gs_q_impact}{{4.1}{19}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Plot of the loss trend in function of Parameter Range}}{20}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces Impact of Parameter Range on Sine Regression Performance (Other HPs Fixed)}}{20}{}\protected@file@percent }
+\newlabel{tab:sine_gs_q_impact}{{4.2}{20}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Plot of the loss trend in function of Parameter Fraction}}{22}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Impact of Parameter Fraction on Sine Regression Performance (Other HPs Fixed)}}{22}{}\protected@file@percent }
+\newlabel{tab:sine_gs_q_impact}{{4.3}{22}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Plot of the loss trend in function of Target Loss}}{23}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Impact of Target Loss on Sine Regression Performance (Other HPs Fixed)}}{24}{}\protected@file@percent }
+\newlabel{tab:sine_gs_q_impact}{{4.4}{24}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Plot of the loss trend in function of Max Iterations}}{25}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces Impact of Max Iterations on Sine Regression Performance (Other HPs Fixed)}}{25}{}\protected@file@percent }
+\newlabel{tab:sine_gs_q_impact}{{4.5}{25}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.4}Comparison with Gradient Descent: $I_{\text  {max}} = 1,000$}{27}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {1,000}$ Iterations. This plot illustrates the average loss over ten independent runs for both A* Search (Novel) and Gradient Descent (Classic), with the shaded region representing $\pm 1$ standard deviation. It highlights convergence speed and the consistency of each algorithm's performance over time.}}{28}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {1,000}$ Iterations. This box plot summarizes the distribution of the terminal loss values achieved by A* Search (Novel) and Gradient Descent (Classic) over ten independent runs. The box represents the interquartile range (IQR), the central line indicates the median, and whiskers show the range of results (excluding outliers).}}{29}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=1,000$ Iterations}}{30}{}\protected@file@percent }
+\newlabel{tab:1k_stats}{{4.6}{30}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.5}Comparison with Gradient Descent: $I_{\text  {max}} = 5,000$}{31}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {5,000}$ Iterations. This plot illustrates the average loss over ten independent runs for both A* Search (Novel) and Gradient Descent (Classic), with the shaded region representing $\pm 1$ standard deviation. It highlights convergence speed and the consistency of each algorithm's performance over time.}}{31}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {5,000}$ Iterations. This box plot summarizes the distribution of the terminal loss values achieved by A* Search (Novel) and Gradient Descent (Classic) over ten independent runs. The box represents the interquartile range (IQR), the central line indicates the median, and whiskers show the range of results (excluding outliers).}}{32}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.7}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=5,000$ Iterations}}{33}{}\protected@file@percent }
+\newlabel{tab:5k_stats}{{4.7}{33}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Classic Dataset: Iris Flower Classification}{34}{}\protected@file@percent }
+\newlabel{sec:iris_classification}{{4.3}{34}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Dataset and Objective}{34}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Stage 1: Optimal Hyperparameters}{34}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}Stage 2 \& 3: Training and Comparative Analysis}{35}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Comparison with Gradient Descent: $I_{\text  {max}} = 1,000$}{35}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {1,000}$ Iterations (Iris Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{35}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.12}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {1,000}$ Iterations (Iris Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{36}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.8}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=1,000$ Iterations (Iris Dataset)}}{37}{}\protected@file@percent }
+\newlabel{tab:iris_1k_stats}{{4.8}{37}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}Comparison with Gradient Descent: $I_{\text  {max}} = 2,500$}{38}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.13}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {2,500}$ Iterations (Iris Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{38}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.14}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {2,500}$ Iterations (Iris Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{39}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.9}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=2,500$ Iterations (Iris Dataset)}}{40}{}\protected@file@percent }
+\newlabel{tab:iris_2_5k_stats}{{4.9}{40}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Non-Linear Dataset: Concentric Circles Classification}{41}{}\protected@file@percent }
+\newlabel{sec:circle_classification}{{4.4}{41}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Dataset Generation and Objective}{41}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.15}{\ignorespaces Plot of the circles dataset}}{42}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Stage 1: Optimal Hyperparameters}{42}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}Stage 2 \& 3: Training and Comparative Analysis}{42}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.4}Comparison with Gradient Descent: $I_{\text  {max}} = 1000$}{43}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.16}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {1000}$ Iterations (Circle Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{43}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.17}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {1000}$ Iterations (Circle Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{44}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.10}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=1000$ Iterations (Circle Dataset)}}{45}{}\protected@file@percent }
+\newlabel{tab:circle_1000_stats}{{4.10}{45}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.5}Comparison with Gradient Descent: $I_{\text  {max}} = 2,500$}{45}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.18}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {2,500}$ Iterations (Circle Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}}{46}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.19}{\ignorespaces Final Loss Box Plot for $I_{\text  {max}}=\text  {2,500}$ Iterations (Circle Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}}{47}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.11}{\ignorespaces Comparative Statistics Over Ten Runs for $I_{\text  {max}}=2,500$ Iterations (Circle Dataset)}}{48}{}\protected@file@percent }
+\newlabel{tab:circle_2500_stats}{{4.11}{48}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Conclusion and Future Work}{49}{}\protected@file@percent }
+\newlabel{sec:conclusion}{{4.5}{49}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Summary of A* Framework Performance}{49}{}\protected@file@percent }
+\newlabel{sec:astar_summary}{{4.5.1}{49}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}Summary of Comparative Findings}{51}{}\protected@file@percent }
+\newlabel{sec:comparative_findings}{{4.5.2}{51}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}Future Work}{51}{}\protected@file@percent }
+\newlabel{sec:future_work}{{4.5.3}{51}{}{}{}}
+\gdef \@abspage@last{56}

@@ -3,57 +3,58 @@
 \contentsline {section}{\numberline {1.2}The Evaluation Function $f(n)$}{1}{}%
 \contentsline {subsection}{\numberline {1.2.1}Path Cost ($g(n)$)}{1}{}%
 \contentsline {subsection}{\numberline {1.2.2}Heuristic Estimate ($h(n)$)}{2}{}%
-\contentsline {section}{\numberline {1.3}Algorithm Mechanics}{2}{}%
+\contentsline {subsubsection}{Consistency (Monotonicity)}{2}{}%
+\contentsline {section}{\numberline {1.3}Algorithm Mechanics}{3}{}%
 \contentsline {section}{\numberline {1.4}Properties of A*}{3}{}%
-\contentsline {chapter}{\numberline {2}The Multilayer Perceptron and Traditional Training Methods}{4}{}%
-\contentsline {section}{\numberline {2.1}Multilayer Perceptron (MLP) Architecture}{4}{}%
-\contentsline {subsection}{\numberline {2.1.1}Neuron Structure and Function}{4}{}%
-\contentsline {subsection}{\numberline {2.1.2}The Cost Function}{5}{}%
-\contentsline {section}{\numberline {2.2}The Standard Training Method: Backpropagation}{5}{}%
-\contentsline {subsection}{\numberline {2.2.1}Gradient Descent}{5}{}%
-\contentsline {subsection}{\numberline {2.2.2}Error Backpropagation}{5}{}%
-\contentsline {section}{\numberline {2.3}Motivation for the A* Approach (Limitations of Backpropagation)}{5}{}%
-\contentsline {chapter}{\numberline {3}The A* Search Framework for MLP Training}{7}{}%
-\contentsline {section}{\numberline {3.1}Discretization of the Weight Space}{7}{}%
-\contentsline {subsection}{\numberline {3.1.1}Quantized State Definition}{7}{}%
-\contentsline {subsection}{\numberline {3.1.2}State Representation and Hashing}{8}{}%
-\contentsline {section}{\numberline {3.2}Search Node and Transition Definition}{8}{}%
-\contentsline {subsection}{\numberline {3.2.1}The Search Node}{8}{}%
-\contentsline {subsection}{\numberline {3.2.2}Defining Transitions (Neighbors)}{8}{}%
-\contentsline {section}{\numberline {3.3}A* Cost Function Adaptation for Training}{9}{}%
-\contentsline {subsection}{\numberline {3.3.1}Heuristic Function $h(n)$: Distance to Target Loss}{9}{}%
-\contentsline {subsection}{\numberline {3.3.2}Path Cost $g(n)$: Accumulated Iterative Cost}{9}{}%
-\contentsline {subsection}{\numberline {3.3.3}Total Evaluation Function $f(n)$}{10}{}%
-\contentsline {subsection}{\numberline {3.3.4}Admissibility Analysis}{10}{}%
-\contentsline {subsection}{\numberline {3.3.5}Role of $g(n)$}{10}{}%
-\contentsline {subsection}{\numberline {3.3.6}Search Termination}{11}{}%
-\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{11}{}%
-\contentsline {chapter}{\numberline {4}Experimental Methodology and Results}{12}{}%
-\contentsline {section}{\numberline {4.1}Experimental Methodology}{12}{}%
-\contentsline {subsection}{\numberline {4.1.1}MLP Architecture and Evaluation}{13}{}%
-\contentsline {subsection}{\numberline {4.1.2}Three-Stage Comparative Protocol}{13}{}%
-\contentsline {subsubsection}{Stage 1: Hyperparameter Grid Search and Sensitivity Analysis}{13}{}%
-\contentsline {subsubsection}{Stage 2: A* Training with Optimal Configuration}{13}{}%
-\contentsline {subsubsection}{Stage 3: Backpropagation Baseline and Comparison}{14}{}%
-\contentsline {section}{\numberline {4.2}Synthetic Dataset: One-Dimensional Sine Function Regression}{15}{}%
-\contentsline {subsection}{\numberline {4.2.1}Dataset Generation and Objective}{15}{}%
-\contentsline {subsection}{\numberline {4.2.2}Stage 1: Grid Search Findings}{16}{}%
-\contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{25}{}%
-\contentsline {subsection}{\numberline {4.2.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{26}{}%
-\contentsline {subsection}{\numberline {4.2.5}Comparison with Gradient Descent: $I_{\text {max}} = 5,000$}{30}{}%
-\contentsline {section}{\numberline {4.3}Classic Dataset: Iris Flower Classification}{33}{}%
-\contentsline {subsection}{\numberline {4.3.1}Dataset and Objective}{33}{}%
-\contentsline {subsection}{\numberline {4.3.2}Stage 1: Optimal Hyperparameters}{33}{}%
-\contentsline {subsection}{\numberline {4.3.3}Stage 2 \& 3: Training and Comparative Analysis}{34}{}%
-\contentsline {subsection}{\numberline {4.3.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{34}{}%
-\contentsline {subsection}{\numberline {4.3.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{37}{}%
-\contentsline {section}{\numberline {4.4}Non-Linear Dataset: Concentric Circles Classification}{40}{}%
-\contentsline {subsection}{\numberline {4.4.1}Dataset Generation and Objective}{40}{}%
-\contentsline {subsection}{\numberline {4.4.2}Stage 1: Optimal Hyperparameters}{41}{}%
-\contentsline {subsection}{\numberline {4.4.3}Stage 2 \& 3: Training and Comparative Analysis}{41}{}%
-\contentsline {subsection}{\numberline {4.4.4}Comparison with Gradient Descent: $I_{\text {max}} = 1000$}{42}{}%
-\contentsline {subsection}{\numberline {4.4.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{44}{}%
-\contentsline {section}{\numberline {4.5}Conclusion and Future Work}{48}{}%
-\contentsline {subsection}{\numberline {4.5.1}Summary of A* Framework Performance}{48}{}%
-\contentsline {subsection}{\numberline {4.5.2}Summary of Comparative Findings}{50}{}%
-\contentsline {subsection}{\numberline {4.5.3}Future Work}{50}{}%
+\contentsline {chapter}{\numberline {2}The Multilayer Perceptron and Traditional Training Methods}{5}{}%
+\contentsline {section}{\numberline {2.1}Multilayer Perceptron (MLP) Architecture}{5}{}%
+\contentsline {subsection}{\numberline {2.1.1}Neuron Structure and Function}{5}{}%
+\contentsline {subsection}{\numberline {2.1.2}The Cost Function}{6}{}%
+\contentsline {section}{\numberline {2.2}The Standard Training Method: Backpropagation}{6}{}%
+\contentsline {subsection}{\numberline {2.2.1}Gradient Descent}{6}{}%
+\contentsline {subsection}{\numberline {2.2.2}Error Backpropagation}{6}{}%
+\contentsline {section}{\numberline {2.3}Motivation for the A* Approach (Limitations of Backpropagation)}{6}{}%
+\contentsline {chapter}{\numberline {3}The A* Search Framework for MLP Training}{8}{}%
+\contentsline {section}{\numberline {3.1}Discretization of the Weight Space}{8}{}%
+\contentsline {subsection}{\numberline {3.1.1}Quantized State Definition}{8}{}%
+\contentsline {subsection}{\numberline {3.1.2}State Representation and Hashing}{9}{}%
+\contentsline {section}{\numberline {3.2}Search Node and Transition Definition}{9}{}%
+\contentsline {subsection}{\numberline {3.2.1}The Search Node}{9}{}%
+\contentsline {subsection}{\numberline {3.2.2}Defining Transitions (Neighbors)}{9}{}%
+\contentsline {section}{\numberline {3.3}A* Cost Function Adaptation for Training}{10}{}%
+\contentsline {subsection}{\numberline {3.3.1}Heuristic Function $h(n)$: Distance to Target Loss}{10}{}%
+\contentsline {subsection}{\numberline {3.3.2}Path Cost $g(n)$: Accumulated Iterative Cost}{10}{}%
+\contentsline {subsection}{\numberline {3.3.3}Total Evaluation Function $f(n)$}{11}{}%
+\contentsline {subsection}{\numberline {3.3.4}Admissibility Analysis}{11}{}%
+\contentsline {subsection}{\numberline {3.3.5}Role of $g(n)$}{11}{}%
+\contentsline {subsection}{\numberline {3.3.6}Search Termination}{12}{}%
+\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{12}{}%
+\contentsline {chapter}{\numberline {4}Experimental Methodology and Results}{13}{}%
+\contentsline {section}{\numberline {4.1}Experimental Methodology}{13}{}%
+\contentsline {subsection}{\numberline {4.1.1}MLP Architecture and Evaluation}{14}{}%
+\contentsline {subsection}{\numberline {4.1.2}Three-Stage Comparative Protocol}{14}{}%
+\contentsline {subsubsection}{Stage 1: Hyperparameter Grid Search and Sensitivity Analysis}{14}{}%
+\contentsline {subsubsection}{Stage 2: A* Training with Optimal Configuration}{14}{}%
+\contentsline {subsubsection}{Stage 3: Backpropagation Baseline and Comparison}{15}{}%
+\contentsline {section}{\numberline {4.2}Synthetic Dataset: One-Dimensional Sine Function Regression}{16}{}%
+\contentsline {subsection}{\numberline {4.2.1}Dataset Generation and Objective}{16}{}%
+\contentsline {subsection}{\numberline {4.2.2}Stage 1: Grid Search Findings}{17}{}%
+\contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{26}{}%
+\contentsline {subsection}{\numberline {4.2.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{27}{}%
+\contentsline {subsection}{\numberline {4.2.5}Comparison with Gradient Descent: $I_{\text {max}} = 5,000$}{31}{}%
+\contentsline {section}{\numberline {4.3}Classic Dataset: Iris Flower Classification}{34}{}%
+\contentsline {subsection}{\numberline {4.3.1}Dataset and Objective}{34}{}%
+\contentsline {subsection}{\numberline {4.3.2}Stage 1: Optimal Hyperparameters}{34}{}%
+\contentsline {subsection}{\numberline {4.3.3}Stage 2 \& 3: Training and Comparative Analysis}{35}{}%
+\contentsline {subsection}{\numberline {4.3.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{35}{}%
+\contentsline {subsection}{\numberline {4.3.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{38}{}%
+\contentsline {section}{\numberline {4.4}Non-Linear Dataset: Concentric Circles Classification}{41}{}%
+\contentsline {subsection}{\numberline {4.4.1}Dataset Generation and Objective}{41}{}%
+\contentsline {subsection}{\numberline {4.4.2}Stage 1: Optimal Hyperparameters}{42}{}%
+\contentsline {subsection}{\numberline {4.4.3}Stage 2 \& 3: Training and Comparative Analysis}{42}{}%
+\contentsline {subsection}{\numberline {4.4.4}Comparison with Gradient Descent: $I_{\text {max}} = 1000$}{43}{}%
+\contentsline {subsection}{\numberline {4.4.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{45}{}%
+\contentsline {section}{\numberline {4.5}Conclusion and Future Work}{49}{}%
+\contentsline {subsection}{\numberline {4.5.1}Summary of A* Framework Performance}{49}{}%
+\contentsline {subsection}{\numberline {4.5.2}Summary of Comparative Findings}{51}{}%
+\contentsline {subsection}{\numberline {4.5.3}Future Work}{51}{}%

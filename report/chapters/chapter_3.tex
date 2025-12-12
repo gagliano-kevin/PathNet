@@ -55,7 +55,7 @@ This heuristic serves as the primary driver of the search, prioritizing configur
 \subsection{Path Cost $g(n)$: Accumulated Iterative Cost}
 The cost-to-come, $g(n)$, represents the cost of the path taken from the initial weight configuration to the current node $n$. In this context, it represents the total effort expended in terms of the number of weight updates.
 
-The cost of each transition (edge) is treated as a uniform constant, $\Delta g$, where $\Delta g$ is calculated based on the initial loss and the maximum allowed iterations ($\Delta g = L_{\text{initial}} / I_{\text{max}}$). The total path cost is:
+The cost of each transition (edge) is treated as a uniform constant, $\Delta g$, where $\Delta g$ is calculated based on the initial loss, target loss and the maximum allowed iterations ($\Delta g = (L_{\text{initial}} - L_{\text{target}}) / I_{\text{max}}$). The total path cost is:
 
 $$g(n) = g(\text{parent}) + \Delta g$$
 
@@ -77,7 +77,7 @@ By selecting the node with the minimum $f(n)$, the algorithm seeks a balance bet
 
 \noindent Given the definitions above, the admissibility requirement is not guaranteed and is, in fact, likely violated:
 \begin{enumerate}
-    \item The heuristic $h(n)$ represents the remaning loss to reach a goal stase, while the unit of the true path cost $h^*(n)$ is a value proportional to the minimum number of parameter modifications ($\Delta g$ steps) required to reach the target loss.
+    \item The heuristic $h(n)$ represents the remaning loss to reach a goal state, while the unit of the true path cost $h^*(n)$ is a value proportional to the minimum number of parameter modifications ($\Delta g$ steps) required to reach the target loss.
     \item Since the minimum number of steps required to eliminate the remaining loss is unknown a priori and bears no guaranteed mathematical relationship to the loss value itself, $h(n)$ cannot reliably be confirmed as a lower bound for $h^*(n)$.
 \end{enumerate}
 

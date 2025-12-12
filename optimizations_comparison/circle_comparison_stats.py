@@ -89,7 +89,7 @@ for run in range(RUNS):
     ASTAR_METRICS["training_times"].append(trainer.training_times[-1]) 
     
     # Using the final heuristic cost (h_val) as the final loss proxy
-    final_loss_astar = trainer.best_node.h_val 
+    final_loss_astar = trainer.best_node.h_val + trainer.target_loss
     ASTAR_METRICS["final_losses"].append(final_loss_astar)
 
 

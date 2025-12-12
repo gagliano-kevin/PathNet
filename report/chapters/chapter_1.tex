@@ -23,6 +23,22 @@ The heuristic $h(n)$ must satisfy the following critical property to guarantee o
 \end{itemize}
 If an admissible heuristic is used, A* is guaranteed to find the optimal (lowest-cost) path, provided a path exists.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                            % NEED TO BE CHECKED!!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Consistency (Monotonicity)}
+The condition of \textbf{consistency} is a stronger requirement than admissibility. A heuristic $h(n)$ is consistent if, for every node $n$ and every successor node $n'$ connected by an edge with cost $c(n, n')$, the estimated cost from $n$ to the goal is less than or equal to the cost of moving to $n'$ plus the estimated cost from $n'$ to the goal.
+
+$$\textbf{Consistency Condition: } h(n) \le c(n, n') + h(n')$$
+Consistency implies admissibility, provided $h(\text{goal}) = 0$. When a consistent heuristic is used, A* is guaranteed to find the optimal path without needing to re-open nodes (re-examine a node already in the Closed Set), because the $f$-cost along any optimal path is monotonically non-decreasing.
+
+\begin{itemize}
+    \item \textbf{Optimality Guarantee:} If the heuristic $h(n)$ is $\textbf{admissible}$ (and edge costs are non-negative), A* is guaranteed to find the optimal (lowest-cost) path. If the heuristic is $\textbf{consistent}$, A* is also guaranteed to be optimal and more efficient, as it never needs to process a node more than once.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Algorithm Mechanics}
 A* operates by iteratively expanding nodes, maintaining two key data structures:
 

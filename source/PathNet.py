@@ -76,6 +76,7 @@ class QuantizedMLP:
             raise ValueError("Model is not valid due to overflow or quantization issues.")
         # The product by quantization factor ensures the hash is based on integer representations of the quantized values 
         return tuple((self.get_flat_weights() * self.quantization_factor).long().tolist())
+
     
     def __str__(self):
         repr = f"QuantizedMLP(quantization_factor={self.quantization_factor}, parameter_range={self.parameter_range}, overflow={self.overflow})"
@@ -229,7 +230,8 @@ class Trainer:
         initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
         initial_loss = initial_mlp.evaluate(X, Y)
 
-        g_step = initial_loss / self.max_iterations 
+        #g_step = initial_loss / self.max_iterations 
+        g_step = (initial_loss - self.target_loss) / self.max_iterations
 
         initial_node = SearchNode(quantized_mlp=initial_mlp, g_val=0, h_val=initial_loss-self.target_loss)
         initial_hash = initial_mlp.get_state_hash()

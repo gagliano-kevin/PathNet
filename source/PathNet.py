@@ -128,7 +128,7 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, param_fraction=1)
     
     # Get the list of parameter tensors from the parent model
     parent_parameters = list(parent_model.parameters())
-    
+
     with torch.no_grad():
         # Iterate over each parameter tensor in the model
         for tensor_idx in range(len(parent_parameters)):
@@ -146,7 +146,7 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, param_fraction=1)
             for flat_scalar_idx in selected_scalar_indexes:
                 
                 # Get the scalar value at the chosen index
-                scalar_value = original_data.view(-1)[flat_scalar_idx].item()
+                scalar_value = original_data.view(-1)[flat_scalar_idx].item()       
                 
                 for delta in [-(1 / quantization_factor), (1 / quantization_factor)]:
                     
@@ -181,8 +181,8 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, param_fraction=1)
                     if neighbor_mlp.overflow:
                         continue
                     
-                    h = neighbor_mlp.evaluate(X, Y)
-                    neighbors.append((neighbor_mlp, h))
+                    loss = neighbor_mlp.evaluate(X, Y)
+                    neighbors.append((neighbor_mlp, loss))
                     
     return neighbors
 

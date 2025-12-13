@@ -51,8 +51,8 @@ The core loop of the A* algorithm is as follows:
     \item Initialize the Open Set with the starting node.
     \item While the Open Set is not empty:
     \begin{itemize}
-        \item Select and remove the node $n$ from the Open Set with the lowest $f(n)$ value.
-        \item If $n$ is the goal state, terminate the search and reconstruct the path.
+        \item Select the node $n$ from the Open Set with the lowest $f(n)$ value.
+        \item If $n$ is the goal state, terminate the search.
         \item Move $n$ from the Open Set to the Closed Set.
         \item Otherwise, generate all successors of $n$. For each successor $s$:
         \begin{itemize}
@@ -90,7 +90,7 @@ The Tree Search variant treats every path to a state as a unique node in the sea
 
 \begin{itemize}
     \item \textbf{Mechanism:} Does not utilize a Closed Set. A node is generated and expanded without checking if an identical state has been reached previously via a different path.
-    \item \textbf{Consequence:} This avoids the memory overhead of the Closed Set but leads to the redundant expansion of identical states, severely impacting time efficiency, especially in graphs with many cycles or alternative routes.
+    \item \textbf{Efficiency:} Avoiding the memory overhead of the Closed Set, leads to the redundant expansion of identical states, severely impacting time efficiency, especially in graphs with many cycles or alternative routes.
     \item \textbf{Optimality:} Only guaranteed if the graph is a tree (no repeated states), or if the memory consumption of the Closed Set is an absolute bottleneck.
 \end{itemize}
 
@@ -101,10 +101,10 @@ The Graph Search variant is the standard implementation of A* because it explici
 \begin{itemize}
     \item \textbf{Mechanism:} Utilizes both the Open Set and the Closed Set to ensure that, ideally, no state is expanded more than once.
     \item \textbf{Efficiency:} Significantly more time-efficient than Tree Search, as it avoids re-exploring entire subgraphs.
-    \item \textbf{Consistency Impact:}
+    \item \textbf{Optimality:}
     \begin{itemize}
         \item If the heuristic $h(n)$ is \textbf{consistent}, a node is guaranteed to be reached via the optimal path when it is first placed in the Closed Set. Therefore, no node ever needs to be re-opened.
-        \item If $h(n)$ is only \textbf{admissible} (or in our case, if both admissibility and consistency are violated), the optimal path to a state might be discovered *after* the state has already been placed in the Closed Set. This necessitates the re-opening mechanism.
+        \item If $h(n)$ is only \textbf{admissible}, the optimal path to a state might be discovered after the state has already been placed in the Closed Set. This motivates the re-opening mechanism.
     \end{itemize}
 \end{itemize}
 

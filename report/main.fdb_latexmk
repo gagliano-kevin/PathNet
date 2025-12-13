@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1765561087.63794 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765561092.52295 0
+["pdflatex"] 1765664385.16267 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765664389.85307 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/kevin/Desktop/PathNet/report/main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -44,6 +44,7 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1248133631 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1248133631 32362 179c33bbf43f19adbb3825bb4e36e57a ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb" 1248133631 32734 69e00a6b65cedb993666e42eedb3d48f ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1248133631 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1248133631 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
@@ -151,10 +152,10 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1762526963.27681 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762527140 8214665 b63933ffebe73c8733810b8a3bee343b ""
-  "chapters/chapter_1.tex" 1765559380.9316 9866 566dca8bfa9f1df1a153dd32e701690c ""
-  "chapters/chapter_2.tex" 1765469633.14787 3816 d907b0f47d84074d84ad47077f2d2a3f ""
-  "chapters/chapter_3.tex" 1765561087.40938 13298 bdf62583d9d8ba827b94bc537d4857fb ""
-  "chapters/chapter_4.tex" 1763060547.32855 49663 2885e4ebe91ce2fe4a3650caee9161b4 ""
+  "chapters/chapter_1.tex" 1765660919.88201 9741 888c8db4b09844d78a7d871d29b52f08 ""
+  "chapters/chapter_2.tex" 1765661082.95809 3783 b5ec3c2751e128cab1dafee875960f10 ""
+  "chapters/chapter_3.tex" 1765663791.56675 13424 45ad7c2680444afb4353bdc85693f4b4 ""
+  "chapters/chapter_4.tex" 1765664384.83885 49358 8e27437ceee3cba27c503925e1c6aaf6 ""
   "chapters/conclusions.tex" 1763307000.47835 8286 aed6974cb930a666a939978395341b45 ""
   "figures/LOGO_UNISI_VERTICALE_NERO_0.pdf" 1762523336 317420 0fd7c19e2c74e4b82b58ccf968648f7e ""
   "figures/circle_tests/circle_final_loss_boxplot_1k.png" 1762978646.75432 31169 bd5ca0c019d441988a0bba17ce07bbc8 ""
@@ -176,10 +177,10 @@
   "figures/sine_tests/sine_test_parameter_range_loss_trend.png" 1762523336 347964 c8fea3cad910ff7849f510919af012a3 ""
   "figures/sine_tests/sine_test_quantization_factor_loss_trend.png" 1762523336 308171 9577e9c88b2fd5792e1a6925fa354a8e ""
   "figures/sine_tests/sine_test_target_loss_loss_trend.png" 1762523336 333062 49095538fc2fc72d97a8f7367eab7ab0 ""
-  "main.aux" 1765561092.42438 17428 a61fd2d1a54bb2a9c16285ad1913febc "pdflatex"
+  "main.aux" 1765664389.75715 17395 0a021c6e93fe7c6cdf21f46b72d98503 "pdflatex"
   "main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
-  "main.toc" 1765561092.42638 5605 368682183560dd1ef714de280154fdeb "pdflatex"
-  "title.tex" 1762523336 751 5b1fd8077fc72f04cc940e5361bf7352 ""
+  "main.toc" 1765664389.75968 5572 488933751cf37c3a9815242db03e744a "pdflatex"
+  "title.tex" 1765663071.03744 760 0e726c8938c8ad23e21e7c6dc3b81bd8 ""
   (generated)
   "main.aux"
   "main.log"

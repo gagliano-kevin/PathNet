@@ -3,7 +3,7 @@
 
 This report conducts a comparative analysis of two optimization methodologies, focusing on their respective strengths and weaknesses. 
 
-The adaptation of A* from a simple pathfinding tool to a machine learning optimization technique, as explored in this report, requires careful consideration of the state space, the definition of the path cost $g(n)$, and the design of an effective, possibly admissible heuristic $h(n)$. The primary objective of this study is to analyze a novel approach using A* search principles, experimentally comparing its performance and behavior against the well-established optimization methodology of Gradient Descent. Furthermore, a crucial element of this comparison involves a detailed investigation into the A* framework's sensitivity to its core parameters; a systematic hyperparameter finetuning process has been performed to understand their influence on achieving superior performance.
+The primary objective of this study is to analyze a novel approach using A* search principles, experimentally comparing its performance and behavior against the well-established optimization methodology of Gradient Descent. Furthermore, a crucial element of this comparison involves a detailed investigation into the A* framework's sensitivity to its core parameters; a systematic hyperparameter finetuning process has been performed to understand their influence on achieving superior performance.
 
 \section{Experimental Methodology}
 \label{sec:experimental_methodology}
@@ -31,7 +31,7 @@ The key hyperparameters subjected to optimization were:
 \end{itemize}
 
 \subsubsection{Stage 2: A* Training with Optimal Configuration}
-The best-performing hyperparameter set from Stage 1 was selected and used to train the final MLP model. This training run recorded the total number of node expansions, the path taken (sequence of weight states), and the overall wall-clock time required for convergence to $L_{\text{target}}$.
+The best-performing hyperparameter set from Stage 1 was selected and used to train the final MLP model. This training run recorded the total number of node expansions, the path taken (sequence of weight states), and the overall wall-clock time required for the optimization.
 
 \subsubsection{Stage 3: Backpropagation Baseline and Comparison}
 The A* performance was compared against the standard Stochastic Gradient Descent algorithm with Backpropagation. For a fair comparison, the SGD baseline was trained using its own optimal learning rate ($\eta$) derived from preliminary tuning. The final comparison focused on three critical metrics:

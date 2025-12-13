@@ -15,7 +15,7 @@ $$w_{i, \text{quantized}} = \text{round}(w_i \cdot Q) / Q$$
 The number of potential discrete weight configurations defines the size of the search space. To manage the complexity and avoid instability, the parameters are constrained to a defined numerical range $[\text{min\_range}, \text{max\_range}]$.
 
 The total number of possible states is: 
-$$[\text{Q} (\text{min\_range} + \text{max\_range}) + 1]^{\text{\# network parameters}}$$
+$$[\text{Q} (\text{min\_range} + \text{max\_range}) + 1]^{N_{\text{params}}}$$
 
 \subsection{State Representation and Hashing}
 In the A* implementation, the efficacy of the algorithm relies on quickly checking if a particular weight configuration has been visited before, or if a better path to that configuration has been found. This requires a unique, hashable identifier for each state.
@@ -38,6 +38,8 @@ The edges of the search graph are defined by the allowed transitions between wei
 
 A neighbor state $s$ is generated from the current state $n$ by modifying the value of a single scalar weight by exactly one quantization step ($\Delta w = \pm 1/Q$). The size of the neighborhood, i.e. the total number of neighbors generated for state $n$ is controlled by the parameter $\text{param\_fraction} \in (0, 1)$, which determines the percentage of the total network parameters that are randomly selected to undergo this modification and become a new neighbor state.
 $$\text{Transition Rule: } w_{i, s} = w_{i, n} \pm 1/Q$$
+$$N_{\text{neighbors}} = 2 \cdot p_{\text{fraction}} \cdot N_{\text{params}}$$
+
 
 This rule ensures that the search space is explored methodically and step-by-step, where the entire training process becomes a controlled traversal of the weight space one minimal adjustment at a time.
 
@@ -55,7 +57,11 @@ This heuristic serves as the primary driver of the search, prioritizing configur
 \subsection{Path Cost $g(n)$: Accumulated Iterative Cost}
 The cost-to-come, $g(n)$, represents the cost of the path taken from the initial weight configuration to the current node $n$. In this context, it represents the total effort expended in terms of the number of weight updates.
 
-The cost of each transition (edge) is treated as a uniform constant, $\Delta g$, where $\Delta g$ is calculated based on the initial loss, target loss and the maximum allowed iterations ($\Delta g = (L_{\text{initial}} - L_{\text{target}}) / I_{\text{max}}$). The total path cost is:
+The cost of each transition (edge) is treated as a uniform constant, $\Delta g$, where $\Delta g$ is calculated based on the initial loss, target loss and the maximum allowed iterations:
+
+$$\Delta g = (L_{\text{initial}} - L_{\text{target}}) / I_{\text{max}}$$
+
+The total path cost is:
 
 $$g(n) = g(\text{parent}) + \Delta g$$
 
@@ -110,7 +116,7 @@ $$\Delta L \ge -\Delta g$$
 
 \noindent The consistency requirement dictates that the change in loss from one step to the next ($\Delta L$) must not be a reduction greater than the fixed transition cost $\Delta g$.
 
-\noindent \textbf{Analysis of Consistency Violation:}
+\noindent \textbf{Analysis of Consistency Violation}
 
 The consistency condition is highly unlikely to be met and is generally violated in this framework due to two primary scenarios arising from the non-convex loss landscape:
 
@@ -122,7 +128,9 @@ The consistency condition is highly unlikely to be met and is generally violated
     If the weight modification moves the network into a higher-loss region, then $L(n') > L(n)$, meaning $\Delta L > 0$. Since $\Delta g$ is a positive constant, $\Delta L \ge -\Delta g$ is satisfied in this case. However, this scenario leads to a different type of problem: it demonstrates that the successor $n'$ has a higher $h$-value than $n$, and since $\Delta g$ is positive, it can create a path where $f(n') > f(n)$, forcing the algorithm to backtrack, which is the very situation consistency is meant to manage.
 \end{enumerate}
 
-\noindent \textbf{Conclusion on Consistency:} Since the cost $\Delta g$ is a fixed constant and the change in loss $\Delta L$ is highly variable and often non-monotonic in a neural network, the consistency property cannot be guaranteed. A single transition can easily cause the optimal cost-to-go estimate to drop by more than $\Delta g$ (Scenario 1), or increase, which requires the Graph Search A* implementation (using both Open and Closed Sets) with the ability to re-open nodes to ensure the optimal path is located.
+\noindent \textbf{Conclusion on Consistency} 
+
+Since the cost $\Delta g$ is a fixed constant and the change in loss $\Delta L$ is highly variable and often non-monotonic in a neural network, the consistency property cannot be guaranteed. A single transition can easily cause the optimal cost-to-go estimate to drop by more than $\Delta g$ (Scenario 1), or increase, which requires the Graph Search A* implementation (using both Open and Closed Sets, with the ability to re-open nodes) to ensure the optimal path is located.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -152,7 +160,7 @@ The core training logic is contained within the \texttt{Trainer} class, which ma
     \item \textbf{Optimality Check:} Before expanding the node, the current path cost $g(n)$ is checked against the minimum cost previously recorded for that state in \texttt{g\_costs} to ensure that A* always processes the optimal path to a given state first.
     \item \textbf{Expansion:} Neighbors are generated by the transition rule ($\pm 1/Q$ change to a weight subset).
     \item \textbf{Cost Update:} For each neighbor, the new $g$ and $h$ values are calculated. If the new path to the neighbor results in a lower cost-to-come ($g_{\text{new}} < g_{\text{old}}$), the neighbor is either updated in the search space or added to the \texttt{open\_set}.
-    \item \textbf{Termination:} The search terminates when the best node retrieved from the \texttt{open\_set} satisfies the goal condition ($h(n) \le 0$).
+    \item \textbf{Termination:} The search terminates when either the best node retrieved from the \texttt{open\_set} satisfies the goal condition ($h(n) \le 0$) or the maximum number of iterations is reached.
 \end{enumerate}
 
 This framework provides a global, informed search mechanism for MLP training, aiming to overcome the local minimum issues inherent in traditional gradient-based methods like Backpropagation.

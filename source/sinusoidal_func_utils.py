@@ -97,7 +97,7 @@ def plot_sine_predictions(test_x_np: np.ndarray,
     plt.savefig(filename)
 
 
-def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, iterations, filename="mean_loss_comparison_with_std.png"):
+def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, filename="mean_loss_comparison_with_std.png"):
     """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
     
     # Create an array of iteration numbers

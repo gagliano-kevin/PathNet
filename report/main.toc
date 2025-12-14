@@ -44,22 +44,22 @@
 \contentsline {section}{\numberline {4.2}Synthetic Dataset: One-Dimensional Sine Function Regression}{19}{}%
 \contentsline {subsection}{\numberline {4.2.1}Dataset Generation and Objective}{19}{}%
 \contentsline {subsection}{\numberline {4.2.2}Stage 1: Grid Search Findings}{20}{}%
-\contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{29}{}%
-\contentsline {subsection}{\numberline {4.2.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{30}{}%
-\contentsline {subsection}{\numberline {4.2.5}Comparison with Gradient Descent: $I_{\text {max}} = 5,000$}{34}{}%
-\contentsline {section}{\numberline {4.3}Classic Dataset: Iris Flower Classification}{37}{}%
-\contentsline {subsection}{\numberline {4.3.1}Dataset and Objective}{37}{}%
-\contentsline {subsection}{\numberline {4.3.2}Stage 1: Optimal Hyperparameters}{37}{}%
-\contentsline {subsection}{\numberline {4.3.3}Stage 2 \& 3: Training and Comparative Analysis}{38}{}%
-\contentsline {subsection}{\numberline {4.3.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{38}{}%
-\contentsline {subsection}{\numberline {4.3.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{41}{}%
-\contentsline {section}{\numberline {4.4}Non-Linear Dataset: Concentric Circles Classification}{44}{}%
-\contentsline {subsection}{\numberline {4.4.1}Dataset Generation and Objective}{44}{}%
-\contentsline {subsection}{\numberline {4.4.2}Stage 1: Optimal Hyperparameters}{45}{}%
-\contentsline {subsection}{\numberline {4.4.3}Stage 2 \& 3: Training and Comparative Analysis}{45}{}%
-\contentsline {subsection}{\numberline {4.4.4}Comparison with Gradient Descent: $I_{\text {max}} = 1000$}{46}{}%
-\contentsline {subsection}{\numberline {4.4.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{48}{}%
-\contentsline {section}{\numberline {4.5}Conclusion and Future Work}{52}{}%
-\contentsline {subsection}{\numberline {4.5.1}Summary of A* Framework Performance}{52}{}%
-\contentsline {subsection}{\numberline {4.5.2}Summary of Comparative Findings}{54}{}%
-\contentsline {subsection}{\numberline {4.5.3}Future Work}{54}{}%
+\contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{30}{}%
+\contentsline {subsection}{\numberline {4.2.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{31}{}%
+\contentsline {subsection}{\numberline {4.2.5}Comparison with Gradient Descent: $I_{\text {max}} = 5,000$}{35}{}%
+\contentsline {section}{\numberline {4.3}Classic Dataset: Iris Flower Classification}{38}{}%
+\contentsline {subsection}{\numberline {4.3.1}Dataset and Objective}{38}{}%
+\contentsline {subsection}{\numberline {4.3.2}Stage 1: Optimal Hyperparameters}{38}{}%
+\contentsline {subsection}{\numberline {4.3.3}Stage 2 \& 3: Training and Comparative Analysis}{39}{}%
+\contentsline {subsection}{\numberline {4.3.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{39}{}%
+\contentsline {subsection}{\numberline {4.3.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{42}{}%
+\contentsline {section}{\numberline {4.4}Non-Linear Dataset: Concentric Circles Classification}{45}{}%
+\contentsline {subsection}{\numberline {4.4.1}Dataset Generation and Objective}{45}{}%
+\contentsline {subsection}{\numberline {4.4.2}Stage 1: Optimal Hyperparameters}{46}{}%
+\contentsline {subsection}{\numberline {4.4.3}Stage 2 \& 3: Training and Comparative Analysis}{46}{}%
+\contentsline {subsection}{\numberline {4.4.4}Comparison with Gradient Descent: $I_{\text {max}} = 1000$}{47}{}%
+\contentsline {subsection}{\numberline {4.4.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,500$}{49}{}%
+\contentsline {section}{\numberline {4.5}Conclusion and Future Work}{53}{}%
+\contentsline {subsection}{\numberline {4.5.1}Summary of A* Framework Performance}{53}{}%
+\contentsline {subsection}{\numberline {4.5.2}Summary of Comparative Findings}{55}{}%
+\contentsline {subsection}{\numberline {4.5.3}Future Work}{55}{}%

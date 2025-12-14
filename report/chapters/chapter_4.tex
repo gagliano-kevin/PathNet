@@ -187,7 +187,15 @@ $[-5,5]$  & 433.9 & 0.369744 \\
 
 \noindent \textbf{Influence of the Target Loss ($L_{\text{target}}$)}
 
-\noindent This experiment investigated the impact of the target loss value, $L_{\text{target}}$, which is intrinsically linked to the $g(n)$ path cost formulation ($g(n) = (L_{\text{initial}} / I_{\text{max}}) \times k$). Three distinct target values were tested: $L_{\text{target}} \in \{0.1, 0.01, 0.001\}$.
+\noindent This experiment investigated the impact of the target loss value, $L_{\text{target}}$, which is intrinsically linked to the $g(n)$ path cost formulation:
+
+\begin{equation}
+    g(n) = \left( \frac{L_{\text{initial}} - L_{\text{target}}}{I_{\text{max}}} \right) \times k
+\end{equation}
+
+where $k$ is the number of expansions (or steps) from the start node to the current node $n$.
+
+Three distinct target values were tested: $L_{\text{target}} \in \{0.1, 0.01, 0.001\}$.
 
 \noindent As demonstrated in the figure below, the variation of the target loss across these three orders of magnitude had no practically significant effect on the terminal loss achieved by the search algorithm. Every configuration converged to a statistically similar minimum loss value. This finding suggests that while the target loss is a component in the heuristic $h(n)$ (where $h(n) = L(n) - L_{\text{target}}$), the absolute value chosen within this tested range does not critically influence the overall search trajectory or the final solution quality. The primary guidance remains dictated by the current loss $L(n)$, and the target is simply a lower bound reference that does not alter the relative priorities between nodes during the search.
 \begin{center}
@@ -221,7 +229,7 @@ $[-5,5]$  & 433.9 & 0.369744 \\
 
 \noindent \textbf{Effect of Maximum Iterations ($I_{\text{max}}$)}
 
-\noindent The final parameter evaluated was the maximum number of search iterations ($I_{\text{max}}$), testing the values $1,000$, $5,000$, and $10,000$. This parameter directly governs the computational budget and is critically linked to the $g(n)$ path cost component via the $\Delta g$ step size: $\Delta g = L_{\text{initial}} / I_{\text{max}}$.
+\noindent The final parameter evaluated was the maximum number of search iterations ($I_{\text{max}}$), testing the values $1,000$, $5,000$, and $10,000$. This parameter directly governs the computational budget and is critically linked to the $g(n)$ path cost component via the $\Delta g$ step size: $\Delta g = ( L_{\text{initial}} - L_{\text{target}} )/ I_{\text{max}}$.
 
 \noindent As demonstrated in the figure below, the results indicate a clear optimum: the shortest search duration of $I_{\text{max}}=1,000$ iterations led to the best overall performance. This configuration achieved both the lowest average terminal loss (substantially smaller than the losses obtained with $5,000$ and $10,000$) and the smallest training time (measured in seconds).
 
@@ -268,12 +276,12 @@ $[-5,5]$  & 433.9 & 0.369744 \\
 
 \noindent \textbf{Mean Loss with Standard Deviation Shading}
 
-\noindent This is the most informative plot for evaluating time-series performance and convergence dynamics. The solid line represents the average loss ($\bar{L}$) across all ten runs at every iteration, clearly demonstrating which method achieves faster convergence or reaches a lower loss plateau on average.
+\noindent The solid line represents the average loss ($\bar{L}$) across all ten runs at every iteration, clearly demonstrating which method achieves faster convergence or reaches a lower loss plateau on average.
 
 \noindent \textbf{Interpretation of Variability (Standard Deviation $\pm 1\sigma$):} The shaded area surrounding the mean line represents the standard deviation ($\pm 1\sigma$) of the loss at each iteration. This is a crucial measure of an algorithm's consistency and robustness.
 \begin{itemize}
     \item A narrow shaded band means the method is highly consistent, its performance is reliable and typically near the average, regardless of the random initial weights.
-    \item A wide shaded band means the method is volatile ($\sigma$ is large) and highly dependent on the random initialization. A wide band often signals that the algorithm frequently "gets stuck" in poor local minima or conversely, occasionally "hits a jackpot" solution.
+    \item A wide shaded band means the method is volatile ($\sigma$ is large) and highly dependent on the random initialization. A wide band often signals that the algorithm frequently gets stuck in poor local minima or conversely, occasionally finds good solutions.
 \end{itemize}
 
 \noindent \textbf{Final Loss Box Plot}

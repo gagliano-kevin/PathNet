@@ -91,7 +91,7 @@ The Tree Search variant treats every path to a state as a unique node in the sea
 \begin{itemize}
     \item \textbf{Mechanism:} Does not utilize a Closed Set. A node is generated and expanded without checking if an identical state has been reached previously via a different path.
     \item \textbf{Efficiency:} Avoiding the memory overhead of the Closed Set, leads to the redundant expansion of identical states, severely impacting time efficiency, especially in graphs with many cycles or alternative routes.
-    \item \textbf{Optimality:} Only guaranteed if the graph is a tree (no repeated states), or if the memory consumption of the Closed Set is an absolute bottleneck.
+    \item \textbf{Optimality:} Only guaranteed if and only if the heuristic function $h(n)$ is admissible.
 \end{itemize}
 
 

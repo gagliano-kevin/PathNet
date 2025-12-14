@@ -125,12 +125,9 @@ The consistency condition is highly unlikely to be met and is generally violated
     If a minimal weight modification (costing $\Delta g$) results in a rapid descent on the loss landscape, the loss can decrease significantly: $L(n') \ll L(n)$.
     If the absolute magnitude of this loss reduction $(L(n) - L(n'))$ is greater than the fixed, small cost $\Delta g$, then $\Delta L < -\Delta g$, and the consistency condition fails.
     \item \textbf{Loss Increase ($\Delta L > 0$):}
-    If the weight modification moves the network into a higher-loss region, then $L(n') > L(n)$, meaning $\Delta L > 0$. Since $\Delta g$ is a positive constant, $\Delta L \ge -\Delta g$ is satisfied in this case. However, this scenario leads to a different type of problem: it demonstrates that the successor $n'$ has a higher $h$-value than $n$, and since $\Delta g$ is positive, it can create a path where $f(n') > f(n)$, forcing the algorithm to backtrack, which is the very situation consistency is meant to manage.
+    If the weight modification moves the network into a higher-loss region, then $L(n') > L(n)$, meaning $\Delta L > 0$. Since $\Delta g$ is a positive constant, $\Delta L \ge -\Delta g$ is satisfied in this case. However, this scenario leads to a different type of problem: it demonstrates that the successor $n'$ has a higher $h$-value than $n$, and since $\Delta g$ is positive, it can create a path where $f(n') > f(n)$, leading to a worsening step.
 \end{enumerate}
 
-\noindent \textbf{Conclusion on Consistency} 
-
-Since the cost $\Delta g$ is a fixed constant and the change in loss $\Delta L$ is highly variable and often non-monotonic in a neural network, the consistency property cannot be guaranteed. A single transition can easily cause the optimal cost-to-go estimate to drop by more than $\Delta g$ (Scenario 1), or increase, which requires the Graph Search A* implementation (using both Open and Closed Sets, with the ability to re-open nodes) to ensure the optimal path is located.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

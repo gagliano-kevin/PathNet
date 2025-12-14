@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\geometry{a4paper, margin=1in}
+
+\title{Mathematical Summary of A* Search for Quantized MLP Optimization}
+\author{Analysis of Parameter Update Strategies and Cost Functions}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides a mathematical summary of the A* search algorithm components—specifically the cost functions and parameter update strategies—used to optimize a Quantized Multi-Layer Perceptron (MLP). The optimization seeks to find an optimal set of discrete, quantized weights by navigating a finite search space.
+\end{abstract}
+
+\section{A* Search Cost Components}
+
+The A* algorithm evaluates nodes $n$ in the search space using a total estimated cost function $f(n)$, which is typically a combination of the cost-to-come $g(n)$ and the heuristic cost-to-go $h(n)$.
+
+\subsection{Heuristic Cost (Cost-to-Go), $h(n)$}
+The heuristic $h(n)$ represents the estimated cost from the current state (node $n$) to the goal state. In this context, $h(n)$ is defined as the **model's loss** on the training data $(X, Y)$:
+$$h(n) = \text{Loss}(\text{MLP}_n(X), Y)$$
+where $\text{MLP}_n$ is the Quantized MLP model associated with node $n$, and $\text{Loss}$ is the chosen loss function (e.g., Mean Squared Error).
+
+\subsection{Cost-to-Come, $g(n)$}
+The cost-to-come $g(n)$ is the accumulated actual cost from the initial state $n_0$ to the current state $n$. For a transition from a parent node $n_{parent}$ to a neighbor node $n$, the cost is updated by a step cost $\Delta g$:
+$$g(n) = g(n_{parent}) + \Delta g(n_{parent} \to n)$$
+The initial cost is $g(n_0) = g_{\text{ini}}$, where $g_{\text{ini}} = \text{self.g\_initial\_value}$. The step cost $\Delta g$ is dependent on the chosen update strategy.
+
+\subsection{Total Estimated Cost, $f(n)$}
+The total estimated cost $f(n)$ is calculated based on $g(n)$ and $h(n)$, and may incorporate a scaling factor to dynamically adjust the influence of $g$ versus $h$. Let $T_L = \text{self.target\_loss}$ be the target loss.
+
+\subsubsection{Standard A* or Unscaled $f$}
+If $\text{self.update\_strategy} = 0$, or if $\text{self.scale\_f} = \text{False}$ (for strategies 1 and 2), the standard A* function is used:
+$$f(n) = g(n) + h(n)$$
+
+\subsubsection{Scaled $f$ (for Strategies 1 and 2 with $\text{self.scale\_f}=\text{True}$)}
+If a scaling factor is applied, the cost-to-come $g(n)$ is scaled by a term that depends on the current loss $h(n)$ relative to the target loss $T_L$. This essentially prioritizes nodes with a loss close to the target.
+$$f(n) = \max\left(0, 1 - \frac{T_L}{h(n)}\right) g(n) + h(n)$$
+
+\section{Update Strategies for Step Cost $\Delta g$}
+
+The step cost $\Delta g(n_{parent} \to n)$ for moving from a parent node $n_{parent}$ to a neighbor node $n$ depends on the parameter $\text{self.update\_strategy}$.
+
+Let $h_{parent} = h(n_{parent})$ and $h = h(n)$. Let $h_0$ be the loss of the initial node.
+\begin{itemize}
+    \item $C = \text{initial\_node.quantized\_mlp.possible\_congigurations}$: Total number of possible quantized weight configurations.
+    \item $M = \text{self.max\_iterations}$: Maximum number of search iterations.
+    \item $\alpha = \text{self.alpha}$: Mixing factor ($0 \le \alpha \le 1$).
+    \item $g_{\text{step}} = \text{self.g\_step}$: A constant step value.
+    \item $k = \text{iteration} + 1$: Current iteration index.
+\end{itemize}
+
+\subsection{Strategy 0: Constant Step Size}
+The step cost is a fixed parameter:
+$$\Delta g = g_{\text{step}}$$
+
+\subsection{Strategy 1: Loss-Based Scaling (Log-Scale Configuration)}
+The step cost is scaled based on the relative change in loss from the parent node and the initial node. Note that $\log(C)$ implies the natural logarithm.
+$$\Delta g = \frac{1}{\ln(C)} \left( \alpha \frac{h}{h_{parent}} + (1-\alpha) \frac{h}{h_0} \right)$$
+
+\subsection{Strategy 2: Normalized Constant Step Size}
+The step cost is a small, constant fraction of the maximum allowed iterations:
+$$\Delta g = \frac{1}{M}$$
+
+\subsection{Strategy 3: Loss-Based Scaling with Iteration-Dependent Exponent}
+This strategy uses a complex scaling factor that is further modulated by the iteration number $k$ using a base-10 logarithm.
+$$\Delta g = \frac{1}{M \cdot \log_{10}(C)} \left( \alpha \frac{h}{h_{parent}} + (1-\alpha) \frac{h}{h_0} \right)^{\max(1, \log_{10}(k))}$$
+
+\section{Quantization and State Space}
+
+The search space is discrete, defined by the quantization of the model parameters.
+
+\subsection{Quantization Step}
+The quantization step $\delta$ is determined by the quantization factor $Q = \text{self.quantization\_factor}$:
+$$\delta = \frac{1}{Q}$$
+A weight $w$ is quantized to $w_q$ by rounding to the nearest multiple of $\delta$:
+$$w_q = \frac{\text{round}(w \cdot Q)}{Q}$$
+
+\subsection{Total Possible Configurations}
+The total number of possible quantized configurations, $C$, is used to normalize the step cost in Strategies 1 and 3. Let $P$ be the total number of scalar parameters and $r_{\max} = \text{self.parameter\_range}[1]$ be the maximum absolute parameter value (assuming a symmetric range). The number of possible values for a single parameter is $2 \cdot r_{\max} \cdot Q + 1$.
+$$C = (2 \cdot r_{\max} \cdot Q + 1)^P$$
+
+\end{document}

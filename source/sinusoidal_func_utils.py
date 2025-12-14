@@ -134,12 +134,12 @@ def plot_final_loss_distribution(astar_final_losses, grad_final_losses, filename
     
     plt.figure(figsize=(8, 6))
     
-    # FIX: medianprops must be a top-level keyword argument, separate from boxprops.
     plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
                 boxprops=dict(facecolor='lightblue'),
                 medianprops=dict(color='darkred'))
     
     # Add individual points (jitter) to show all run results
+    # Jittering is done by adding small random noise to x-coordinates of the points, this facilitates visualization avoiding overlap of same y values.
     for i, losses in enumerate(data):
         x = np.random.normal(i + 1, 0.04, size=len(losses)) 
         plt.scatter(x, losses, color='black', alpha=0.6, s=10)

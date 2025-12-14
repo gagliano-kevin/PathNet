@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1765664385.16267 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765664389.85307 0
+["pdflatex"] 1765706741.51705 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1765706746.29085 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/kevin/Desktop/PathNet/report/main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -155,7 +155,7 @@
   "chapters/chapter_1.tex" 1765660919.88201 9741 888c8db4b09844d78a7d871d29b52f08 ""
   "chapters/chapter_2.tex" 1765661082.95809 3783 b5ec3c2751e128cab1dafee875960f10 ""
   "chapters/chapter_3.tex" 1765663791.56675 13424 45ad7c2680444afb4353bdc85693f4b4 ""
-  "chapters/chapter_4.tex" 1765664384.83885 49358 8e27437ceee3cba27c503925e1c6aaf6 ""
+  "chapters/chapter_4.tex" 1765706741.26886 50776 fd45aeba222acd9a3fb593aaa16aab50 ""
   "chapters/conclusions.tex" 1763307000.47835 8286 aed6974cb930a666a939978395341b45 ""
   "figures/LOGO_UNISI_VERTICALE_NERO_0.pdf" 1762523336 317420 0fd7c19e2c74e4b82b58ccf968648f7e ""
   "figures/circle_tests/circle_final_loss_boxplot_1k.png" 1762978646.75432 31169 bd5ca0c019d441988a0bba17ce07bbc8 ""
@@ -177,9 +177,9 @@
   "figures/sine_tests/sine_test_parameter_range_loss_trend.png" 1762523336 347964 c8fea3cad910ff7849f510919af012a3 ""
   "figures/sine_tests/sine_test_quantization_factor_loss_trend.png" 1762523336 308171 9577e9c88b2fd5792e1a6925fa354a8e ""
   "figures/sine_tests/sine_test_target_loss_loss_trend.png" 1762523336 333062 49095538fc2fc72d97a8f7367eab7ab0 ""
-  "main.aux" 1765664389.75715 17395 0a021c6e93fe7c6cdf21f46b72d98503 "pdflatex"
+  "main.aux" 1765706746.19752 17395 0a021c6e93fe7c6cdf21f46b72d98503 "pdflatex"
   "main.tex" 1762705409.96541 1004 beea547bd588f45678990ed106f76d31 ""
-  "main.toc" 1765664389.75968 5572 488933751cf37c3a9815242db03e744a "pdflatex"
+  "main.toc" 1765706746.19992 5572 488933751cf37c3a9815242db03e744a "pdflatex"
   "title.tex" 1765663071.03744 760 0e726c8938c8ad23e21e7c6dc3b81bd8 ""
   (generated)
   "main.aux"

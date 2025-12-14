@@ -287,6 +287,25 @@ $[-5,5]$  & 433.9 & 0.369744 \\
     \item \textbf{Whiskers and Dots (Range and Outliers):} The whiskers show the full range of results (excluding outliers), and individual dots beyond the whiskers identify extreme outliers. These elements help to see how often a method results in a failed run or a single exceptional result.
 \end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   TO CHECK!!!!!     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent \textbf{Calculation of Whisker Range and Outliers}
+
+\noindent The length of the whiskers is not arbitrary; it is statistically determined by the data's central spread (the IQR) to identify extreme values (outliers).
+
+\begin{itemize}
+    \item \textbf{Interquartile Range (IQR):} This is the length of the box, calculated as $IQR = Q_3 - Q_1$.
+    \item \textbf{Whisker Boundaries:} The upper and lower whiskers extend to the most extreme data points that are no more than $\mathbf{1.5 \times IQR}$ away from the box edges. The boundaries are formally defined as:
+    $$
+    \text{Upper Bound} = Q_3 + 1.5 \times IQR
+    $$
+    $$
+    \text{Lower Bound} = Q_1 - 1.5 \times IQR
+    $$
+    \item \textbf{Outliers:} Any final loss value that falls outside these calculated bounds is considered an outlier and is plotted as an individual point (dot). In the context of loss, points above the upper whisker represent runs where the algorithm performed significantly worse than its typical operation.
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

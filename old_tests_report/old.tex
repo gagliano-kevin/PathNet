@@ -23,7 +23,7 @@ The A* algorithm evaluates nodes $n$ in the search space using a total estimated
 \subsection{Heuristic Cost (Cost-to-Go), $h(n)$}
 The heuristic $h(n)$ represents the estimated cost from the current state (node $n$) to the goal state. In this context, $h(n)$ is defined as the model's loss on the training data $(X, Y)$:
 $$h(n) = \text{Loss}(\text{MLP}_n(X), Y)$$
-where $\text{MLP}_n$ is the Quantized MLP model associated with node $n$, and $\text{Loss}$ is the chosen loss function.
+where $\text{MLP}_n$ is the Quantized MLP model associated with node $n$, $\text{Loss}$ is the chosen loss function and $T_L$ is the target loss.
 
 \subsection{Cost-to-Come, $g(n)$}
 The cost-to-come $g(n)$ is the accumulated actual cost from the initial state $n_0$ to the current state $n$. For a transition from a parent node $n_{parent}$ to a neighbor node $n$, the cost is updated by a step cost $\Delta g$:
@@ -34,10 +34,10 @@ The initial cost is $g(n_0) = g_{\text{ini}}$ and the step cost $\Delta g$ is de
 The total estimated cost $f(n)$ is calculated based on $g(n)$ and $h(n)$, and may incorporate a scaling factor to dynamically adjust the influence of $g$ versus $h$.
 
 \subsubsection{Standard A* (Unscaled $f$)}
-If $\text{update\_strategy} = 0$, or if $\text{scale\_f} = \text{False}$ (for strategies 1 and 2), the standard A* function is used:
+If $\text{update\_strategy} = 0$ the standard A* function is used:
 $$f(n) = g(n) + h(n)$$
 
-\subsubsection{Scaled $f$ (for Strategies 1, 2 and 3 with $\text{scale\_f}=\text{True}$)}
+\subsubsection{Scaled $f$ (for Strategies 1, 2 and 3)}
 If a scaling factor is applied, the cost-to-come $g(n)$ is scaled by a term that depends on the current loss $h(n)$ relative to the target loss $T_L$. This essentially prioritizes nodes with a loss close to the target.
 $$f(n) = \max\left(0, 1 - \frac{T_L}{h(n)}\right) g(n) + h(n)$$
 

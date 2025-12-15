@@ -58,6 +58,7 @@ def get_circle_data_tensors(n_samples=1000, noise_level=0.1, factor_level=0.5, r
     
     return X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor
 
+# UNUSED FUNCTION
 def pad_losses(losses_list, target_len):
     """Pads all loss histories in the list up to the target_len with NaN."""
     padded_array = np.full((len(losses_list), target_len), np.nan)

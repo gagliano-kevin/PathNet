@@ -73,6 +73,7 @@ print("\n\nparameter_list[1].data\n",parameter_list[1].data)
 #defining two kernels (or sliding windows) for demonstration
 weight_kernel = [2,2]  # 2D kernel of size 2x2 for weights
 bias_kernel = [2]      # 1D kernel of size 2 for biases
+stride = 1              # stride of 1, used to control overlap in sliding window
 
 # defining a small increment value
 delta_abs = 0.01         # small value to add for demonstration
@@ -82,25 +83,25 @@ parent_model = model
 parent_parameter_list = list(parent_model.parameters())
 
 #let's iterate over all parameters
-for tensor_index in range(len(parameter_list)):
+for tensor_index in range(len(parent_parameter_list)):
 
     print(f"\n\nOriginal Tensor at index {tensor_index}:\n", parent_parameter_list[tensor_index].data)
 
     for delta in [+delta_abs, -delta_abs]:
 
-        neighbor_model = deepcopy(parent_model)
-        neighbor_parameter_list = list(neighbor_model.parameters())
-        original_tensor = neighbor_parameter_list[tensor_index].data
+        parent_tensor = list(parent_model.parameters())[tensor_index].data
 
         #check if tensor is 2D (weights)
-        if len(original_tensor.shape) == 2:
+        if len(parent_tensor.shape) == 2:
             # check if the tensor is compatible with the weight kernel (has at least the size of the kernel)
-            if original_tensor.shape[0] >= weight_kernel[0] and original_tensor.shape[1] >= weight_kernel[1]:
-                print(f"\n\nProcessing 2D weight tensor at index {tensor_index} with shape {original_tensor.shape}")
+            if parent_tensor.shape[0] >= weight_kernel[0] and parent_tensor.shape[1] >= weight_kernel[1]:
+                print(f"\n\nProcessing 2D weight tensor at index {tensor_index} with shape {parent_tensor.shape}, using delta {delta}")
                 # sliding window over the tensor
-                for i in range(original_tensor.shape[0] - weight_kernel[0] + 1):
-                    for j in range(original_tensor.shape[1] - weight_kernel[1] + 1):
-                        window = original_tensor[i:i+weight_kernel[0], j:j+weight_kernel[1]]
+                for i in range(0, parent_tensor.shape[0] - weight_kernel[0] + 1, stride):
+                    for j in range(0, parent_tensor.shape[1] - weight_kernel[1] + 1, stride):
+                        neighbor_model = deepcopy(parent_model)
+                        target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                        window = target_tensor[i:i+weight_kernel[0], j:j+weight_kernel[1]]
                         print(f"Weight Window starting at ({i},{j}):")
                         print(window)
 
@@ -110,21 +111,25 @@ for tensor_index in range(len(parameter_list)):
                         print(window)
             # else the kernel is larger than the tensor itself and we take the whole tensor
             else:
-                print(f"\n\n2D weight tensor at index {tensor_index} is smaller than kernel, taking whole tensor:")
-                print(original_tensor)
+                print(f"\n\n2D weight tensor at index {tensor_index} is smaller than kernel, taking whole tensor using delta {delta}:")
+                neighbor_model = deepcopy(parent_model)
+                target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                print(target_tensor)
 
                 #adding a small delta to each element in the tensor for demonstration
-                original_tensor += delta
+                target_tensor += delta
                 print(f"Modified 2D weight tensor at index {tensor_index}:")
 
         # check if tensor is 1D (biases)
-        elif len(original_tensor.shape) == 1:
+        elif len(parent_tensor.shape) == 1:
             # check if the tensor is compatible with the bias kernel (has at least the size of the kernel)
-            if original_tensor.shape[0] >= bias_kernel[0]:
-                print(f"\n\nProcessing 1D bias tensor at index {tensor_index} with shape {original_tensor.shape}")
+            if parent_tensor.shape[0] >= bias_kernel[0]:
+                print(f"\n\nProcessing 1D bias tensor at index {tensor_index} with shape {parent_tensor.shape}, using delta {delta}")
                 # sliding window over the tensor
-                for i in range(original_tensor.shape[0] - bias_kernel[0] + 1):
-                    window = original_tensor[i:i+bias_kernel[0]]
+                for i in range(0, parent_tensor.shape[0] - bias_kernel[0] + 1, stride):
+                    neighbor_model = deepcopy(parent_model)
+                    target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                    window = target_tensor[i:i+bias_kernel[0]]
                     print(f"Bias Window starting at ({i}):")
                     print(window)
 
@@ -134,17 +139,19 @@ for tensor_index in range(len(parameter_list)):
                     print(window)
             # else the kernel is larger than the tensor itself and we take the whole tensor
             else:
-                print(f"\n\n1D bias tensor at index {tensor_index} is smaller than kernel, taking whole tensor:")
-                print(original_tensor)
+                print(f"\n\n1D bias tensor at index {tensor_index} is smaller than kernel, taking whole tensor using delta {delta}:")
+                neighbor_model = deepcopy(parent_model)
+                target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                print(target_tensor)
 
                 #adding a small delta to each element in the tensor for demonstration
-                original_tensor += delta
+                target_tensor += delta
                 print(f"Modified 1D bias tensor at index {tensor_index}:")
-                print(original_tensor)
+                print(target_tensor)
 
         else:
             #raise an error in the neighborhood generation process if tensor is neither 1D nor 2D
-            raise ValueError(f"Unsupported tensor shape at index {tensor_index}: {original_tensor.shape}. Only 1D and 2D tensors are supported.")
+            raise ValueError(f"Unsupported tensor shape at index {tensor_index}: {parent_tensor.shape}. Only 1D and 2D tensors are supported.")
 
 
 

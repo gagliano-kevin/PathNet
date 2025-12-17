@@ -104,87 +104,135 @@ class SearchNode:
     
 
 
-def get_neighbors(search_node, X, Y, quantization_factor=None, param_fraction=1):
-    """
-    Generates neighbors for the given search node by modifying a fraction (param_fraction) 
-    of scalar weights within every parameter tensor.
-    
-    Parameters:
-        search_node (SearchNode): The current search node containing the quantized MLP.
-        X (torch.Tensor): Input data for evaluation.
-        Y (torch.Tensor): Target labels for evaluation.
-        quantization_factor (int, optional): The quantization factor to use. If None, uses the parent's factor.
-        param_fraction (float): Fraction (p) of SCALAR WEIGHTS to modify within *each* parameter tensor.
+def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel = [2,2], bias_kernel = [2], stride=1):
 
-    Returns:
-        list: A list of tuples containing the neighbor MLP and its evaluation score.
-    """
     if quantization_factor is None:
         quantization_factor = search_node.quantized_mlp.quantization_factor
 
     neighbors = []
     parent_mlp = search_node.quantized_mlp
     parent_model = parent_mlp.model
-    
-    # Get the list of parameter tensors from the parent model
-    parent_parameters = list(parent_model.parameters())
+    parent_parameter_list = list(parent_model.parameters())
 
     with torch.no_grad():
-        # Iterate over each parameter tensor in the model
-        for tensor_idx in range(len(parent_parameters)):
-            
-            # Clone the original tensor data
-            original_data = parent_parameters[tensor_idx].data.clone()
-            
-            # Get the total number of scalar elements in the selected tensor
-            num_elements = original_data.numel()
-            
-            num_scalars_to_change = max(1, int(num_elements * param_fraction))
-            selected_scalar_indexes = random.sample(range(num_elements), num_scalars_to_change)
-            
-            # Iterate inside the selected tensor (layer parameters, weights or biases) in order to create neighbors by modifying selected scalars
-            for flat_scalar_idx in selected_scalar_indexes:
-                
-                # Get the scalar value at the chosen index
-                scalar_value = original_data.view(-1)[flat_scalar_idx].item()       
-                
-                for delta in [-(1 / quantization_factor), (1 / quantization_factor)]:
-                    
-                    # Boundary check - skip if the change would go out of bounds
-                    if (scalar_value == parent_mlp.parameter_range[0] and delta < 0) or \
-                       (scalar_value == parent_mlp.parameter_range[1] and delta > 0):
-                        continue
+        #let's iterate over all parameters
+        for tensor_index in range(len(parent_parameter_list)):
+            delta_abs = 1 / quantization_factor
+            for delta in [+delta_abs, -delta_abs]:
+                parent_tensor = list(parent_model.parameters())[tensor_index].data
 
-                    # Create a deep copy of the parent MLP to modify
-                    neighbor_mlp = deepcopy(parent_mlp)
-                    
-                    # Get the parameter tensor to modify
-                    tensor_to_modify = list(neighbor_mlp.model.parameters())[tensor_idx]
-                    
-                    # Clone the tensor data to modify
-                    new_tensor = tensor_to_modify.data.clone() 
-                    
-                    # Apply the delta to the specific index of the cloned tensor
-                    new_tensor.view(-1)[flat_scalar_idx] = scalar_value + delta
-                    
-                    # Update the parameter's data
-                    tensor_to_modify.data = new_tensor
-                    
-                    # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
-                    if quantization_factor is not None:
-                        neighbor_mlp.quantization_factor = quantization_factor
-                        neighbor_mlp.quantize()
+                # check if any overflow would occur
+                if (torch.any(parent_tensor == parent_mlp.parameter_range[0]) and delta < 0) or \
+                     (torch.any(parent_tensor == parent_mlp.parameter_range[1]) and delta > 0):
+                    continue
+
+                #check if tensor is 2D (weights)
+                if len(parent_tensor.shape) == 2:
+                    # check if the tensor is compatible with the weight kernel (has at least the size of the kernel)
+                    if parent_tensor.shape[0] >= weight_kernel[0] and parent_tensor.shape[1] >= weight_kernel[1]:
+                        # sliding window over the tensor
+                        for i in range(0, parent_tensor.shape[0] - weight_kernel[0] + 1, stride):
+                            for j in range(0, parent_tensor.shape[1] - weight_kernel[1] + 1, stride):
+                                neighbor_mlp = deepcopy(parent_mlp)
+                                neighbor_model = neighbor_mlp.model
+                                target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                                window = target_tensor[i:i+weight_kernel[0], j:j+weight_kernel[1]]
+                                #adding a small delta to each element in the window 
+                                window += delta
+
+                                # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                                if quantization_factor is not None:
+                                    neighbor_mlp.quantization_factor = quantization_factor
+                                    neighbor_mlp.quantize()
+                                else:
+                                    # Otherwise, only quantize the modified tensor
+                                    neighbor_mlp.quantize_tensor(tensor_index)
+                                
+                                if neighbor_mlp.overflow:
+                                    continue
+                                
+                                loss = neighbor_mlp.evaluate(X, Y)
+                                neighbors.append((neighbor_mlp, loss))
+
+
+                    # else the kernel is larger than the tensor itself and we take the whole tensor
                     else:
-                        # Otherwise, only quantize the modified tensor
-                        neighbor_mlp.quantize_tensor(tensor_idx)
-                    
-                    if neighbor_mlp.overflow:
-                        continue
-                    
-                    loss = neighbor_mlp.evaluate(X, Y)
-                    neighbors.append((neighbor_mlp, loss))
-                    
+                        neighbor_mlp = deepcopy(parent_mlp)
+                        neighbor_model = neighbor_mlp.model
+                        target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                        #adding a small delta to each element in the tensor 
+                        target_tensor += delta
+
+                        # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                        if quantization_factor is not None:
+                            neighbor_mlp.quantization_factor = quantization_factor
+                            neighbor_mlp.quantize()
+                        else:
+                            # Otherwise, only quantize the modified tensor
+                            neighbor_mlp.quantize_tensor(tensor_index)
+                        
+                        if neighbor_mlp.overflow:
+                            continue
+                        
+                        loss = neighbor_mlp.evaluate(X, Y)
+                        neighbors.append((neighbor_mlp, loss))
+
+                # check if tensor is 1D (biases)
+                elif len(parent_tensor.shape) == 1:
+                    # check if the tensor is compatible with the bias kernel (has at least the size of the kernel)
+                    if parent_tensor.shape[0] >= bias_kernel[0]:
+                        # sliding window over the tensor
+                        for i in range(0, parent_tensor.shape[0] - bias_kernel[0] + 1, stride):
+                            neighbor_mlp = deepcopy(parent_mlp)
+                            neighbor_model = neighbor_mlp.model
+                            target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                            window = target_tensor[i:i+bias_kernel[0]]
+                            #adding a small delta to each element in the window for demonstration
+                            window += delta
+
+                            # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                            if quantization_factor is not None:
+                                neighbor_mlp.quantization_factor = quantization_factor
+                                neighbor_mlp.quantize()
+                            else:
+                                # Otherwise, only quantize the modified tensor
+                                neighbor_mlp.quantize_tensor(tensor_index)
+                            
+                            if neighbor_mlp.overflow:
+                                continue
+                            
+                            loss = neighbor_mlp.evaluate(X, Y)
+                            neighbors.append((neighbor_mlp, loss))
+
+                    # else the kernel is larger than the tensor itself and we take the whole tensor
+                    else:
+                        neighbor_mlp = deepcopy(parent_mlp)
+                        neighbor_model = neighbor_mlp.model
+                        target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                        #adding a small delta to each element in the tensor for demonstration
+                        target_tensor += delta
+
+                        # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                        if quantization_factor is not None:
+                            neighbor_mlp.quantization_factor = quantization_factor
+                            neighbor_mlp.quantize()
+                        else:
+                            # Otherwise, only quantize the modified tensor
+                            neighbor_mlp.quantize_tensor(tensor_index)
+                        
+                        if neighbor_mlp.overflow:
+                            continue
+                        
+                        loss = neighbor_mlp.evaluate(X, Y)
+                        neighbors.append((neighbor_mlp, loss))
+
+                else:
+                    #raise an error in the neighborhood generation process if tensor is neither 1D nor 2D
+                    raise ValueError(f"Unsupported tensor shape at index {tensor_index}: {parent_tensor.shape}. Only 1D and 2D tensors are supported.")
+                
     return neighbors
+
+
 
 
 
@@ -192,13 +240,16 @@ class Trainer:
     """
     A class to train a quantized MLP model using an A* search algorithm.
     """
-    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, param_fraction=1, max_iterations=1000, log_freq=1000, measure_time=True):
+    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], stride=1, max_iterations=1000, log_freq=1000, measure_time=True):
         self.model = model          # nn.sequential model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
         self.parameter_range = parameter_range
         self.debug_mlp = debug_mlp
-        self.param_fraction = param_fraction
+
+        self.weight_kernel = weight_kernel
+        self.bias_kernel = bias_kernel
+        self.stride = stride
 
         self.max_iterations = max_iterations
         self.log_freq = log_freq
@@ -260,8 +311,8 @@ class Trainer:
 
             if (iteration + 1) % self.log_freq == 0:
                 print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
-
-            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.param_fraction)
+                
+            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.weight_kernel, self.bias_kernel, self.stride)
 
             for neighbor_mlp, neighbor_loss in neighbors:
                 if neighbor_mlp.overflow: continue

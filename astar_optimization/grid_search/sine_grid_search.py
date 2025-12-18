@@ -7,7 +7,9 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import matplotlib.pyplot as plt
 from source.sinusoidal_func_utils import generate_sinusoidal_tensor
+
 from source.PathNet import GridSearchTrainer
 
 
@@ -17,51 +19,20 @@ MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
 ITERATIONS = 100
 
+RUNS = 2
 
-X_train_tensor, y_train_tensor = generate_sinusoidal_tensor(func=torch.sin, num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
+LOG_FILE_ASTAR = "sine_model_astar_multiple_runs"
 
+X_train_tensor, y_train_tensor = generate_sinusoidal_tensor(num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
 
-xs_model = nn.Sequential(
-    nn.Linear(1, 4),  
-    nn.ReLU(),
-    nn.Linear(4, 4),
-    nn.ReLU(),
-    nn.Linear(4, 1),
-    nn.Tanh()
-    )
-
-s_model = nn.Sequential(
-    nn.Linear(1, 8),  
-    nn.ReLU(),
-    #nn.Tanh(),
-    nn.Linear(8, 8),
-    nn.ReLU(),
-    #nn.Tanh(),
-    nn.Linear(8, 1),
-    nn.Tanh()
-    )
-
-
-"""
-grid_search_trainer = GridSearchTrainer(
-    models=[xs_model, s_model],
-    loss_funcs=[nn.MSELoss()],
-    quantization_factors=[1, 10, 100],
-    parameter_ranges=[(-5, 5), (-10, 10)],
-    param_fractions=[0.5, 1.0],
-    #max_iterations=[1000, 3000],
-    max_iterations=[1000, 5000, 10000],
-    log_freq=[100],
-    target_losses=[0.001],
-    debug_mlps=True
-)
-
-#grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=False, log_filename='sine_grid_search_log.txt')
-
-grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_grid_search_log_test_01')
-
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_grid_search_log_test_01", metric="loss_history")
-"""
+model = nn.Sequential(
+        nn.Linear(1, 4),  
+        nn.ReLU(),
+        nn.Linear(4, 4),
+        nn.ReLU(),
+        nn.Linear(4, 1),
+        nn.Tanh()
+        )
 
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -70,38 +41,23 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_grid_search_log_te
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# FIXED PARAMETERS FOR ALL TESTS:
-# models=[xs_model, s_model],
-# loss_funcs=[nn.MSELoss()],
-# log_freq=[100],
-# debug_mlps=True
-
-# STANDARD PARAMETERS FOR ALL TESTS:
-# quantization_factors=[10],
-# parameter_ranges=[(-5, 5)],
-# param_fractions=[1.0],
-# max_iterations=[5000],
-# target_losses=[0.01]
-
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
 # TESTING ONLY MAX ITERATIONS PARAMETER: 1000, 5000, 10000
 
-grid_search_trainer = GridSearchTrainer(
-    models=[xs_model],
+"""grid_search_trainer = GridSearchTrainer(
+    models=[model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
-    parameter_ranges=[(-5, 5)],
-    param_fractions=[1.0],
-    max_iterations=[1000, 5000, 10000],
+    parameter_ranges=[(-10, 10)],
+    weight_kernels = [2,2], 
+    bias_kernels = [[2]], 
+    strides=[1], 
+    max_iterations=[10, 50, 100],
     log_freq=[100],
-    target_losses=[0.01],
     debug_mlps=True
 )
 
-grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_max_iterations')
+grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=RUNS, enable_training_history_logging=True, log_filename='sine_test_max_iterations')
 
 grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_max_iterations", metric="loss_history")
 
@@ -113,18 +69,19 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_max_iteration
 #TESTING ONLY QUANTIZATION FACTOR PARAMETER: 1, 10, 100
 
 grid_search_trainer = GridSearchTrainer(
-    models=[xs_model],
+    models=[model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[1, 10, 100],
-    parameter_ranges=[(-5, 5)],
-    param_fractions=[1.0],
-    max_iterations=[5000],
+    parameter_ranges=[(-10, 10)],
+    weight_kernels = [2,2], 
+    bias_kernels = [[2]], 
+    strides=[1], 
+    max_iterations=[ITERATIONS],
     log_freq=[100],
-    target_losses=[0.01],
     debug_mlps=True
 )
 
-grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_quantization_factor')
+grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_quantization_factor')
 
 grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_quantization_factor", metric="loss_history")
 
@@ -133,66 +90,47 @@ grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_quantization_
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-#TESTING ONLY PARAMETER RANGE PARAMETER: -3 to 3, -5 to 5, -10 to 10
+#TESTING ONLY PARAMETER RANGE PARAMETER: -5 to 5, -10 to 10 and -20 to 20
 
 grid_search_trainer = GridSearchTrainer(
-    models=[xs_model],
+    models=[model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
-    parameter_ranges=[(-3, 3), (-5, 5), (-10, 10)],
-    param_fractions=[1.0],
-    max_iterations=[5000],
+    parameter_ranges=[(-5, 5), (-10, 10), (-20, 20)],
+    weight_kernels = [2,2], 
+    bias_kernels = [[2]], 
+    strides=[1], 
+    max_iterations=[ITERATIONS],
     log_freq=[100],
-    target_losses=[0.01],
     debug_mlps=True
 )
 
-grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_parameter_range')
+grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_parameter_range')
 
 grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_parameter_range", metric="loss_history")
-
+"""
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-#TESTING ONLY PARAM FRACTION PARAMETER: 0.25, 0.5, 1.0
+#TESTING ONLY WEIGHT KERNEL SIZE 
+
 
 grid_search_trainer = GridSearchTrainer(
-    models=[xs_model],
+    models=[model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
-    parameter_ranges=[(-5, 5)],
-    param_fractions=[0.25, 0.5, 1.0],   
-    max_iterations=[5000],
+    parameter_ranges=[(-10, 10)],
+    weight_kernels = [[2,2], [3,3]], 
+    bias_kernels = [[2],[3]], 
+    strides=[1,2], 
+    max_iterations=[ITERATIONS],
     log_freq=[100],
-    target_losses=[0.01],
     debug_mlps=True
 )
 
-grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_param_fraction')
+grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=RUNS, enable_training_history_logging=True, log_filename='sine_test_kernel_stride')
 
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_param_fraction", metric="loss_history")
+grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_kernel_stride", metric="loss_history")
 
-
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-#TESTING ONLY TARGET LOSS PARAMETER: 0.1, 0.01, 0.001
-
-grid_search_trainer = GridSearchTrainer(
-    models=[xs_model],
-    loss_funcs=[nn.MSELoss()],
-    quantization_factors=[10],
-    parameter_ranges=[(-5, 5)],
-    param_fractions=[1.0],
-    max_iterations=[5000],
-    log_freq=[100],
-    target_losses=[0.1, 0.01, 0.001],
-    debug_mlps=True
-)
-
-grid_search_trainer.run_grid_search_logger(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_target_loss')
-
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_target_loss", metric="loss_history")

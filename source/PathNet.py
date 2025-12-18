@@ -445,7 +445,7 @@ class GridSearchTrainer:
     """
     A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
     """
-    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, weight_kernel = [2,2], bias_kernel = [2], stride=1, delta_abs = None, max_iterations=1000, log_freq=100, debug_mlps=True, measure_time=True):
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, weight_kernels, bias_kernels, strides, max_iterations, log_freq, delta_abs=[None], debug_mlps=True, measure_time=True):
        
         self.trainers_params = []
         self.grid_search_data = []
@@ -454,10 +454,10 @@ class GridSearchTrainer:
             for lf in loss_funcs:
                 for qf in quantization_factors:
                     for pr in parameter_ranges:
-                        for wk in [weight_kernel]:
-                            for bk in [bias_kernel]:
-                                for st in [stride]:
-                                    for da in [delta_abs]:
+                        for wk in weight_kernels:
+                            for bk in bias_kernels:
+                                for st in strides:
+                                    for da in delta_abs:
                                         for mi in max_iterations:
                                             for lfq in log_freq:
                                                 self.trainers_params.append((
@@ -588,7 +588,7 @@ class GridSearchTrainer:
                 hps = res['hyperparameters']
                 log_file.write(f"{i+1}. Loss: {res['metrics']['final_loss']:.6f}\n")
                 log_file.write(f"Model: {hps['model_type']}\n")
-                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, PF: {hps['param_fraction']}, Iter: {hps['max_iterations']}\n\n")
+                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}\n\n")
         
     
     

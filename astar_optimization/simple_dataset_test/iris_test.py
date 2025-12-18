@@ -7,7 +7,8 @@
 import torch
 import torch.nn as nn
 from source.PathNet import Trainer
-from source.iris_utils import get_iris_data_tensors, print_iris_data_info, plot_iris_losses
+from source.iris_utils import get_iris_data_tensors, print_iris_data_info
+from source.general_utils import plot_losses
 
 
 print_iris_data_info()
@@ -21,7 +22,9 @@ nn.ReLU(),
 nn.Linear(4, 3),
 ) 
 
-trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=200, log_freq=500, target_loss=0.0001)
+trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, \
+                  weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None, max_iterations=1000, log_freq=100, \
+                    measure_time=True, save_trained_model=False, model_name="iris_classification_model")
 
 trainer.train(X_train_tensor, y_train_tensor)
 
@@ -40,4 +43,4 @@ print(f"\n\nTest Accuracy: {accuracy * 100:.2f}%")
 losses = [trainer.loss_history]
 loss_labels = ["A-Star"]
 
-plot_iris_losses(losses, loss_labels)
+plot_losses(losses, loss_labels)

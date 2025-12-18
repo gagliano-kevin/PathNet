@@ -349,7 +349,7 @@ class Trainer:
 
     def plot_training_history(self, filename='astar_loss_plot.png'):
         """
-        Plots the loss (h), the total cost (f) and the cost per iteration over iterations and saves the plot to a file.
+        Plots the loss (h), the total cost (f) and the cost g per iteration over all the iterations and saves the plot to a file.
 
         Parameters:
             filename (str): The name of the file to save the plot.

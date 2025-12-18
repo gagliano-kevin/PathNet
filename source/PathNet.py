@@ -445,82 +445,38 @@ class GridSearchTrainer:
     """
     A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
     """
-    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, param_fractions, max_iterations, log_freq, debug_mlps=True, measure_time=True):
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, weight_kernel = [2,2], bias_kernel = [2], stride=1, delta_abs = None, max_iterations=1000, log_freq=100, debug_mlps=True, measure_time=True):
+       
         self.trainers_params = []
+        self.grid_search_data = []
+
         for i in range(len(models)):
             for lf in loss_funcs:
                 for qf in quantization_factors:
                     for pr in parameter_ranges:
-                        for pf in param_fractions:
-                            for mi in max_iterations:
-                                for lfq in log_freq:
-                                    self.trainers_params.append((
-                                        models[i],
-                                        lf,
-                                        qf,
-                                        pr,
-                                        debug_mlps,
-                                        pf,
-                                        mi,
-                                        lfq,
-                                        measure_time
-                                    ))
-
-    def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=False, log_filename='grid_search_log.txt',):
-        """
-        Runs the grid search over all trainer configurations and logs the results.
-
-        Parameters:
-            X (torch.Tensor): Input data for training.
-            Y (torch.Tensor): Target labels for training.
-            log_filename (str): Filename to log the training results.
-        """
-
-        sorted_final_losses = []
-
-        with open(log_filename, 'w') as log_file:
-            log_file.write("=" * 32 + "\n")
-            log_file.write("\tGrid Search Training Log\n")
-            log_file.write("=" * 32 + "\n\n")
-
-        for param_config in self.trainers_params:
-            for run in range(runs_per_config):
-                trainer = Trainer(
-                    model=param_config[0],
-                    loss_fn=param_config[1],
-                    quantization_factor=param_config[2],
-                    parameter_range=param_config[3],
-                    debug_mlp=param_config[4],
-                    param_fraction=param_config[5],
-                    max_iterations=param_config[6],
-                    log_freq=param_config[7],
-                    measure_time=param_config[8]
-                )
-                print(f"(Run {run}) - Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}\n\n")
-                print(f"Model: {str(trainer.model)}\n")
-                with open(log_filename, 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}\n\n")
-                    log_file.write(f"Model: {str(trainer.model)}\n\n")
-                trainer.train(X, Y)
-                heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [str(trainer.model), trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations]))
-                if enable_training_history_logging: trainer.log_to_file(log_filename)
-                print(f"(Run {run}) - Training completed.\n\n")
-                with open(log_filename, 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val}\n")
-                    log_file.write(f"(Run {run}) - Training Time: {trainer.training_times[-1]:.4f} seconds\n")
-                    log_file.write(f"\n(Run {run}) - Training completed.\n\n")
-                    log_file.write("-" * 150 + "\n\n")
-
-        with open(log_filename, 'a') as log_file:
-            log_file.write("Sorted Final Losses from Grid Search:\n")
-            log_file.write("Final Loss\t\t\t\t\tParameters: [Model, Quantization Factor, Parameter Range, Param Fraction, Max Iterations]\n")
-            while sorted_final_losses:
-                loss, params = heapq.heappop(sorted_final_losses)
-                log_file.write(f"{loss}\t\t\t{params}\n")
+                        for wk in [weight_kernel]:
+                            for bk in [bias_kernel]:
+                                for st in [stride]:
+                                    for da in [delta_abs]:
+                                        for mi in max_iterations:
+                                            for lfq in log_freq:
+                                                self.trainers_params.append((
+                                                    models[i],
+                                                    lf,
+                                                    qf,
+                                                    pr,
+                                                    debug_mlps,
+                                                    wk,
+                                                    bk,
+                                                    st,
+                                                    da,
+                                                    mi,
+                                                    lfq,
+                                                    measure_time
+                                                ))
 
 
-
-    def run_grid_search_logger(self, X, Y, runs_per_config=1, enable_training_history_logging=True, log_filename='grid_search_results'):
+    def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=True, log_filename='grid_search_results', save_models=False):
         """
         Runs the grid search over all trainer configurations and logs the results to a JSON file.
 
@@ -532,9 +488,6 @@ class GridSearchTrainer:
         Returns:
             list: The list of results dictionaries.
         """
-        
-        # List to hold all dictionary results
-        grid_search_results = []
 
         with open(log_filename + '.txt', 'w') as log_file:
             log_file.write("=" * 32 + "\n")
@@ -546,14 +499,17 @@ class GridSearchTrainer:
         print("=" * 50)
         
         for config_index, param_config in enumerate(self.trainers_params):
-            (model_class, loss_fn, qf, pr, debug_mlp, pf, mi, lfq, measure_time) = param_config
+            (model_class, loss_fn, qf, pr, debug_mlp, wk, bk, st, da, mi, lfq, measure_time) = param_config
             
             hyperparams_dict = {
                 "model_type": str(model_class),
                 "loss_fn": str(loss_fn),
                 "quantization_factor": qf,
                 "parameter_range": pr,
-                "param_fraction": pf,
+                "weight_kernel": wk,
+                "bias_kernel": bk,
+                "stride": st,
+                "delta_abs": da,
                 "max_iterations": mi,
                 "log_freq": lfq,
                 "debug_mlp": debug_mlp,
@@ -567,7 +523,10 @@ class GridSearchTrainer:
                     quantization_factor=qf,
                     parameter_range=pr,
                     debug_mlp=debug_mlp,
-                    param_fraction=pf,
+                    weight_kernel=wk,
+                    bias_kernel=bk,
+                    stride=st,
+                    delta_abs=da,
                     max_iterations=mi,
                     log_freq=lfq,
                     measure_time=measure_time
@@ -575,16 +534,15 @@ class GridSearchTrainer:
                 
                 run_label = f"Config {config_index+1}/{len(self.trainers_params)} (Run {run+1}/{runs_per_config})"
                 print(f"\n--- {run_label} ---")
-                print(f"HPs: QF={qf}, PR={pr}, PF={pf}, MaxIter={mi}")
+                print(f"HPs: QF={qf}, PR={pr}, WK={wk}, BK={bk}, S={st}, DA={da}, MI={mi}, LFQ={lfq}\n")
 
                 with open(log_filename + '.txt', 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}\n\n")
-                    log_file.write(f"Model: {str(trainer.model)}\n\n")
+                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Weight Kernel={trainer.weight_kernel}, Bias Kernel={trainer.bias_kernel}, Stride={trainer.stride}, Delta Abs={trainer.delta_abs}, Max Iterations={trainer.max_iterations}, Log Freq={trainer.log_freq}\n\n")
 
                 trainer.train(X, Y)
 
                 final_loss = trainer.best_node.h_val
-                training_time = trainer.training_times[-1] if trainer.training_times else 0.0
+                training_time = trainer.training_time if trainer.training_time else 0.0
 
                 run_result = {
                     "config_index": config_index,
@@ -601,25 +559,29 @@ class GridSearchTrainer:
                     run_result["f_history"] = trainer.f_history
                     run_result["g_history"] = trainer.g_history
 
-                grid_search_results.append(run_result)
+                self.grid_search_data.append(run_result)
                 
                 print(f"COMPLETED: Best Loss: {final_loss:.6f} | Time: {training_time:.2f}s")
 
                 with open(log_filename + '.txt', 'a') as log_file:
                     log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val}\n")
-                    log_file.write(f"(Run {run}) - Training Time: {trainer.training_times[-1]:.4f} seconds\n")
+                    log_file.write(f"(Run {run}) - Training Time: {trainer.training_time:.4f} seconds\n")
                     log_file.write(f"\n(Run {run}) - Training completed.\n\n")
                     log_file.write("-" * 150 + "\n\n")
+
+                if save_models:
+                    model_filename = f"model_config{config_index}_run{run}.pth"
+                    trainer.save_model(filename=model_filename)
         
         print("\n" + "-" * 50)
-        print(f"Grid Search completed. Writing {len(grid_search_results)} results in {log_filename + '.json'}...")
+        print(f"Grid Search completed. Writing {len(self.grid_search_data)} results in {log_filename + '.json'}...")
         
         with open(log_filename + '.json', 'w') as f:
-            json.dump(grid_search_results, f, indent=4)
+            json.dump(self.grid_search_data, f, indent=4)
             
         print("JSON write completed.")
         
-        sorted_results = sorted(grid_search_results, key=lambda x: x["metrics"]["final_loss"])
+        sorted_results = sorted(self.grid_search_data, key=lambda x: x["metrics"]["final_loss"])
         with open(log_filename + '.txt', 'a') as log_file:
             log_file.write("Sorted Final Losses from Grid Search:\n")
             for i, res in enumerate(sorted_results):
@@ -628,7 +590,6 @@ class GridSearchTrainer:
                 log_file.write(f"Model: {hps['model_type']}\n")
                 log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, PF: {hps['param_fraction']}, Iter: {hps['max_iterations']}\n\n")
         
-        return grid_search_results
     
     
 
@@ -677,7 +638,7 @@ class GridSearchTrainer:
                     hps = run_result["hyperparameters"]
                     label = (
                         f"Config Index {run_result['config_index']} - Run N° {run_result['run_number']} "
-                        f"[PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, PF: {hps['param_fraction']}, MI: {hps['max_iterations']}]"
+                        f"[PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
                     )
                     
                     # X = iteration, Y = history_value

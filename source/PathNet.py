@@ -104,87 +104,141 @@ class SearchNode:
     
 
 
-def get_neighbors(search_node, X, Y, quantization_factor=None, param_fraction=1):
-    """
-    Generates neighbors for the given search node by modifying a fraction (param_fraction) 
-    of scalar weights within every parameter tensor.
-    
-    Parameters:
-        search_node (SearchNode): The current search node containing the quantized MLP.
-        X (torch.Tensor): Input data for evaluation.
-        Y (torch.Tensor): Target labels for evaluation.
-        quantization_factor (int, optional): The quantization factor to use. If None, uses the parent's factor.
-        param_fraction (float): Fraction (p) of SCALAR WEIGHTS to modify within *each* parameter tensor.
+def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None):
 
-    Returns:
-        list: A list of tuples containing the neighbor MLP and its evaluation score.
-    """
     if quantization_factor is None:
         quantization_factor = search_node.quantized_mlp.quantization_factor
 
     neighbors = []
     parent_mlp = search_node.quantized_mlp
     parent_model = parent_mlp.model
-    
-    # Get the list of parameter tensors from the parent model
-    parent_parameters = list(parent_model.parameters())
+    parent_parameter_list = list(parent_model.parameters())
 
     with torch.no_grad():
-        # Iterate over each parameter tensor in the model
-        for tensor_idx in range(len(parent_parameters)):
-            
-            # Clone the original tensor data
-            original_data = parent_parameters[tensor_idx].data.clone()
-            
-            # Get the total number of scalar elements in the selected tensor
-            num_elements = original_data.numel()
-            
-            num_scalars_to_change = max(1, int(num_elements * param_fraction))
-            selected_scalar_indexes = random.sample(range(num_elements), num_scalars_to_change)
-            
-            # Iterate inside the selected tensor (layer parameters, weights or biases) in order to create neighbors by modifying selected scalars
-            for flat_scalar_idx in selected_scalar_indexes:
-                
-                # Get the scalar value at the chosen index
-                scalar_value = original_data.view(-1)[flat_scalar_idx].item()       
-                
-                for delta in [-(1 / quantization_factor), (1 / quantization_factor)]:
-                    
-                    # Boundary check - skip if the change would go out of bounds
-                    if (scalar_value == parent_mlp.parameter_range[0] and delta < 0) or \
-                       (scalar_value == parent_mlp.parameter_range[1] and delta > 0):
-                        continue
+        #let's iterate over all parameters
+        for tensor_index in range(len(parent_parameter_list)):
+            #check if delta_abs is provided, otherwise use default 1/quantization_factor
+            if delta_abs is None:
+                delta_abs = 1 / quantization_factor
+            for delta in [+delta_abs, -delta_abs]:
+                parent_tensor = list(parent_model.parameters())[tensor_index].data
 
-                    # Create a deep copy of the parent MLP to modify
-                    neighbor_mlp = deepcopy(parent_mlp)
-                    
-                    # Get the parameter tensor to modify
-                    tensor_to_modify = list(neighbor_mlp.model.parameters())[tensor_idx]
-                    
-                    # Clone the tensor data to modify
-                    new_tensor = tensor_to_modify.data.clone() 
-                    
-                    # Apply the delta to the specific index of the cloned tensor
-                    new_tensor.view(-1)[flat_scalar_idx] = scalar_value + delta
-                    
-                    # Update the parameter's data
-                    tensor_to_modify.data = new_tensor
-                    
-                    # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
-                    if quantization_factor is not None:
-                        neighbor_mlp.quantization_factor = quantization_factor
-                        neighbor_mlp.quantize()
+                # check if any overflow would occur
+                if (torch.any(parent_tensor == parent_mlp.parameter_range[0]) and delta < 0) or \
+                     (torch.any(parent_tensor == parent_mlp.parameter_range[1]) and delta > 0):
+                    continue
+
+                #check if tensor is 2D (weights)
+                if len(parent_tensor.shape) == 2:
+                    # check if the tensor is compatible with the weight kernel (has at least the size of the kernel)
+                    if parent_tensor.shape[0] >= weight_kernel[0] and parent_tensor.shape[1] >= weight_kernel[1]:
+                        # sliding window over the tensor
+                        for i in range(0, parent_tensor.shape[0] - weight_kernel[0] + 1, stride):
+                            for j in range(0, parent_tensor.shape[1] - weight_kernel[1] + 1, stride):
+                                neighbor_mlp = deepcopy(parent_mlp)
+                                neighbor_model = neighbor_mlp.model
+                                target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                                window = target_tensor[i:i+weight_kernel[0], j:j+weight_kernel[1]]
+                                #adding a small delta to each element in the window 
+                                window += delta
+
+                                # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                                if quantization_factor is not None:
+                                    neighbor_mlp.quantization_factor = quantization_factor
+                                    neighbor_mlp.quantize()
+                                else:
+                                    # Otherwise, only quantize the modified tensor
+                                    # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
+                                    neighbor_mlp.quantize_tensor(tensor_index)
+                                
+                                if neighbor_mlp.overflow:
+                                    continue
+                                
+                                loss = neighbor_mlp.evaluate(X, Y)
+                                neighbors.append((neighbor_mlp, loss))
+
+
+                    # else the kernel is larger than the tensor itself and we take the whole tensor
                     else:
-                        # Otherwise, only quantize the modified tensor
-                        neighbor_mlp.quantize_tensor(tensor_idx)
-                    
-                    if neighbor_mlp.overflow:
-                        continue
-                    
-                    loss = neighbor_mlp.evaluate(X, Y)
-                    neighbors.append((neighbor_mlp, loss))
-                    
+                        neighbor_mlp = deepcopy(parent_mlp)
+                        neighbor_model = neighbor_mlp.model
+                        target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                        #adding a small delta to each element in the tensor 
+                        target_tensor += delta
+
+                        # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                        if quantization_factor is not None:
+                            neighbor_mlp.quantization_factor = quantization_factor
+                            neighbor_mlp.quantize()
+                        else:
+                            # Otherwise, only quantize the modified tensor 
+                            # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
+                            neighbor_mlp.quantize_tensor(tensor_index)
+                        
+                        if neighbor_mlp.overflow:
+                            continue
+                        
+                        loss = neighbor_mlp.evaluate(X, Y)
+                        neighbors.append((neighbor_mlp, loss))
+
+                # check if tensor is 1D (biases)
+                elif len(parent_tensor.shape) == 1:
+                    # check if the tensor is compatible with the bias kernel (has at least the size of the kernel)
+                    if parent_tensor.shape[0] >= bias_kernel[0]:
+                        # sliding window over the tensor
+                        for i in range(0, parent_tensor.shape[0] - bias_kernel[0] + 1, stride):
+                            neighbor_mlp = deepcopy(parent_mlp)
+                            neighbor_model = neighbor_mlp.model
+                            target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                            window = target_tensor[i:i+bias_kernel[0]]
+                            #adding a small delta to each element in the window for demonstration
+                            window += delta
+
+                            # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                            if quantization_factor is not None:
+                                neighbor_mlp.quantization_factor = quantization_factor
+                                neighbor_mlp.quantize()
+                            else:
+                                # Otherwise, only quantize the modified tensor
+                                # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
+                                neighbor_mlp.quantize_tensor(tensor_index)
+                            
+                            if neighbor_mlp.overflow:
+                                continue
+                            
+                            loss = neighbor_mlp.evaluate(X, Y)
+                            neighbors.append((neighbor_mlp, loss))
+
+                    # else the kernel is larger than the tensor itself and we take the whole tensor
+                    else:
+                        neighbor_mlp = deepcopy(parent_mlp)
+                        neighbor_model = neighbor_mlp.model
+                        target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                        #adding a small delta to each element in the tensor for demonstration
+                        target_tensor += delta
+
+                        # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                        if quantization_factor is not None:
+                            neighbor_mlp.quantization_factor = quantization_factor
+                            neighbor_mlp.quantize()
+                        else:
+                            # Otherwise, only quantize the modified tensor
+                            # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
+                            neighbor_mlp.quantize_tensor(tensor_index)
+                        
+                        if neighbor_mlp.overflow:
+                            continue
+                        
+                        loss = neighbor_mlp.evaluate(X, Y)
+                        neighbors.append((neighbor_mlp, loss))
+
+                else:
+                    #raise an error in the neighborhood generation process if tensor is neither 1D nor 2D
+                    raise ValueError(f"Unsupported tensor shape at index {tensor_index}: {parent_tensor.shape}. Only 1D and 2D tensors are supported.")
+                
     return neighbors
+
+
 
 
 
@@ -192,17 +246,20 @@ class Trainer:
     """
     A class to train a quantized MLP model using an A* search algorithm.
     """
-    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, param_fraction=1, max_iterations=1000, log_freq=1000, target_loss=0.1, measure_time=True):
+    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], stride=1, delta_abs=None, max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
         self.model = model          # nn.sequential model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
         self.parameter_range = parameter_range
         self.debug_mlp = debug_mlp
-        self.param_fraction = param_fraction
+
+        self.weight_kernel = weight_kernel
+        self.bias_kernel = bias_kernel
+        self.stride = stride
+        self.delta_abs = delta_abs
 
         self.max_iterations = max_iterations
         self.log_freq = log_freq
-        self.target_loss = target_loss
 
         self.open_set = []
         self.g_costs = {}       # It represents the best g-cost found so far for each MLP state
@@ -213,7 +270,9 @@ class Trainer:
         self.g_history = []
 
         self.measure_time = measure_time
-        self.training_times = []
+        self.save_trained_model = save_trained_model
+        self.model_name = model_name
+        self.training_time = None
 
     def train(self, X, Y):
         """
@@ -230,9 +289,7 @@ class Trainer:
         initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
         initial_loss = initial_mlp.evaluate(X, Y)
 
-        g_step = (initial_loss - self.target_loss) / self.max_iterations
-
-        initial_node = SearchNode(quantized_mlp=initial_mlp, g_val=0, h_val=initial_loss-self.target_loss)
+        initial_node = SearchNode(quantized_mlp=initial_mlp, g_val=0, h_val=initial_loss)
         initial_hash = initial_mlp.get_state_hash()
 
         heapq.heappush(self.open_set, (initial_node.f_val, initial_node))
@@ -253,70 +310,62 @@ class Trainer:
             if current_hash not in self.g_costs or current_node.g_val > self.g_costs[current_hash]:
                 continue
 
-            self.loss_history.append(current_node.h_val + self.target_loss)
+            self.loss_history.append(current_node.h_val)
             self.f_history.append(current_node.f_val)
             self.g_history.append(current_node.g_val)
 
             if current_node.h_val < self.best_node.h_val:
                 self.best_node = current_node
-                print(f"Iteration {iteration+1}: New best loss = {self.best_node.h_val + self.target_loss}")
-
-            if current_node.h_val <= self.target_loss:
-                print(f"Goal loss achieved: {current_node.h_val + self.target_loss} <= {self.target_loss}")
-                print(f"Training completed in {iteration+1} iterations.")
-                self.best_node = current_node
-                if self.measure_time:
-                    end_time = time.perf_counter()
-                    total_time = end_time - start_time
-                    self.training_times.append(total_time)
-                    print(f"Total training time: {total_time:.4f} seconds")
-                return
+                print(f"Iteration {iteration+1}: New best loss = {self.best_node.h_val}")
 
             if (iteration + 1) % self.log_freq == 0:
-                print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val + self.target_loss}")
+                print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
+                
+            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.weight_kernel, self.bias_kernel, self.stride, self.delta_abs)
 
-            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.param_fraction)
-
-            for neighbor_mlp,loss in neighbors:
+            for neighbor_mlp, neighbor_loss in neighbors:
                 if neighbor_mlp.overflow: continue
-                state_hash = neighbor_mlp.get_state_hash()
+                neighbor_state_hash = neighbor_mlp.get_state_hash()
 
-                h = loss - self.target_loss  # h describe the distance between the current loss and the target loss
+                g_step = neighbor_loss - current_node.h_val     # c(n,n') = loss(n') - loss(n) -> difference between child and parent loss
 
                 # New g-cost (cost-to-come) for this neighbor
                 g = current_node.g_val + g_step
                 
                 # Check if the neighbor state has not been visited yet or if this path offers a better g-cost (reinsertion case of the same MLP state to the open set)
-                if state_hash not in self.g_costs or g < self.g_costs[state_hash]:  
-                    self.g_costs[state_hash] = g
+                if neighbor_state_hash not in self.g_costs or g < self.g_costs[neighbor_state_hash]:  
+                    self.g_costs[neighbor_state_hash] = g
 
                     # Create and push the new search node onto the open set, could be a real new state or an improved path to an existing state
-                    new_node = SearchNode(neighbor_mlp, g_val=g, h_val=h, parent=current_node)
+                    new_node = SearchNode(neighbor_mlp, g_val=g, h_val=neighbor_loss, parent=current_node)
                     heapq.heappush(self.open_set, (new_node.f_val, new_node))
 
         print(f"Search completed after {iteration+1} iterations.")
-        print(f"Best loss found: {self.best_node.h_val + self.target_loss}")
+        print(f"Best loss found: {self.best_node.h_val}")
         if self.measure_time:
             end_time = time.perf_counter()
             total_time = end_time - start_time
-            self.training_times.append(total_time)
+            self.training_time = total_time
             print(f"Total training time: {total_time:.4f} seconds")
+
+        if self.save_trained_model:
+            self.save_model(filename=self.model_name + '.pth')
         return
 
     def plot_training_history(self, filename='astar_loss_plot.png'):
         """
-        Plots the loss (h), the total cost (f) and the cost per iteration over iterations and saves the plot to a file.
+        Plots the loss (h), the total cost (f) and the cost g per iteration over all the iterations and saves the plot to a file.
 
         Parameters:
             filename (str): The name of the file to save the plot.
         """
         plt.figure(figsize=(10, 6))
-        plt.plot(self.loss_history, label='Loss (h + target_loss) per Iteration')
+        plt.plot(self.loss_history, label='Loss (h) per Iteration')
         plt.plot(self.f_history, label='Total Cost (f) per Iteration')
         plt.plot(self.g_history, label='Cost g per Iteration')
         plt.xlabel('Number of Iterations')
         plt.ylabel('Value')
-        plt.title('Loss (h + target_loss), Total Cost (f) and Cost (g) Over Iterations with A*')
+        plt.title('Loss (h), Total Cost (f) and Cost (g) Over Iterations with A*')
         plt.legend()
         plt.grid(True)
         plt.savefig(filename)
@@ -357,7 +406,7 @@ class Trainer:
         print(f"Model loaded from {filename}")
         return quantized_mlp
 
-    def log_to_file(self, filename='training_log.txt'):
+    def log_to_txt_file(self, filename='training_log.txt'):
         """
         Logs the training history to a specified file.
 
@@ -365,11 +414,29 @@ class Trainer:
             filename (str): The name of the file to log the training history.
         """
         with open(filename, 'a') as f:
-            f.write("Iteration\tLoss (h + target_loss)\tTotal Cost (f)\tCost g\n")
+            f.write("Iteration\tLoss (h)\tTotal Cost (f)\tCost g\n")
             for i in range(len(self.loss_history)):
                 f.write(f"{i+1}\t{self.loss_history[i]}\t{self.f_history[i]}\t{self.g_history[i]}\n")
-            f.write(f"\nBest Loss: {self.best_node.h_val + self.target_loss}\n\n")
-            f.write(f"Training Times (seconds): {self.training_times}\n")
+            f.write(f"\nBest Loss: {self.best_node.h_val}\n\n")
+            f.write(f"Training Time (seconds): {self.training_time}\n")
+        print(f"Training log saved to {filename}")
+
+    def log_to_json_file(self, filename='training_log.json'):
+        """
+        Logs the training history to a specified JSON file.
+
+        Parameters:
+            filename (str): The name of the JSON file to log the training history.
+        """
+        log_data = {
+            "loss_history": self.loss_history,
+            "f_history": self.f_history,
+            "g_history": self.g_history,
+            "best_loss": self.best_node.h_val,
+            "training_time_seconds": self.training_time
+        }
+        with open(filename, 'w') as f:
+            json.dump(log_data, f, indent=4)
         print(f"Training log saved to {filename}")
 
                 
@@ -378,7 +445,7 @@ class GridSearchTrainer:
     """
     A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
     """
-    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, param_fractions, max_iterations, log_freq, target_losses, debug_mlps=True, measure_time=True):
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, param_fractions, max_iterations, log_freq, debug_mlps=True, measure_time=True):
         self.trainers_params = []
         for i in range(len(models)):
             for lf in loss_funcs:
@@ -387,19 +454,17 @@ class GridSearchTrainer:
                         for pf in param_fractions:
                             for mi in max_iterations:
                                 for lfq in log_freq:
-                                    for tl in target_losses:
-                                        self.trainers_params.append((
-                                            models[i],
-                                            lf,
-                                            qf,
-                                            pr,
-                                            debug_mlps,
-                                            pf,
-                                            mi,
-                                            lfq,
-                                            tl,
-                                            measure_time
-                                        ))
+                                    self.trainers_params.append((
+                                        models[i],
+                                        lf,
+                                        qf,
+                                        pr,
+                                        debug_mlps,
+                                        pf,
+                                        mi,
+                                        lfq,
+                                        measure_time
+                                    ))
 
     def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=False, log_filename='grid_search_log.txt',):
         """
@@ -429,16 +494,15 @@ class GridSearchTrainer:
                     param_fraction=param_config[5],
                     max_iterations=param_config[6],
                     log_freq=param_config[7],
-                    target_loss=param_config[8],
-                    measure_time=param_config[9]
+                    measure_time=param_config[8]
                 )
-                print(f"(Run {run}) - Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}")
+                print(f"(Run {run}) - Starting training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}\n\n")
                 print(f"Model: {str(trainer.model)}\n")
                 with open(log_filename, 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}\n\n")
+                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}\n\n")
                     log_file.write(f"Model: {str(trainer.model)}\n\n")
                 trainer.train(X, Y)
-                heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [str(trainer.model), trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations, trainer.target_loss]))
+                heapq.heappush(sorted_final_losses, (trainer.best_node.h_val, [str(trainer.model), trainer.quantization_factor, trainer.parameter_range, trainer.param_fraction, trainer.max_iterations]))
                 if enable_training_history_logging: trainer.log_to_file(log_filename)
                 print(f"(Run {run}) - Training completed.\n\n")
                 with open(log_filename, 'a') as log_file:
@@ -449,7 +513,7 @@ class GridSearchTrainer:
 
         with open(log_filename, 'a') as log_file:
             log_file.write("Sorted Final Losses from Grid Search:\n")
-            log_file.write("Final Loss\t\t\t\t\tParameters: [Model, Quantization Factor, Parameter Range, Param Fraction, Max Iterations, Target Loss]\n")
+            log_file.write("Final Loss\t\t\t\t\tParameters: [Model, Quantization Factor, Parameter Range, Param Fraction, Max Iterations]\n")
             while sorted_final_losses:
                 loss, params = heapq.heappop(sorted_final_losses)
                 log_file.write(f"{loss}\t\t\t{params}\n")
@@ -482,7 +546,7 @@ class GridSearchTrainer:
         print("=" * 50)
         
         for config_index, param_config in enumerate(self.trainers_params):
-            (model_class, loss_fn, qf, pr, debug_mlp, pf, mi, lfq, tl, measure_time) = param_config
+            (model_class, loss_fn, qf, pr, debug_mlp, pf, mi, lfq, measure_time) = param_config
             
             hyperparams_dict = {
                 "model_type": str(model_class),
@@ -492,7 +556,6 @@ class GridSearchTrainer:
                 "param_fraction": pf,
                 "max_iterations": mi,
                 "log_freq": lfq,
-                "target_loss": tl,
                 "debug_mlp": debug_mlp,
                 "measure_time": measure_time
             }
@@ -507,21 +570,20 @@ class GridSearchTrainer:
                     param_fraction=pf,
                     max_iterations=mi,
                     log_freq=lfq,
-                    target_loss=tl,
                     measure_time=measure_time
                 )
                 
                 run_label = f"Config {config_index+1}/{len(self.trainers_params)} (Run {run+1}/{runs_per_config})"
                 print(f"\n--- {run_label} ---")
-                print(f"HPs: QF={qf}, PR={pr}, PF={pf}, MaxIter={mi}, TL={tl}")
+                print(f"HPs: QF={qf}, PR={pr}, PF={pf}, MaxIter={mi}")
 
                 with open(log_filename + '.txt', 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}, Target Loss={trainer.target_loss}\n\n")
+                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Param Fraction={trainer.param_fraction}, Max Iterations={trainer.max_iterations}\n\n")
                     log_file.write(f"Model: {str(trainer.model)}\n\n")
 
                 trainer.train(X, Y)
 
-                final_loss = trainer.best_node.h_val + trainer.target_loss
+                final_loss = trainer.best_node.h_val
                 training_time = trainer.training_times[-1] if trainer.training_times else 0.0
 
                 run_result = {
@@ -544,7 +606,7 @@ class GridSearchTrainer:
                 print(f"COMPLETED: Best Loss: {final_loss:.6f} | Time: {training_time:.2f}s")
 
                 with open(log_filename + '.txt', 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val + trainer.target_loss}\n")
+                    log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val}\n")
                     log_file.write(f"(Run {run}) - Training Time: {trainer.training_times[-1]:.4f} seconds\n")
                     log_file.write(f"\n(Run {run}) - Training completed.\n\n")
                     log_file.write("-" * 150 + "\n\n")
@@ -564,7 +626,7 @@ class GridSearchTrainer:
                 hps = res['hyperparameters']
                 log_file.write(f"{i+1}. Loss: {res['metrics']['final_loss']:.6f}\n")
                 log_file.write(f"Model: {hps['model_type']}\n")
-                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, PF: {hps['param_fraction']}, Iter: {hps['max_iterations']}, TL: {hps['target_loss']}\n\n")
+                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, PF: {hps['param_fraction']}, Iter: {hps['max_iterations']}\n\n")
         
         return grid_search_results
     

@@ -6,7 +6,7 @@
 
 
 from source.sinusoidal_func_utils import generate_sinusoidal_tensor
-from source.PathNet2 import Trainer
+from source.PathNet import Trainer
 
 import torch
 import torch.nn as nn

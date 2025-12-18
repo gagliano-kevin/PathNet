@@ -1,0 +1,16 @@
+Configuration: Weight Kernel: [2, 2], Bias Kernel: [2], Stride: 1
+Test results over 10 runs:
+Min Final Loss: 0.427024
+Max Final Loss: 0.427024
+Average Final Loss: 0.427024 ± 0.000000
+Median Final Loss: 0.427024
+Average Training Time: 25.86 seconds
+
+Configuration: Weight Kernel: [2, 2], Bias Kernel: [2], Stride: 2
+Test results over 10 runs:
+Min Final Loss: 0.421418
+Max Final Loss: 0.421418
+Average Final Loss: 0.421418 ± 0.000000
+Median Final Loss: 0.421418
+Average Training Time: 15.51 seconds
+

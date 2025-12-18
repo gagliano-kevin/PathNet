@@ -17,9 +17,9 @@ NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
-ITERATIONS = 100
+ITERATIONS = 200
 
-RUNS = 2
+RUNS = 3
 
 LOG_FILE_ASTAR = "sine_model_astar_multiple_runs"
 
@@ -44,12 +44,12 @@ model = nn.Sequential(
 
 # TESTING ONLY MAX ITERATIONS PARAMETER: 1000, 5000, 10000
 
-"""grid_search_trainer = GridSearchTrainer(
+grid_search_trainer = GridSearchTrainer(
     models=[model],
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
     parameter_ranges=[(-10, 10)],
-    weight_kernels = [2,2], 
+    weight_kernels = [[2,2]], 
     bias_kernels = [[2]], 
     strides=[1], 
     max_iterations=[10, 50, 100],
@@ -59,7 +59,9 @@ model = nn.Sequential(
 
 grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=RUNS, enable_training_history_logging=True, log_filename='sine_test_max_iterations')
 
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_max_iterations", metric="loss_history")
+#grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_max_iterations", metric="loss_history")
+
+grid_search_trainer.plot_avg_loss(file_name="sine_test_max_iterations")
 
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -73,7 +75,7 @@ grid_search_trainer = GridSearchTrainer(
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[1, 10, 100],
     parameter_ranges=[(-10, 10)],
-    weight_kernels = [2,2], 
+    weight_kernels = [[2,2]], 
     bias_kernels = [[2]], 
     strides=[1], 
     max_iterations=[ITERATIONS],
@@ -83,7 +85,9 @@ grid_search_trainer = GridSearchTrainer(
 
 grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_quantization_factor')
 
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_quantization_factor", metric="loss_history")
+#grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_quantization_factor", metric="loss_history")
+
+grid_search_trainer.plot_avg_loss(file_name="sine_test_quantization_factor")
 
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -97,7 +101,7 @@ grid_search_trainer = GridSearchTrainer(
     loss_funcs=[nn.MSELoss()],
     quantization_factors=[10],
     parameter_ranges=[(-5, 5), (-10, 10), (-20, 20)],
-    weight_kernels = [2,2], 
+    weight_kernels = [[2,2]], 
     bias_kernels = [[2]], 
     strides=[1], 
     max_iterations=[ITERATIONS],
@@ -107,8 +111,10 @@ grid_search_trainer = GridSearchTrainer(
 
 grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=2, enable_training_history_logging=True, log_filename='sine_test_parameter_range')
 
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_parameter_range", metric="loss_history")
-"""
+#grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_parameter_range", metric="loss_history")
+
+grid_search_trainer.plot_avg_loss(file_name="sine_test_parameter_range")
+
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -132,5 +138,8 @@ grid_search_trainer = GridSearchTrainer(
 
 grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_config=RUNS, enable_training_history_logging=True, log_filename='sine_test_kernel_stride')
 
-grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_kernel_stride", metric="loss_history")
+#grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_kernel_stride", metric="loss_history")
+
+grid_search_trainer.plot_avg_loss(file_name="sine_test_kernel_stride")
+
 

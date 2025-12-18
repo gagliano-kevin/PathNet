@@ -104,7 +104,7 @@ class SearchNode:
     
 
 
-def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel = [2,2], bias_kernel = [2], stride=1):
+def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None):
 
     if quantization_factor is None:
         quantization_factor = search_node.quantized_mlp.quantization_factor
@@ -117,7 +117,9 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel = [
     with torch.no_grad():
         #let's iterate over all parameters
         for tensor_index in range(len(parent_parameter_list)):
-            delta_abs = 1 / quantization_factor
+            #check if delta_abs is provided, otherwise use default 1/quantization_factor
+            if delta_abs is None:
+                delta_abs = 1 / quantization_factor
             for delta in [+delta_abs, -delta_abs]:
                 parent_tensor = list(parent_model.parameters())[tensor_index].data
 
@@ -146,6 +148,7 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel = [
                                     neighbor_mlp.quantize()
                                 else:
                                     # Otherwise, only quantize the modified tensor
+                                    # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
                                     neighbor_mlp.quantize_tensor(tensor_index)
                                 
                                 if neighbor_mlp.overflow:
@@ -168,7 +171,8 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel = [
                             neighbor_mlp.quantization_factor = quantization_factor
                             neighbor_mlp.quantize()
                         else:
-                            # Otherwise, only quantize the modified tensor
+                            # Otherwise, only quantize the modified tensor 
+                            # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
                             neighbor_mlp.quantize_tensor(tensor_index)
                         
                         if neighbor_mlp.overflow:
@@ -196,6 +200,7 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel = [
                                 neighbor_mlp.quantize()
                             else:
                                 # Otherwise, only quantize the modified tensor
+                                # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
                                 neighbor_mlp.quantize_tensor(tensor_index)
                             
                             if neighbor_mlp.overflow:
@@ -218,6 +223,7 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel = [
                             neighbor_mlp.quantize()
                         else:
                             # Otherwise, only quantize the modified tensor
+                            # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
                             neighbor_mlp.quantize_tensor(tensor_index)
                         
                         if neighbor_mlp.overflow:
@@ -240,7 +246,7 @@ class Trainer:
     """
     A class to train a quantized MLP model using an A* search algorithm.
     """
-    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], stride=1, max_iterations=1000, log_freq=1000, measure_time=True):
+    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], stride=1, delta_abs=None, max_iterations=1000, log_freq=1000, measure_time=True):
         self.model = model          # nn.sequential model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
@@ -250,6 +256,7 @@ class Trainer:
         self.weight_kernel = weight_kernel
         self.bias_kernel = bias_kernel
         self.stride = stride
+        self.delta_abs = delta_abs
 
         self.max_iterations = max_iterations
         self.log_freq = log_freq
@@ -312,7 +319,7 @@ class Trainer:
             if (iteration + 1) % self.log_freq == 0:
                 print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
                 
-            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.weight_kernel, self.bias_kernel, self.stride)
+            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.weight_kernel, self.bias_kernel, self.stride, self.delta_abs)
 
             for neighbor_mlp, neighbor_loss in neighbors:
                 if neighbor_mlp.overflow: continue

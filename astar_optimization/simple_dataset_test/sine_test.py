@@ -28,7 +28,7 @@ model = nn.Sequential(
 #trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-4, 4), debug_mlp=True, param_fraction=1.0, max_iterations=1000, log_freq=100, target_loss=0.01)
 
 #PathNet2 version with sliding window kernels
-trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-4, 4), debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], stride=2, max_iterations=1000, log_freq=100)
+trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-4, 4), debug_mlp=True, weight_kernel = [3,3], bias_kernel = [3], stride=1, delta_abs=None, max_iterations=1000, log_freq=100)
 
 
 trainer.train(X_sin, Y_sin)

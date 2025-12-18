@@ -97,7 +97,7 @@ def plot_sine_predictions(test_x_np: np.ndarray,
     plt.savefig(filename)
 
 
-def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, filename="mean_loss_comparison_with_std.png"):
+def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, runs, filename="mean_loss_comparison_with_std.png"):
     """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
     
     # Create an array of iteration numbers
@@ -115,7 +115,7 @@ def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, filename
     plt.fill_between(epochs, grad_mean - grad_std, grad_mean + grad_std, 
                      alpha=0.2, color='red', label='Gradient Descent ($\pm 1 \sigma$)')
 
-    plt.title(f'Mean Training Loss Comparison over {RUNS} Runs')
+    plt.title(f'Mean Training Loss Comparison over {runs} Runs')
     plt.xlabel('Epochs / Iterations')
     plt.ylabel('Mean MSE Loss')
     plt.grid(True, linestyle='--', alpha=0.6)
@@ -126,7 +126,7 @@ def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, filename
     print(f"Saved plot: {filename}")
 
 
-def plot_final_loss_distribution(astar_final_losses, grad_final_losses, filename="final_loss_boxplot.png"):
+def plot_final_loss_distribution(astar_final_losses, grad_final_losses, runs, filename="final_loss_boxplot.png"):
     """Plots a Box-and-Whisker plot of the final performance metric."""
     
     data = [astar_final_losses, grad_final_losses]
@@ -144,7 +144,7 @@ def plot_final_loss_distribution(astar_final_losses, grad_final_losses, filename
         x = np.random.normal(i + 1, 0.04, size=len(losses)) 
         plt.scatter(x, losses, color='black', alpha=0.6, s=10)
 
-    plt.title(f'Distribution of Final Loss over {RUNS} Runs')
+    plt.title(f'Distribution of Final Loss over {runs} Runs')
     plt.ylabel('Final MSE Loss')
     plt.xticks(ticks=[1, 2], labels=labels)
     plt.grid(axis='y', linestyle='--', alpha=0.6)

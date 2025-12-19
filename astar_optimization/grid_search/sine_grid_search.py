@@ -19,7 +19,7 @@ MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
 ITERATIONS = 200
 
-RUNS = 3
+RUNS = 2
 
 LOG_FILE_ASTAR = "sine_model_astar_multiple_runs"
 
@@ -52,7 +52,7 @@ grid_search_trainer = GridSearchTrainer(
     weight_kernels = [[2,2]], 
     bias_kernels = [[2]], 
     strides=[1], 
-    max_iterations=[10, 50, 100],
+    max_iterations=[10, 50],
     log_freq=[100],
     debug_mlps=True
 )

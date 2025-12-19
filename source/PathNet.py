@@ -708,9 +708,17 @@ class GridSearchTrainer:
 
         # Organize losses by configuration index
         config_losses = {}
+        config_labels = {}
         for run_result in results:
             config_index = run_result['config_index']
             loss_history = run_result.get('loss_history', [])
+            if config_index not in config_labels:
+                hps = run_result["hyperparameters"]
+                config_labels[config_index] = (
+                    f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
+                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
+                    f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                )
             if loss_history:
                 if config_index not in config_losses:
                     config_losses[config_index] = []
@@ -729,7 +737,7 @@ class GridSearchTrainer:
             iterations = range(1, len(mean_loss) + 1)
 
             # Plot mean loss
-            plt.plot(iterations, mean_loss, label=f'Config {config_index}', linewidth=2)
+            plt.plot(iterations, mean_loss, label=config_labels[config_index], linewidth=2)
 
             # Plot std deviation shading
             plt.fill_between(iterations, mean_loss - std_loss, mean_loss + std_loss, alpha=0.2)

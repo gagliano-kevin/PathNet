@@ -681,68 +681,68 @@ class GridSearchTrainer:
         print("-" * 50)
 
 
-# Method to plot the average loss with 1 std shading for each configuration across runs, using numpy for mean and std calculations
-def plot_avg_loss(self, file_name='grid_search_avg_loss'):
-    """
-    Plots the average loss with standard deviation shading for each hyperparameter configuration across multiple runs.
+    # Method to plot the average loss with 1 std shading for each configuration across runs, using numpy for mean and std calculations
+    def plot_avg_loss(self, file_name='grid_search_avg_loss'):
+        """
+        Plots the average loss with standard deviation shading for each hyperparameter configuration across multiple runs.
 
-    Parameters:
-        file_name (str): The filename prefix for saving the plot.
-    """
+        Parameters:
+            file_name (str): The filename prefix for saving the plot.
+        """
 
-    json_file = file_name if file_name.endswith('.json') else file_name + '.json'
+        json_file = file_name if file_name.endswith('.json') else file_name + '.json'
 
-    try:
-        with open(json_file, 'r') as f:
-            results = json.load(f)
-    except FileNotFoundError:
-        print(f"Error: File not found at {json_file}. Please run grid search logging first.")
-        return
-    except json.JSONDecodeError:
-        print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
-        return
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
 
-    if not results:
-        print("No results found in the JSON file.")
-        return
+        if not results:
+            print("No results found in the JSON file.")
+            return
 
-    # Organize losses by configuration index
-    config_losses = {}
-    for run_result in results:
-        config_index = run_result['config_index']
-        loss_history = run_result.get('loss_history', [])
-        if loss_history:
-            if config_index not in config_losses:
-                config_losses[config_index] = []
-            config_losses[config_index].append(loss_history)
+        # Organize losses by configuration index
+        config_losses = {}
+        for run_result in results:
+            config_index = run_result['config_index']
+            loss_history = run_result.get('loss_history', [])
+            if loss_history:
+                if config_index not in config_losses:
+                    config_losses[config_index] = []
+                config_losses[config_index].append(loss_history)
 
-    plt.figure(figsize=(14, 8))
+        plt.figure(figsize=(14, 8))
 
-    for config_index, loss_lists in config_losses.items():
-        # Convert to numpy array for easier mean/std calculation
-        loss_array = np.array(loss_lists)
-        
-        # Calculate mean and std deviation across runs
-        mean_loss = np.mean(loss_array, axis=0)
-        std_loss = np.std(loss_array, axis=0)
+        for config_index, loss_lists in config_losses.items():
+            # Convert to numpy array for easier mean/std calculation
+            loss_array = np.array(loss_lists)
+            
+            # Calculate mean and std deviation across runs
+            mean_loss = np.mean(loss_array, axis=0)
+            std_loss = np.std(loss_array, axis=0)
 
-        iterations = range(1, len(mean_loss) + 1)
+            iterations = range(1, len(mean_loss) + 1)
 
-        # Plot mean loss
-        plt.plot(iterations, mean_loss, label=f'Config {config_index}', linewidth=2)
+            # Plot mean loss
+            plt.plot(iterations, mean_loss, label=f'Config {config_index}', linewidth=2)
 
-        # Plot std deviation shading
-        plt.fill_between(iterations, mean_loss - std_loss, mean_loss + std_loss, alpha=0.2)
+            # Plot std deviation shading
+            plt.fill_between(iterations, mean_loss - std_loss, mean_loss + std_loss, alpha=0.2)
 
-    # Plot customization
-    plt.title('Average Loss with Standard Deviation Across Grid Search Configurations', fontsize=16)
-    plt.xlabel('Iteration (Number of Steps)', fontsize=14)
-    plt.ylabel('Loss Value', fontsize=14)
-    plt.grid(True, linestyle='--', alpha=0.6)
+        # Plot customization
+        plt.title('Average Loss with Standard Deviation Across Grid Search Configurations', fontsize=16)
+        plt.xlabel('Iteration (Number of Steps)', fontsize=14)
+        plt.ylabel('Loss Value', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.6)
 
-    # Legend outside the plot
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameter Configurations") 
-    plt.tight_layout(rect=[0, 0, 1.00, 1]) # needed to avoid cutting off the legend
-    plt.savefig(file_name + '_avg_loss.png', dpi=300)
-    print("Plot saved as " + file_name + "_avg_loss.png\n")
+        # Legend outside the plot
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameter Configurations") 
+        plt.tight_layout(rect=[0, 0, 1.00, 1]) # needed to avoid cutting off the legend
+        plt.savefig(file_name + '_avg_loss.png', dpi=300)
+        print("Plot saved as " + file_name + "_avg_loss.png\n")
 

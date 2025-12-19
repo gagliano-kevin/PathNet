@@ -12,7 +12,8 @@ from source.PathNet import Trainer
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-from source.circle_utils import get_circle_data_tensors, pad_losses, plot_mean_loss_with_std, plot_final_loss_distribution
+from source.circle_utils import get_circle_data_tensors
+from source.general_utils import plot_mean_loss_with_std, plot_final_loss_distribution, pad_losses
 
 
 # --- GLOBAL CONFIGURATION ---
@@ -72,24 +73,19 @@ for run in range(RUNS):
         nn.Linear(HIDDEN_SIZE, OUTPUT_SIZE),
     ) 
 
-    trainer = Trainer(model, nn.CrossEntropyLoss(), 
-                      quantization_factor=10, 
-                      parameter_range=(-10, 10), 
-                      debug_mlp=True, 
-                      param_fraction=1.0, 
-                      max_iterations=MAX_ITERATIONS, 
-                      log_freq=50, 
-                      target_loss=0.0001, 
-                      measure_time=True) 
+
+    trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
+                    weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
+                        measure_time=True, save_trained_model=False, model_name="circle_classification_model")
+
 
     trainer.train(X_train_tensor, y_train_tensor)
 
     # Collect Metrics
     ASTAR_METRICS["losses"].append(trainer.loss_history)
-    ASTAR_METRICS["training_times"].append(trainer.training_times[-1]) 
+    ASTAR_METRICS["training_times"].append(trainer.training_time) 
     
-    # Using the final heuristic cost (h_val) as the final loss proxy
-    final_loss_astar = trainer.best_node.h_val + trainer.target_loss
+    final_loss_astar = trainer.best_node.h_val
     ASTAR_METRICS["final_losses"].append(final_loss_astar)
 
 
@@ -110,7 +106,7 @@ for run in range(RUNS):
 
     loss_history = []
     
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     print(f"\n--- Gradient Training Run {run + 1}/{RUNS} ---\n")
 
@@ -130,7 +126,7 @@ for run in range(RUNS):
             print(f'Epoch [{epoch+1}/{MAX_ITERATIONS}], Loss: {loss.item():.4f}')
 
 
-    end_time = time.time()
+    end_time = time.perf_counter()
     training_time = end_time - start_time
 
     # Collect Metrics
@@ -146,22 +142,18 @@ for run in range(RUNS):
 
 # --- ALIGNMENT FIX: DETERMINE GLOBAL MAX LENGTH FOR PLOTTING ---
 
-all_losses = ASTAR_METRICS["losses"] + GRAD_METRICS["losses"]
-# Find the maximum length across all runs/methods (e.g., 1000 from the error trace)
-global_max_len = max(len(l) for l in all_losses) if all_losses else MAX_ITERATIONS 
+astar_losses_array = np.array(ASTAR_METRICS["losses"])
+grad_losses_array = np.array(GRAD_METRICS["losses"])
 
-# Pad both arrays to the global maximum length (e.g., 1000)
-astar_losses_array = pad_losses(ASTAR_METRICS["losses"], global_max_len)
-grad_losses_array = pad_losses(GRAD_METRICS["losses"], global_max_len)
 
 # --- CALCULATE MEAN/STD DEV ---
 
 # Calculate mean and standard deviation across all runs for each iteration (now safe due to equal length)
-astar_mean_loss = np.nanmean(astar_losses_array, axis=0)
-astar_std_loss = np.nanstd(astar_losses_array, axis=0)
+astar_mean_loss = np.mean(astar_losses_array, axis=0)
+astar_std_loss = np.std(astar_losses_array, axis=0)
 
-grad_mean_loss = np.nanmean(grad_losses_array, axis=0)
-grad_std_loss = np.nanstd(grad_losses_array, axis=0)
+grad_mean_loss = np.mean(grad_losses_array, axis=0)
+grad_std_loss = np.std(grad_losses_array, axis=0)
 
 
 # --- 1. FINAL LOSS STATS (for Summary Table and Box Plot) ---
@@ -225,7 +217,7 @@ print(f"\nSaved statistical summary to 'circle_training_statistics_summary_{RUNS
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # 1. Plot Mean Loss with Standard Deviation Shading
-plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss)
+plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss, RUNS, filename="circle_mean_loss_comparison_with_std.png", dataset_name="Circle Dataset")
 
 # 2. Plot Box and Whisker of Final Losses
-plot_final_loss_distribution(astar_final_losses, grad_final_losses)
+plot_final_loss_distribution(astar_final_losses, grad_final_losses, RUNS, filename="circle_final_loss_boxplot.png", dataset_name="Circle Dataset")

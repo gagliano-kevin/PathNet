@@ -66,6 +66,14 @@ def plot_losses(loss_lists, labels, filename="loss_plot.png"):
     print(f"Training plot saved in file: {filename}")
 
 
+def pad_losses(losses_list, target_len):
+    """Pads all loss histories in the list up to the target_len with NaN."""
+    padded_array = np.full((len(losses_list), target_len), np.nan)
+    for i, l in enumerate(losses_list):
+        padded_array[i, :len(l)] = l
+    return padded_array
+
+
 def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
     """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
     
@@ -84,9 +92,9 @@ def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, runs, fi
     plt.fill_between(epochs, grad_mean - grad_std, grad_mean + grad_std, 
                      alpha=0.2, color='red', label='Gradient Descent ($\pm 1 \sigma$)')
 
-    plt.title(f'Mean Training Cross-Entropy Loss Comparison on {dataset_name} over {runs} Runs')
+    plt.title(f'Mean Training Loss Comparison on {dataset_name} over {runs} Runs')
     plt.xlabel('Epochs / Iterations')
-    plt.ylabel('Mean Cross-Entropy Loss')
+    plt.ylabel('Mean Loss')
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.legend()
     plt.tight_layout()
@@ -113,8 +121,8 @@ def plot_final_loss_distribution(astar_final_losses, grad_final_losses, runs, fi
         x = np.random.normal(i + 1, 0.04, size=len(losses)) 
         plt.scatter(x, losses, color='black', alpha=0.6, s=10)
 
-    plt.title(f'Distribution of Final Cross-Entropy Loss on {dataset_name} over {runs} Runs')
-    plt.ylabel('Final Cross-Entropy Loss')
+    plt.title(f'Distribution of Final Loss on {dataset_name} over {runs} Runs')
+    plt.ylabel('Final Loss')
     plt.xticks(ticks=[1, 2], labels=labels)
     plt.grid(axis='y', linestyle='--', alpha=0.6)
     plt.tight_layout()

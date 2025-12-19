@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def get_iris_data_tensors():
+def get_splitted_iris_data_tensors():
     iris = load_iris()
     X, y = iris.data, iris.target
 
@@ -27,9 +27,22 @@ def get_iris_data_tensors():
 
     return X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor
 
+def get_iris_data_tensors():
+    iris = load_iris()
+    X_train, y_train = iris.data, iris.target
+
+    # Scaling features for better performance
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+
+    X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
+    y_train_tensor = torch.tensor(y_train, dtype=torch.long)
+ 
+    return X_train_tensor, y_train_tensor
+
 
 def print_iris_data_info():
-    tensors = get_iris_data_tensors()
+    tensors = get_splitted_iris_data_tensors()
     X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = tensors
 
     print("--- Data Variables Ready for Custom Model ---")
@@ -45,7 +58,7 @@ def print_iris_data_info():
 
 
 def get_iris_dataloaders(batch_size=16, full_batch=False):
-    X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = get_iris_data_tensors()
+    X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = get_splitted_iris_data_tensors()
 
     if full_batch:
         train_batch_size = X_train_tensor.size(0)
@@ -62,3 +75,18 @@ def get_iris_dataloaders(batch_size=16, full_batch=False):
     test_loader = DataLoader(test_dataset, batch_size=test_batch_size, shuffle=False)
 
     return train_loader, test_loader
+
+
+def get_train_iris_dataloader(batch_size=16, full_batch=False):
+    X_train_tensor, y_train_tensor = get_iris_data_tensors()
+
+    if full_batch:
+        train_batch_size = X_train_tensor.size(0)
+    else:
+        train_batch_size = batch_size
+        
+    # Create DataLoader
+    train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+    train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True)
+
+    return train_loader

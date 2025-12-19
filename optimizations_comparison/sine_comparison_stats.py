@@ -1,10 +1,11 @@
 #===================================================================================================================================
 #===================================================================================================================================
-#----------------- run this file from project root: python -m optimizations_comparison.sine_comparison_stats -----------------------------
+#----------------- run this file from project root: python -m optimizations_comparison.sine_comparison_stats -----------------------
 #===================================================================================================================================
 #===================================================================================================================================
 
-from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinCosDataset, SinusoidalMLP, plot_final_loss_distribution, plot_mean_loss_with_std
+from source.sinusoidal_func_utils import generate_sinusoidal_tensor, plot_sine_predictions, SinDataset
+from source.general_utils import SinusoidalMLP, plot_final_loss_distribution, plot_mean_loss_with_std
 from source.general_utils import plot_losses
 from source.PathNet import Trainer
 
@@ -22,9 +23,9 @@ NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
-ITERATIONS = 5000
+ITERATIONS = 100
 
-RUNS = 10
+RUNS = 2
 
 ASTAR_METRICS = {
     "losses": [],
@@ -45,7 +46,7 @@ LOG_FILE_GRAD = "sine_model_grad_base_multiple_runs"
 #------------------------------------------------------------------------- ASTAR TRAINING -----------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-X_train, Y_train = generate_sinusoidal_tensor(func=torch.sin, num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
+X_train, Y_train = generate_sinusoidal_tensor(num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
 
 
 for run in range(RUNS):
@@ -59,16 +60,20 @@ for run in range(RUNS):
         nn.Linear(4, 1),
         nn.Tanh()
         )
+    
 
-    trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, param_fraction=1.0, max_iterations=ITERATIONS, log_freq=100, target_loss=0.01, measure_time=True)
+    trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
+            weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None, max_iterations=ITERATIONS, log_freq=100, \
+                measure_time=True, save_trained_model=False, model_name="sine_regression_model")
+
 
     trainer.train(X_train, Y_train)
 
     ASTAR_METRICS["losses"].append(trainer.loss_history)
-    ASTAR_METRICS["training_times"].append(trainer.training_times[-1])
-    ASTAR_METRICS["final_losses"].append(trainer.best_node.h_val + trainer.target_loss)
+    ASTAR_METRICS["training_times"].append(trainer.training_time)
+    ASTAR_METRICS["final_losses"].append(trainer.best_node.h_val)
 
-    trainer.log_to_file(f"{LOG_FILE_ASTAR}_run_{run + 1}.txt")
+    trainer.log_to_txt_file(f"{LOG_FILE_ASTAR}_run_{run + 1}.txt")
 
     plot_sine_predictions(test_x_np=X_train.numpy(), 
                           predicted_sin_np=trainer.best_node.quantized_mlp.model(X_train).detach().numpy(), 
@@ -86,7 +91,7 @@ LEARNING_RATE = 0.001
 EPOCHS = ITERATIONS
 HIDDEN_SIZE = 4
 
-dataset = SinCosDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE, NOISE_LEVEL)
+dataset = SinDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE, NOISE_LEVEL)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 for run in range(RUNS):
@@ -97,13 +102,13 @@ for run in range(RUNS):
 
     loss_history = []
 
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     print(f"\n--- Gradient Training Run {run + 1} ---\n")
 
     for epoch in range(EPOCHS):
         total_loss = 0
-        for x_batch, sin_y_batch, cos_y_batch in dataloader:        # Only using sin_y_batch for sine model
+        for x_batch, sin_y_batch in dataloader:        # Only using sin_y_batch for sine model
             sin_optimizer.zero_grad()
             predictions = sin_model_tanh_out(x_batch)
             loss = criterion(predictions, sin_y_batch)              # Target is sin_y_batch
@@ -116,7 +121,7 @@ for run in range(RUNS):
             print(f'Sine Epoch [{epoch+1}/{EPOCHS}], Loss: {total_loss / len(dataloader):.6f}')
 
 
-    end_time = time.time()
+    end_time = time.perf_counter()
     training_time = end_time - start_time
 
     GRAD_METRICS["losses"].append(loss_history)
@@ -212,27 +217,20 @@ with open(f"sine_training_statistics_summary_{RUNS}_runs.txt", "w") as f:
 
 print(f"\nSaved statistical summary to 'sine_training_statistics_summary_{RUNS}_runs.txt'\n")
 
-# Convert list of lists of losses into numpy arrays, padding with NaNs if necessary
-# This ensures all runs, even if stopped early, can be aggregated correctly.
-def align_and_convert_losses(losses_list):
-    max_len = max(len(l) for l in losses_list)
-    padded_array = np.full((len(losses_list), max_len), np.nan)
-    for i, l in enumerate(losses_list):
-        padded_array[i, :len(l)] = l
-    return padded_array
 
-astar_losses_array = align_and_convert_losses(ASTAR_METRICS["losses"])
-grad_losses_array = align_and_convert_losses(GRAD_METRICS["losses"])
+
+astar_losses_array = ASTAR_METRICS["losses"]
+grad_losses_array = GRAD_METRICS["losses"]
 
 # mean and standard deviation across all runs for each iteration
-astar_mean_loss = np.nanmean(astar_losses_array, axis=0)
-astar_std_loss = np.nanstd(astar_losses_array, axis=0)
+astar_mean_loss = np.mean(astar_losses_array, axis=0)
+astar_std_loss = np.std(astar_losses_array, axis=0)
 
-grad_mean_loss = np.nanmean(grad_losses_array, axis=0)
-grad_std_loss = np.nanstd(grad_losses_array, axis=0)
+grad_mean_loss = np.mean(grad_losses_array, axis=0)
+grad_std_loss = np.std(grad_losses_array, axis=0)
 
 # mean loss with standard deviation shading
-plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss, ITERATIONS)
+plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss, ITERATIONS, "sine_mean_loss_comparison_with_std.png", "Sine Function")
 
 # box and whisker of final losses
-plot_final_loss_distribution(astar_final_losses, grad_final_losses)
+plot_final_loss_distribution(astar_final_losses, grad_final_losses, ITERATIONS, "sine_final_loss_distribution_comparison.png", "Sine Function")

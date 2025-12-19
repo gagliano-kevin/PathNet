@@ -8,7 +8,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from source.PathNet import Trainer
-from source.iris_utils import get_iris_data_tensors, print_iris_data_info, get_iris_dataloaders, IrisMLP, plot_mean_loss_with_std, plot_final_loss_distribution, align_and_convert_losses
+from source.iris_utils import get_iris_data_tensors, print_iris_data_info, get_train_iris_dataloader
+from source.general_utils import IrisMLP, plot_mean_loss_with_std, plot_final_loss_distribution
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,10 +42,9 @@ LOG_FILE_GRAD = "iris_model_grad_base_multiple_runs"
 #------------------------------------------------------------------------- DATA SETUP ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-print_iris_data_info()
 
-X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = get_iris_data_tensors()
-train_loader, test_loader = get_iris_dataloaders(batch_size=16, full_batch=True)
+X_train_tensor, y_train_tensor = get_iris_data_tensors()
+train_loader = get_train_iris_dataloader(batch_size=16, full_batch=True)
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,23 +63,19 @@ for run in range(RUNS):
         nn.Linear(HIDDEN_SIZE, OUTPUT_SIZE),
     ) 
 
-    trainer = Trainer(model, nn.CrossEntropyLoss(), 
-                      quantization_factor=10, 
-                      parameter_range=(-10, 10), 
-                      debug_mlp=True, 
-                      param_fraction=1.0, 
-                      max_iterations=MAX_ITERATIONS, 
-                      log_freq=100, 
-                      target_loss=0.01, 
-                      measure_time=True) 
+
+    trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
+                weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
+                    measure_time=True, save_trained_model=False, model_name="iris_classification_model")
+
 
     trainer.train(X_train_tensor, y_train_tensor)
 
     ASTAR_METRICS["losses"].append(trainer.loss_history)
     
-    ASTAR_METRICS["training_times"].append(trainer.training_times[-1]) 
+    ASTAR_METRICS["training_times"].append(trainer.training_time) 
 
-    final_loss_astar = trainer.best_node.h_val + trainer.target_loss
+    final_loss_astar = trainer.best_node.h_val
 
     ASTAR_METRICS["final_losses"].append(final_loss_astar)
 
@@ -99,7 +95,7 @@ for run in range(RUNS):
 
     loss_history = []
     
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     print(f"\n--- Gradient Training Run {run + 1}/{RUNS} ---\n")
 
@@ -120,7 +116,7 @@ for run in range(RUNS):
             print(f'Epoch [{epoch+1}/{MAX_ITERATIONS}], Loss: {loss.item():.4f}')
 
 
-    end_time = time.time()
+    end_time = time.perf_counter()
     training_time = end_time - start_time
 
     GRAD_METRICS["losses"].append(loss_history)
@@ -197,18 +193,18 @@ with open(f"iris_training_statistics_summary_{RUNS}_runs.txt", "w") as f:
 print(f"\nSaved statistical summary to 'iris_training_statistics_summary_{RUNS}_runs.txt'\n")
 
 
-astar_losses_array = align_and_convert_losses(ASTAR_METRICS["losses"])
-grad_losses_array = align_and_convert_losses(GRAD_METRICS["losses"])
+astar_losses_array = ASTAR_METRICS["losses"]
+grad_losses_array = GRAD_METRICS["losses"]
 
 # mean and standard deviation across all runs for each iteration
-astar_mean_loss = np.nanmean(astar_losses_array, axis=0)
-astar_std_loss = np.nanstd(astar_losses_array, axis=0)
+astar_mean_loss = np.mean(astar_losses_array, axis=0)
+astar_std_loss = np.std(astar_losses_array, axis=0)
 
-grad_mean_loss = np.nanmean(grad_losses_array, axis=0)
-grad_std_loss = np.nanstd(grad_losses_array, axis=0)
+grad_mean_loss = np.mean(grad_losses_array, axis=0)
+grad_std_loss = np.std(grad_losses_array, axis=0)
 
 # mean loss plot with standard deviation shading
-plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss)
+plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss, RUNS, filename="iris_mean_loss_comparison_with_std.png", dataset_name="Iris")
 
 # box and whisker of final losses
-plot_final_loss_distribution(astar_final_losses, grad_final_losses)
+plot_final_loss_distribution(astar_final_losses, grad_final_losses, RUNS, filename="iris_final_loss_boxplot.png", dataset_name="Iris")

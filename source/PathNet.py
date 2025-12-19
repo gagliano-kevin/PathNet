@@ -124,15 +124,17 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
                 parent_tensor = list(parent_model.parameters())[tensor_index].data
 
                 # check if any overflow would occur
+                """
                 if (torch.any(parent_tensor == parent_mlp.parameter_range[0]) and delta < 0) or \
                      (torch.any(parent_tensor == parent_mlp.parameter_range[1]) and delta > 0):
                     continue
                 """
+                
                 # should be the right way to check for overflow, but need to be tested 
                 if (torch.any(parent_tensor < parent_mlp.parameter_range[0] + delta_abs) and delta < 0) or \
                      (torch.any(parent_tensor > parent_mlp.parameter_range[1] - delta_abs) and delta > 0):
                     continue
-                """
+                
                 #check if tensor is 2D (weights)
                 if len(parent_tensor.shape) == 2:
                     # check if the tensor is compatible with the weight kernel (has at least the size of the kernel)

@@ -4,7 +4,8 @@
 #===================================================================================================================================
 #===================================================================================================================================
 
-from source.sinusoidal_func_utils import plot_sine_predictions, SinusoidalMLP, SinCosDataset
+from source.sinusoidal_func_utils import plot_sine_predictions, SinDataset
+from source.general_utils import SinusoidalMLP
 import torch
 import torch.nn as nn
 import numpy as np
@@ -20,7 +21,7 @@ LEARNING_RATE = 0.001
 EPOCHS = 500
 HIDDEN_SIZE = 64
 
-dataset = SinCosDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE)
+dataset = SinDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
     
 sin_model = SinusoidalMLP(hidden_size=HIDDEN_SIZE)
@@ -30,7 +31,7 @@ sin_optimizer = torch.optim.Adam(sin_model.parameters(), lr=LEARNING_RATE)
 print("Starting training for Sine model...")
 for epoch in range(EPOCHS):
     total_loss = 0
-    for x_batch, sin_y_batch, cos_y_batch in dataloader:        # Only using sin_y_batch for sine model
+    for x_batch, sin_y_batch in dataloader:        # Only using sin_y_batch for sine model
         sin_optimizer.zero_grad()
         predictions = sin_model(x_batch)
         loss = criterion(predictions, sin_y_batch)              # Target is sin_y_batch

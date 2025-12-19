@@ -9,11 +9,11 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import time
-from source.iris_utils import get_iris_data_tensors, print_iris_data_info, get_iris_dataloaders, IrisMLP
+from source.iris_utils import get_splitted_iris_data_tensors, get_iris_dataloaders
+from source.general_utils import IrisMLP
 
-print_iris_data_info()
 
-X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = get_iris_data_tensors()
+X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor = get_splitted_iris_data_tensors()
 
 # Full batch mode enabled in order to be consistent with astar's full batch training 
 # (number of epochs in gradient base training is coherent to the number of iterations of astar search)

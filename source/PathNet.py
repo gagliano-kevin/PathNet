@@ -522,8 +522,15 @@ class GridSearchTrainer:
             }
 
             for run in range(runs_per_config):
+                # Copying the model architecture but reinitializing weights for each run
+                model = deepcopy(model_class)
+                # random initialization of model weights
+                for layer in model.modules():
+                    if hasattr(layer, 'reset_parameters'):
+                        layer.reset_parameters()        
+
                 trainer = Trainer(
-                    model=model_class,
+                    model=model,
                     loss_fn=loss_fn,
                     quantization_factor=qf,
                     parameter_range=pr,

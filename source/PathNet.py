@@ -691,12 +691,13 @@ class GridSearchTrainer:
 
 
     # Method to plot the average loss with 1 std shading for each configuration across runs, using numpy for mean and std calculations
-    def plot_avg_loss(self, file_name='grid_search_avg_loss'):
+    def plot_avg_loss(self, file_name='grid_search_avg_loss', parameter_name=None):
         """
         Plots the average loss with standard deviation shading for each hyperparameter configuration across multiple runs.
 
         Parameters:
             file_name (str): The filename prefix for saving the plot.
+            parameter_name (str): The name of the hyperparameter being varied (for labeling purposes).
         """
 
         json_file = file_name if file_name.endswith('.json') else file_name + '.json'
@@ -722,12 +723,28 @@ class GridSearchTrainer:
             config_index = run_result['config_index']
             loss_history = run_result.get('loss_history', [])
             if config_index not in config_labels:
+                # checking if the delta_abs parameter is None to print it properly in the label
+                if run_result["hyperparameters"]["delta_abs"] is None:
+                    run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
                 hps = run_result["hyperparameters"]
-                config_labels[config_index] = (
-                    f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
-                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
-                    f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                if parameter_name is None:
+                    config_labels[config_index] = (
+                        f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
+                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
+                        f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
                 )
+                else:
+                    #check if parameter_name is a list or a single string
+                    if isinstance(parameter_name, list):
+                        labels = []
+                        for pn in parameter_name:
+                            param_value = run_result["hyperparameters"].get(pn)
+                            labels.append(f"{pn}: {param_value}")
+                        config_labels[config_index] = ", ".join(labels)
+                    else:
+                        # if a specific parameter_name is provided, only show that parameter in the label
+                        param_value = run_result["hyperparameters"].get(parameter_name)
+                        config_labels[config_index] = f"{parameter_name}: {param_value}"
             if loss_history:
                 if config_index not in config_losses:
                     config_losses[config_index] = []
@@ -758,7 +775,7 @@ class GridSearchTrainer:
         plt.grid(True, linestyle='--', alpha=0.6)
 
         # Legend outside the plot
-        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameter Configurations") 
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameters Tested") 
         plt.tight_layout(rect=[0, 0, 1.00, 1]) # needed to avoid cutting off the legend
         plt.savefig(file_name + '_avg_loss.png', dpi=300)
         print("Plot saved as " + file_name + "_avg_loss.png\n")
@@ -837,7 +854,7 @@ class GridSearchTrainer:
         plt.boxplot(boxplot_data, vert=True, patch_artist=True, labels=boxplot_labels, 
                 boxprops=dict(facecolor='lightblue'),
                 medianprops=dict(color='darkred'))
-        plt.xticks(rotation=45, ha='right')
+        #plt.xticks(rotation=45, ha='right')
 
         # adding jittered scatter points for each final loss
         for i, losses in enumerate(boxplot_data):

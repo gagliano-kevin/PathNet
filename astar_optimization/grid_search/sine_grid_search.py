@@ -22,14 +22,14 @@ NOISE_LEVEL = 0.1
 RUNS = 10
 
 # Default number of iterations for training
-DEFAULT_ITERATIONS = 1000
+DEFAULT_ITERATIONS = 2000
 
 # Default parameters for grid search
-DEFAULT_WEIGHT_KERNEL = [2, 2]
-DEFAULT_BIAS_KERNEL = [2]
-DEFAULT_STRIDE = 1
+DEFAULT_WEIGHT_KERNEL = [3, 3]
+DEFAULT_BIAS_KERNEL = [3]
+DEFAULT_STRIDE = 2
 
-DEFAULT_PARAMETER_RANGE = (-10, 10)
+DEFAULT_PARAMETER_RANGE = (-20, 20)
 DEFAULT_QUANTIZATION_FACTOR = 10
 
 
@@ -38,6 +38,7 @@ LOG_FILE_ASTAR = "sine_model_astar_multiple_runs"
 
 X_train_tensor, y_train_tensor = generate_sinusoidal_tensor(num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
 
+"""
 model = nn.Sequential(
         nn.Linear(1, 4),  
         nn.ReLU(),
@@ -46,7 +47,18 @@ model = nn.Sequential(
         nn.Linear(4, 1),
         nn.Tanh()
         )
+"""
 
+model = nn.Sequential(
+        nn.Linear(1, 16),  
+        nn.ReLU(),
+        nn.Linear(16, 32),
+        nn.ReLU(),
+        nn.Linear(32, 16),  
+        nn.ReLU(),
+        nn.Linear(16, 1),
+        nn.Tanh()
+        )
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -56,7 +68,7 @@ model = nn.Sequential(
 
 
 # TESTING ONLY MAX ITERATIONS PARAMETER: 1000, 2000
-
+#"""
 grid_search_trainer = GridSearchTrainer(
     models=[model],
     loss_funcs=[nn.MSELoss()],
@@ -65,7 +77,7 @@ grid_search_trainer = GridSearchTrainer(
     weight_kernels = [DEFAULT_WEIGHT_KERNEL], 
     bias_kernels = [DEFAULT_BIAS_KERNEL], 
     strides=[DEFAULT_STRIDE], 
-    max_iterations=[1000, 2000],
+    max_iterations=[2000, 4000],
     log_freq=[100],
     debug_mlps=True
 )
@@ -83,7 +95,7 @@ grid_search_trainer.plot_avg_loss(file_name="sine_test_max_iterations", paramete
 grid_search_trainer.plot_final_loss_boxplot(file_name="sine_test_max_iterations", x_label="max_iterations")
 
 grid_search_trainer.generate_final_loss_summary(file_name="sine_test_max_iterations")
-
+#"""
 
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

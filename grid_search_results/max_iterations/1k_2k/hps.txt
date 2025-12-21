@@ -1,0 +1,16 @@
+model = nn.Sequential(
+        nn.Linear(1, 4),  
+        nn.ReLU(),
+        nn.Linear(4, 4),
+        nn.ReLU(),
+        nn.Linear(4, 1),
+        nn.Tanh()
+        )
+        
+       
+DEFAULT_WEIGHT_KERNEL = [2, 2]
+DEFAULT_BIAS_KERNEL = [2]
+DEFAULT_STRIDE = 1
+
+DEFAULT_PARAMETER_RANGE = (-10, 10)
+DEFAULT_QUANTIZATION_FACTOR = 10

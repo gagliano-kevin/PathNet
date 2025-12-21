@@ -830,6 +830,13 @@ class GridSearchTrainer:
                 boxprops=dict(facecolor='lightblue'),
                 medianprops=dict(color='darkred'))
         plt.xticks(rotation=45, ha='right')
+
+        # adding jittered scatter points for each final loss
+        for i, losses in enumerate(boxplot_data):
+            y = losses
+            x = np.random.normal(i + 1, 0.04, size=len(y))  # Adding some jitter to the x-axis
+            plt.scatter(x, y, alpha=0.6, color='blue', s=20)
+
         plt.title('Final Loss Distribution Across Grid Search Configurations', fontsize=16)
         plt.xlabel(x_label if x_label else 'Final Loss', fontsize=14)
         plt.ylabel('Final Loss', fontsize=14)
@@ -839,7 +846,7 @@ class GridSearchTrainer:
         print("Boxplot saved as " + file_name + "_boxplot.png\n")
 
 
-    # Method to generate a txt file summary table of final losses for each configuration across runs, including mean, median, std, min, and max and mean training time
+    # Method to generate a statistical summary of final losses for each configuration across runs and save it to a text file
     def generate_final_loss_summary(self, file_name='grid_search_final_loss_summary'):
         """
         Generates a summary table of final losses for each hyperparameter configuration across multiple runs and saves it to a text file.
@@ -905,15 +912,16 @@ class GridSearchTrainer:
             f.write("=" * 120 + "\n\n\n\n")
 
             f.write("=" * 120 + "\n\n")
-            f.write(f"{'Config':<10}{'Mean Loss':<15}{'Median Loss':<15}{'Std Dev':<15}{'Min Loss':<15}{'Max Loss':<15}{'Mean Time (s)':<15}\n")
+            f.write(f"{'Config':<10}{'Mean Loss':<15}{'Median Loss':<15}{'Std Dev':<15}{'Variance':<15}{'Min Loss':<15}{'Max Loss':<15}{'Mean Time (s)':<15}\n")
             f.write("-" * 120 + "\n")
             for config_index, losses in config_final_losses.items():
                 training_times = config_training_times[config_index]
                 mean_loss = np.mean(losses)
                 median_loss = np.median(losses)
                 std_loss = np.std(losses)
+                variance_loss = np.var(losses)
                 min_loss = np.min(losses)
                 max_loss = np.max(losses)
                 mean_time = np.mean(training_times) if training_times else 0.0
-                f.write(f"{config_index:<10}{mean_loss:<15.6f}{median_loss:<15.6f}{std_loss:<15.6f}{min_loss:<15.6f}{max_loss:<15.6f}{mean_time:<15.2f}\n")
+                f.write(f"{config_index:<10}{mean_loss:<15.6f}{median_loss:<15.6f}{std_loss:<15.6f}{variance_loss:<15.6f}{min_loss:<15.6f}{max_loss:<15.6f}{mean_time:<15.2f}\n")
             f.write("-" * 120 + "\n")

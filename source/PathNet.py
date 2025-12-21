@@ -763,3 +763,157 @@ class GridSearchTrainer:
         plt.savefig(file_name + '_avg_loss.png', dpi=300)
         print("Plot saved as " + file_name + "_avg_loss.png\n")
 
+
+    # Method to plot boxplot of final losses for each configuration across runs 
+    def plot_final_loss_boxplot(self, file_name='grid_search_final_loss_boxplot', x_label=None):
+        """
+        Plots a boxplot of the final losses for each hyperparameter configuration across multiple runs.
+
+        Parameters:
+            file_name (str): The filename prefix for saving the plot.
+            y_label (str): The label for the y-axis. If None, defaults to 'Final Loss'.
+        """
+
+        json_file = file_name if file_name.endswith('.json') else file_name + '.json'
+
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
+
+        if not results:
+            print("No results found in the JSON file.")
+            return
+
+        # Organize final losses by configuration index
+        config_final_losses = {}
+        config_labels = {}
+        for run_result in results:
+            config_index = run_result['config_index']
+            final_loss = run_result['metrics'].get('final_loss')
+            if config_index not in config_labels:
+                # checking if the delta_abs parameter is None to print it properly in the label
+                if run_result["hyperparameters"]["delta_abs"] is None:
+                    run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
+                if x_label is None:
+                    hps = run_result["hyperparameters"]
+                    config_labels[config_index] = (
+                        f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
+                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
+                        f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                    )
+                else:
+                    # if a specific x_label is provided, only show that parameter in the label
+                    param_value = run_result["hyperparameters"].get(x_label)
+                    config_labels[config_index] = f"{x_label}: {param_value}"
+            if final_loss is not None:
+                if config_index not in config_final_losses:
+                    config_final_losses[config_index] = []
+                config_final_losses[config_index].append(final_loss)
+
+        # Prepare data for boxplot
+        boxplot_data = []
+        boxplot_labels = []
+        for config_index, losses in config_final_losses.items():
+            boxplot_data.append(losses)
+            boxplot_labels.append(config_labels[config_index])
+
+        plt.figure(figsize=(14, 8))
+        #plt.boxplot(boxplot_data, labels=boxplot_labels, showfliers=True)
+            # Boxplot showing median, IQR, and range
+        plt.boxplot(boxplot_data, vert=True, patch_artist=True, labels=boxplot_labels, 
+                boxprops=dict(facecolor='lightblue'),
+                medianprops=dict(color='darkred'))
+        plt.xticks(rotation=45, ha='right')
+        plt.title('Final Loss Distribution Across Grid Search Configurations', fontsize=16)
+        plt.xlabel(x_label if x_label else 'Final Loss', fontsize=14)
+        plt.ylabel('Final Loss', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.tight_layout()
+        plt.savefig(file_name + '_boxplot.png', dpi=300)
+        print("Boxplot saved as " + file_name + "_boxplot.png\n")
+
+
+    # Method to generate a txt file summary table of final losses for each configuration across runs, including mean, median, std, min, and max and mean training time
+    def generate_final_loss_summary(self, file_name='grid_search_final_loss_summary'):
+        """
+        Generates a summary table of final losses for each hyperparameter configuration across multiple runs and saves it to a text file.
+
+        Parameters:
+            file_name (str): The filename prefix for saving the summary text file.
+        """
+
+        json_file = file_name if file_name.endswith('.json') else file_name + '.json'
+
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
+
+        if not results:
+            print("No results found in the JSON file.")
+            return
+
+        # Organize final losses and training times by configuration index
+        config_final_losses = {}
+        config_training_times = {}
+        config_labels = {}
+        for run_result in results:
+            config_index = run_result['config_index']
+            final_loss = run_result['metrics'].get('final_loss')
+            training_time = run_result['metrics'].get('training_time_seconds', 0.0)
+            if config_index not in config_labels:
+                hps = run_result["hyperparameters"]
+                if run_result["hyperparameters"]["delta_abs"] is None:
+                    run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
+                config_labels[config_index] = (
+                    f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
+                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
+                    f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                )
+            if final_loss is not None:
+                if config_index not in config_final_losses:
+                    config_final_losses[config_index] = []
+                    config_training_times[config_index] = []
+                config_final_losses[config_index].append(final_loss)
+                config_training_times[config_index].append(training_time)
+
+        # Write summary to text file
+        summary_file = file_name + '_summary.txt'
+        with open(summary_file, 'w') as f:
+            f.write("=" * 120 + "\n")
+            f.write("Final Loss Summary Across Grid Search Configurations\n")
+            f.write("=" * 120 + "\n\n\n\n")
+            # writing a table mapping each config index to its hyperparameter settings
+            f.write("=" * 120 + "\n")
+            f.write("Configuration Index to Hyperparameter Settings Mapping:\n")
+            f.write("=" * 120 + "\n\n")
+            for config_index, label in config_labels.items():
+                f.write(f"{config_index}: {label}\n")
+                f.write("-" * 120 + "\n")
+
+            f.write("=" * 120 + "\n\n\n\n")
+
+            f.write("=" * 120 + "\n\n")
+            f.write(f"{'Config':<10}{'Mean Loss':<15}{'Median Loss':<15}{'Std Dev':<15}{'Min Loss':<15}{'Max Loss':<15}{'Mean Time (s)':<15}\n")
+            f.write("-" * 120 + "\n")
+            for config_index, losses in config_final_losses.items():
+                training_times = config_training_times[config_index]
+                mean_loss = np.mean(losses)
+                median_loss = np.median(losses)
+                std_loss = np.std(losses)
+                min_loss = np.min(losses)
+                max_loss = np.max(losses)
+                mean_time = np.mean(training_times) if training_times else 0.0
+                f.write(f"{config_index:<10}{mean_loss:<15.6f}{median_loss:<15.6f}{std_loss:<15.6f}{min_loss:<15.6f}{max_loss:<15.6f}{mean_time:<15.2f}\n")
+            f.write("-" * 120 + "\n")

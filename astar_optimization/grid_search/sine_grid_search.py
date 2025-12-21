@@ -63,6 +63,15 @@ grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_con
 
 grid_search_trainer.plot_avg_loss(file_name="sine_test_max_iterations")
 
+# if all parameters are to be plotted in boxplot labels 
+#grid_search_trainer.plot_final_loss_boxplot(file_name="sine_test_max_iterations")
+
+# if only the tested parameter is to be plotted in boxplot labels
+grid_search_trainer.plot_final_loss_boxplot(file_name="sine_test_max_iterations", x_label="max_iterations")
+
+grid_search_trainer.generate_final_loss_summary(file_name="sine_test_max_iterations")
+
+
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

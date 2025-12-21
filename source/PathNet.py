@@ -808,9 +808,17 @@ class GridSearchTrainer:
                         f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
                     )
                 else:
-                    # if a specific x_label is provided, only show that parameter in the label
-                    param_value = run_result["hyperparameters"].get(x_label)
-                    config_labels[config_index] = f"{x_label}: {param_value}"
+                    #checking if the x_labels is a list or a single string
+                    if isinstance(x_label, list):
+                        labels = []
+                        for xl in x_label:
+                            param_value = run_result["hyperparameters"].get(xl)
+                            labels.append(f"{xl}: {param_value}")
+                        config_labels[config_index] = ", ".join(labels)
+                    else:
+                        # if a specific x_label is provided, only show that parameter in the label
+                        param_value = run_result["hyperparameters"].get(x_label)
+                        config_labels[config_index] = f"{x_label}: {param_value}"
             if final_loss is not None:
                 if config_index not in config_final_losses:
                     config_final_losses[config_index] = []
@@ -838,7 +846,7 @@ class GridSearchTrainer:
             plt.scatter(x, y, alpha=0.6, color='blue', s=20)
 
         plt.title('Final Loss Distribution Across Grid Search Configurations', fontsize=16)
-        plt.xlabel(x_label if x_label else 'Final Loss', fontsize=14)
+        plt.xlabel("Hyperparameter Tested", fontsize=14)
         plt.ylabel('Final Loss', fontsize=14)
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.tight_layout()

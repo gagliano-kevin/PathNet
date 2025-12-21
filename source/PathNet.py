@@ -103,7 +103,7 @@ class SearchNode:
         return self.f_val < other.f_val
     
 
-
+# Possible modification: stride could be splitted in x_stride and y_stride for more flexibility
 def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None):
 
     if quantization_factor is None:

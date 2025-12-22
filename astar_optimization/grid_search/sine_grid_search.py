@@ -27,7 +27,8 @@ DEFAULT_ITERATIONS = 2000
 # Default parameters for grid search
 DEFAULT_WEIGHT_KERNEL = [3, 3]
 DEFAULT_BIAS_KERNEL = [3]
-DEFAULT_STRIDE = 2
+DEFAULT_X_STRIDE = 2
+DEFAULT_Y_STRIDE = 2
 
 DEFAULT_PARAMETER_RANGE = (-20, 20)
 DEFAULT_QUANTIZATION_FACTOR = 10
@@ -76,7 +77,8 @@ grid_search_trainer = GridSearchTrainer(
     parameter_ranges=[DEFAULT_PARAMETER_RANGE],
     weight_kernels = [DEFAULT_WEIGHT_KERNEL], 
     bias_kernels = [DEFAULT_BIAS_KERNEL], 
-    strides=[DEFAULT_STRIDE], 
+    x_strides=[DEFAULT_X_STRIDE],
+    y_strides=[DEFAULT_Y_STRIDE], 
     max_iterations=[1000, 2000],
     log_freq=[100],
     debug_mlps=True
@@ -111,7 +113,8 @@ grid_search_trainer = GridSearchTrainer(
     parameter_ranges=[DEFAULT_PARAMETER_RANGE],
     weight_kernels = [DEFAULT_WEIGHT_KERNEL], 
     bias_kernels = [DEFAULT_BIAS_KERNEL], 
-    strides=[DEFAULT_STRIDE], 
+    x_strides=[DEFAULT_X_STRIDE],
+    y_strides=[DEFAULT_Y_STRIDE], 
     max_iterations=[DEFAULT_ITERATIONS],
     log_freq=[100],
     debug_mlps=True
@@ -142,7 +145,8 @@ grid_search_trainer = GridSearchTrainer(
     parameter_ranges=[(-5, 5), (-10, 10), (-20, 20)],
     weight_kernels = [DEFAULT_WEIGHT_KERNEL], 
     bias_kernels = [DEFAULT_BIAS_KERNEL], 
-    strides=[DEFAULT_STRIDE], 
+    x_strides=[DEFAULT_X_STRIDE],
+    y_strides=[DEFAULT_Y_STRIDE], 
     max_iterations=[DEFAULT_ITERATIONS],
     log_freq=[100],
     debug_mlps=True
@@ -175,7 +179,8 @@ grid_search_trainer = GridSearchTrainer(
     weight_kernels=[[2,2],[3,3]],
     #bias_kernels = [[1], [2], [3]], 
     bias_kernels=[[2],[3]],
-    strides=[2], 
+    x_strides=[2],
+    y_strides=[2], 
     max_iterations=[DEFAULT_ITERATIONS],
     log_freq=[100],
     debug_mlps=True
@@ -185,9 +190,9 @@ grid_search_trainer.run_grid_search(X_train_tensor, y_train_tensor, runs_per_con
 
 #grid_search_trainer.plot_grid_search_trend(log_filename="sine_test_kernel_stride", metric="loss_history")
 
-grid_search_trainer.plot_avg_loss(file_name="sine_test_kernel_stride", parameter_name=["weight_kernel", "bias_kernel", "stride"])
+grid_search_trainer.plot_avg_loss(file_name="sine_test_kernel_stride", parameter_name=["weight_kernel", "bias_kernel", "x_stride", "y_stride"])
 
-grid_search_trainer.plot_final_loss_boxplot(file_name="sine_test_kernel_stride", x_label=["weight_kernel", "bias_kernel", "stride"])
+grid_search_trainer.plot_final_loss_boxplot(file_name="sine_test_kernel_stride", x_label=["weight_kernel", "bias_kernel", "x_stride", "y_stride"])
 
 grid_search_trainer.generate_final_loss_summary(file_name="sine_test_kernel_stride")
 """

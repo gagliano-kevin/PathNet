@@ -63,7 +63,7 @@ for run in range(RUNS):
     
 
     trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
-            weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None, max_iterations=ITERATIONS, log_freq=100, \
+            weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=ITERATIONS, log_freq=100, \
                 measure_time=True, save_trained_model=False, model_name="sine_regression_model")
 
 

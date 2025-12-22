@@ -65,7 +65,7 @@ for run in range(RUNS):
 
 
     trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
-                weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
+                weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
                     measure_time=True, save_trained_model=False, model_name="iris_classification_model")
 
 

@@ -103,8 +103,7 @@ class SearchNode:
         return self.f_val < other.f_val
     
 
-# Possible modification: stride could be splitted in x_stride and y_stride for more flexibility
-def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None):
+def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None):
 
     if quantization_factor is None:
         quantization_factor = search_node.quantized_mlp.quantization_factor
@@ -140,8 +139,8 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
                     # check if the tensor is compatible with the weight kernel (has at least the size of the kernel)
                     if parent_tensor.shape[0] >= weight_kernel[0] and parent_tensor.shape[1] >= weight_kernel[1]:
                         # sliding window over the tensor
-                        for i in range(0, parent_tensor.shape[0] - weight_kernel[0] + 1, stride):
-                            for j in range(0, parent_tensor.shape[1] - weight_kernel[1] + 1, stride):
+                        for i in range(0, parent_tensor.shape[0] - weight_kernel[0] + 1, y_stride):
+                            for j in range(0, parent_tensor.shape[1] - weight_kernel[1] + 1, x_stride):
                                 neighbor_mlp = deepcopy(parent_mlp)
                                 neighbor_model = neighbor_mlp.model
                                 target_tensor = list(neighbor_model.parameters())[tensor_index].data
@@ -193,7 +192,7 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
                     # check if the tensor is compatible with the bias kernel (has at least the size of the kernel)
                     if parent_tensor.shape[0] >= bias_kernel[0]:
                         # sliding window over the tensor
-                        for i in range(0, parent_tensor.shape[0] - bias_kernel[0] + 1, stride):
+                        for i in range(0, parent_tensor.shape[0] - bias_kernel[0] + 1, y_stride):
                             neighbor_mlp = deepcopy(parent_mlp)
                             neighbor_model = neighbor_mlp.model
                             target_tensor = list(neighbor_model.parameters())[tensor_index].data
@@ -253,7 +252,7 @@ class Trainer:
     """
     A class to train a quantized MLP model using an A* search algorithm.
     """
-    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], stride=1, delta_abs=None, max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
+    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
         self.model = model          # nn.sequential model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
@@ -262,7 +261,8 @@ class Trainer:
 
         self.weight_kernel = weight_kernel
         self.bias_kernel = bias_kernel
-        self.stride = stride
+        self.x_stride = x_stride
+        self.y_stride = y_stride
         self.delta_abs = delta_abs
 
         self.max_iterations = max_iterations
@@ -328,7 +328,7 @@ class Trainer:
             if (iteration + 1) % self.log_freq == 0:
                 print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
                 
-            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.weight_kernel, self.bias_kernel, self.stride, self.delta_abs)
+            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.weight_kernel, self.bias_kernel, self.x_stride, self.y_stride, self.delta_abs)
 
             for neighbor_mlp, neighbor_loss in neighbors:
                 if neighbor_mlp.overflow: continue
@@ -452,7 +452,7 @@ class GridSearchTrainer:
     """
     A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
     """
-    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, weight_kernels, bias_kernels, strides, max_iterations, log_freq, delta_abs=[None], debug_mlps=True, measure_time=True):
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, weight_kernels, bias_kernels, x_strides, y_strides, max_iterations, log_freq, delta_abs=[None], debug_mlps=True, measure_time=True):
        
         self.trainers_params = []
         self.grid_search_data = []
@@ -463,24 +463,26 @@ class GridSearchTrainer:
                     for pr in parameter_ranges:
                         for wk in weight_kernels:
                             for bk in bias_kernels:
-                                for st in strides:
-                                    for da in delta_abs:
-                                        for mi in max_iterations:
-                                            for lfq in log_freq:
-                                                self.trainers_params.append((
-                                                    models[i],
-                                                    lf,
-                                                    qf,
-                                                    pr,
-                                                    debug_mlps,
-                                                    wk,
-                                                    bk,
-                                                    st,
-                                                    da,
-                                                    mi,
-                                                    lfq,
-                                                    measure_time
-                                                ))
+                                for xst in x_strides:
+                                    for yst in y_strides:
+                                        for da in delta_abs:
+                                            for mi in max_iterations:
+                                                for lfq in log_freq:
+                                                    self.trainers_params.append((
+                                                        models[i],
+                                                        lf,
+                                                        qf,
+                                                        pr,
+                                                        debug_mlps,
+                                                        wk,
+                                                        bk,
+                                                        xst,
+                                                        yst,
+                                                        da,
+                                                        mi,
+                                                        lfq,
+                                                        measure_time
+                                                    ))
 
 
     def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=True, log_filename='grid_search_results', save_models=False):
@@ -506,7 +508,7 @@ class GridSearchTrainer:
         print("=" * 50)
         
         for config_index, param_config in enumerate(self.trainers_params):
-            (model_class, loss_fn, qf, pr, debug_mlp, wk, bk, st, da, mi, lfq, measure_time) = param_config
+            (model_class, loss_fn, qf, pr, debug_mlp, wk, bk, xst, yst, da, mi, lfq, measure_time) = param_config
             
             hyperparams_dict = {
                 "model_type": str(model_class),
@@ -515,7 +517,8 @@ class GridSearchTrainer:
                 "parameter_range": pr,
                 "weight_kernel": wk,
                 "bias_kernel": bk,
-                "stride": st,
+                "x_stride": xst,
+                "y_stride": yst,
                 "delta_abs": da,
                 "max_iterations": mi,
                 "log_freq": lfq,
@@ -539,7 +542,8 @@ class GridSearchTrainer:
                     debug_mlp=debug_mlp,
                     weight_kernel=wk,
                     bias_kernel=bk,
-                    stride=st,
+                    x_stride=xst,
+                    y_stride=yst,
                     delta_abs=da,
                     max_iterations=mi,
                     log_freq=lfq,
@@ -548,10 +552,10 @@ class GridSearchTrainer:
                 
                 run_label = f"Config {config_index+1}/{len(self.trainers_params)} (Run {run+1}/{runs_per_config})"
                 print(f"\n--- {run_label} ---")
-                print(f"HPs: QF={qf}, PR={pr}, WK={wk}, BK={bk}, S={st}, DA={da}, MI={mi}, LFQ={lfq}\n")
+                print(f"HPs: QF={qf}, PR={pr}, WK={wk}, BK={bk}, XS={xst},YS={yst}, DA={da}, MI={mi}, LFQ={lfq}\n")
 
                 with open(log_filename + '.txt', 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Weight Kernel={trainer.weight_kernel}, Bias Kernel={trainer.bias_kernel}, Stride={trainer.stride}, Delta Abs={trainer.delta_abs}, Max Iterations={trainer.max_iterations}, Log Freq={trainer.log_freq}\n\n")
+                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Weight Kernel={trainer.weight_kernel}, Bias Kernel={trainer.bias_kernel}, X Stride={trainer.x_stride}, Y Stride={trainer.y_stride}, Delta Abs={trainer.delta_abs}, Max Iterations={trainer.max_iterations}, Log Freq={trainer.log_freq}\n\n")
 
                 trainer.train(X, Y)
 
@@ -602,7 +606,7 @@ class GridSearchTrainer:
                 hps = res['hyperparameters']
                 log_file.write(f"{i+1}. Loss: {res['metrics']['final_loss']:.6f}\n")
                 log_file.write(f"Model: {hps['model_type']}\n")
-                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}\n\n")
+                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}\n\n")
         
     
     
@@ -652,7 +656,7 @@ class GridSearchTrainer:
                     hps = run_result["hyperparameters"]
                     label = (
                         f"Config Index {run_result['config_index']} - Run N° {run_result['run_number']} "
-                        f"[PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                        f"[PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
                     )
                     
                     # X = iteration, Y = history_value
@@ -730,7 +734,7 @@ class GridSearchTrainer:
                 if parameter_name is None:
                     config_labels[config_index] = (
                         f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
-                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
+                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']},"
                         f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
                 )
                 else:
@@ -821,7 +825,7 @@ class GridSearchTrainer:
                     hps = run_result["hyperparameters"]
                     config_labels[config_index] = (
                         f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
-                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
+                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']},"
                         f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
                     )
                 else:
@@ -910,7 +914,7 @@ class GridSearchTrainer:
                     run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
                 config_labels[config_index] = (
                     f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
-                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, S: {hps['stride']}, "
+                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']},"
                     f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
                 )
             if final_loss is not None:

@@ -27,7 +27,7 @@ model = nn.Sequential(
 )
 
 trainer = Trainer(model, nn.MSELoss(), quantization_factor=2, parameter_range=(-4, 4), debug_mlp=True, \
-                  weight_kernel=[2,2], bias_kernel=[2], stride=1, delta_abs=None, max_iterations=1000, log_freq=100, \
+                  weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=1000, log_freq=100, \
                     measure_time=True, save_trained_model=False, model_name="sine_classification_model")
 
 

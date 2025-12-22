@@ -174,28 +174,19 @@ Unlike the previous version, consistency is now tied directly to the direction o
 \end{enumerate}
 
 
+\subsection{Efficiency and Scalability of Kernel-Based Transitions}
 
-\subsection{Role of $g(n)$ and Search Dynamics}
+The implementation of sliding window kernels, paired with the loss-differential cost function, provides a robust framework for navigating high-dimensional weight spaces. This structured approach ensures the search remains computationally feasible through several key mechanisms:
 
-By defining $\Delta g$ as the loss differential, $g(n)$ essentially tracks the "Work Done" on the loss landscape. The total evaluation function $f(n) = g(n) + h(n)$ simplifies significantly:
-\begin{equation}
-    f(n) = \sum \Delta g + L(n)
-\end{equation}
-Because $\sum \Delta g$ is a telescoping sum ($L(n) - L_{initial}$), the function becomes:
-\begin{equation}
-    f(n) = (L(n) - L_{initial}) + L(n) = 2L(n) - L_{initial}
-\end{equation}
-
-This reveals that the search behaves as a **Greedy Best-First Search** weighted by the current loss. The benefit of this approach is the massive \textbf{pruning of the search space}: by using a sliding window (spatial locality) and a loss-driven $g(n)$, we avoid the memory explosion of tracking millions of independent scalar weight neighbors.
-
-\subsection{Performance and Scalability}
-
-The transition from single-scalar updates to sliding window kernels, combined with this new cost function, addresses the "curse of dimensionality":
 \begin{itemize}
-    \item \textbf{RAM Efficiency:} By reducing the branching factor (fewer neighbors per node), the Open List in A* remains manageable even for larger MLP architectures.
-    \item \textbf{Temporal Efficiency:} Each "hop" of the window updates $H \times W$ parameters. To achieve the same change via single-scalar updates would require $H \times W$ levels of depth in the search tree. This effectively "squashes" the search depth, leading to faster convergence to a target loss.
+    \item \textbf{Memory Optimization:} By generating transitions based on window "hops", the algorithm significantly restricts the branching factor of the search graph. This keeps the A* Open List manageable and prevents memory exhaustion, even when applied to larger Multi-Layer Perceptron (MLP) architectures.
+    \item \textbf{Temporal Acceleration:} Each kernel application updates a block of $H \times W$ parameters simultaneously. This spatial grouping effectively "squashes" the required search depth, allowing the algorithm to achieve significant loss reduction in fewer state explorations compared to unstructured methods.
 \end{itemize}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+By leveraging these efficiencies, the kernel-based method mitigates the "curse of dimensionality," making it possible to apply discrete search-based optimization to complex neural network structures that would otherwise be computationally prohibitive.%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%===================================================================================================================================
 
 \section{The A* Training Loop Implementation}
 

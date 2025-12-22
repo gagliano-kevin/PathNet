@@ -31,8 +31,7 @@
 \contentsline {subsection}{\numberline {3.3.3}Total Evaluation Function $f(n)$}{13}{}%
 \contentsline {subsection}{\numberline {3.3.4}Admissibility Analysis}{14}{}%
 \contentsline {subsection}{\numberline {3.3.5}Consistency Analysis}{14}{}%
-\contentsline {subsection}{\numberline {3.3.6}Role of $g(n)$ and Search Dynamics}{15}{}%
-\contentsline {subsection}{\numberline {3.3.7}Performance and Scalability}{16}{}%
+\contentsline {subsection}{\numberline {3.3.6}Efficiency and Scalability of Kernel-Based Transitions}{15}{}%
 \contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{16}{}%
 \contentsline {chapter}{\numberline {4}Experimental Methodology and Results}{17}{}%
 \contentsline {section}{\numberline {4.1}Experimental Methodology}{17}{}%

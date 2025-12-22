@@ -1,0 +1,885 @@
+================================
+	Grid Search Training Log
+================================
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 0) - Best Loss: 0.019582923501729965
+(Run 0) - Training Time: 572.0657 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 1) - Best Loss: 0.05449645593762398
+(Run 1) - Training Time: 502.0783 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 2) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 2) - Best Loss: 0.08450445532798767
+(Run 2) - Training Time: 557.4581 seconds
+
+(Run 2) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 3) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 3) - Best Loss: 0.058500878512859344
+(Run 3) - Training Time: 468.6775 seconds
+
+(Run 3) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 4) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 4) - Best Loss: 0.0987374484539032
+(Run 4) - Training Time: 447.9803 seconds
+
+(Run 4) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 5) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 5) - Best Loss: 0.22088664770126343
+(Run 5) - Training Time: 405.8400 seconds
+
+(Run 5) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 6) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 6) - Best Loss: 0.049593646079301834
+(Run 6) - Training Time: 469.4670 seconds
+
+(Run 6) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 7) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 7) - Best Loss: 0.3133714497089386
+(Run 7) - Training Time: 496.5428 seconds
+
+(Run 7) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 8) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 8) - Best Loss: 0.04168320819735527
+(Run 8) - Training Time: 546.9950 seconds
+
+(Run 8) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 9) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 9) - Best Loss: 0.04601619020104408
+(Run 9) - Training Time: 532.7830 seconds
+
+(Run 9) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 0) - Best Loss: 0.05396001413464546
+(Run 0) - Training Time: 467.3634 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 1) - Best Loss: 0.17988435924053192
+(Run 1) - Training Time: 422.1709 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 2) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 2) - Best Loss: 0.0693158507347107
+(Run 2) - Training Time: 395.2528 seconds
+
+(Run 2) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 3) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 3) - Best Loss: 0.10109380632638931
+(Run 3) - Training Time: 543.9431 seconds
+
+(Run 3) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 4) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 4) - Best Loss: 0.05125197768211365
+(Run 4) - Training Time: 539.1462 seconds
+
+(Run 4) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 5) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 5) - Best Loss: 0.3199300765991211
+(Run 5) - Training Time: 378.7591 seconds
+
+(Run 5) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 6) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 6) - Best Loss: 0.07410207390785217
+(Run 6) - Training Time: 448.1691 seconds
+
+(Run 6) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 7) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 7) - Best Loss: 0.03889354690909386
+(Run 7) - Training Time: 485.0957 seconds
+
+(Run 7) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 8) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 8) - Best Loss: 0.06521341949701309
+(Run 8) - Training Time: 550.4078 seconds
+
+(Run 8) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 9) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[2, 2], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 9) - Best Loss: 0.021686414256691933
+(Run 9) - Training Time: 551.1836 seconds
+
+(Run 9) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 0) - Best Loss: 0.43312379717826843
+(Run 0) - Training Time: 394.4023 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 1) - Best Loss: 0.08198537677526474
+(Run 1) - Training Time: 421.4926 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 2) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 2) - Best Loss: 0.4359775185585022
+(Run 2) - Training Time: 395.1777 seconds
+
+(Run 2) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 3) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 3) - Best Loss: 0.3515966236591339
+(Run 3) - Training Time: 408.9455 seconds
+
+(Run 3) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 4) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 4) - Best Loss: 0.3511638045310974
+(Run 4) - Training Time: 402.7811 seconds
+
+(Run 4) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 5) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 5) - Best Loss: 0.22028566896915436
+(Run 5) - Training Time: 413.6008 seconds
+
+(Run 5) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 6) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 6) - Best Loss: 0.10852218419313431
+(Run 6) - Training Time: 338.8102 seconds
+
+(Run 6) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 7) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 7) - Best Loss: 0.05175870656967163
+(Run 7) - Training Time: 377.6705 seconds
+
+(Run 7) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 8) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 8) - Best Loss: 0.05110044404864311
+(Run 8) - Training Time: 397.1805 seconds
+
+(Run 8) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 9) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[2], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 9) - Best Loss: 0.05049372464418411
+(Run 9) - Training Time: 408.5993 seconds
+
+(Run 9) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 0) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 0) - Best Loss: 0.12925240397453308
+(Run 0) - Training Time: 314.3020 seconds
+
+(Run 0) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 1) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 1) - Best Loss: 0.39734676480293274
+(Run 1) - Training Time: 388.5621 seconds
+
+(Run 1) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 2) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 2) - Best Loss: 0.0748078003525734
+(Run 2) - Training Time: 316.6816 seconds
+
+(Run 2) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 3) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 3) - Best Loss: 0.08501879870891571
+(Run 3) - Training Time: 340.8622 seconds
+
+(Run 3) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 4) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 4) - Best Loss: 0.2551538646221161
+(Run 4) - Training Time: 393.6693 seconds
+
+(Run 4) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 5) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 5) - Best Loss: 0.07391350716352463
+(Run 5) - Training Time: 320.3246 seconds
+
+(Run 5) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 6) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 6) - Best Loss: 0.24682632088661194
+(Run 6) - Training Time: 319.9630 seconds
+
+(Run 6) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 7) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 7) - Best Loss: 0.36045271158218384
+(Run 7) - Training Time: 390.0430 seconds
+
+(Run 7) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 8) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 8) - Best Loss: 0.21187058091163635
+(Run 8) - Training Time: 390.7258 seconds
+
+(Run 8) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+(Run 9) - Training with parameters: Quantization Factor=10, Parameter Range=(-20, 20), Weight Kernel=[3, 3], Bias Kernel=[3], Stride=2, Delta Abs=None, Max Iterations=2000, Log Freq=100
+
+(Run 9) - Best Loss: 0.06728246808052063
+(Run 9) - Training Time: 396.5482 seconds
+
+(Run 9) - Training completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sorted Final Losses from Grid Search:
+1. Loss: 0.019583
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+2. Loss: 0.021686
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+3. Loss: 0.038894
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+4. Loss: 0.041683
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+5. Loss: 0.046016
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+6. Loss: 0.049594
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+7. Loss: 0.050494
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+8. Loss: 0.051100
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+9. Loss: 0.051252
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+10. Loss: 0.051759
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+11. Loss: 0.053960
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+12. Loss: 0.054496
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+13. Loss: 0.058501
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+14. Loss: 0.065213
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+15. Loss: 0.067282
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+16. Loss: 0.069316
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+17. Loss: 0.073914
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+18. Loss: 0.074102
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+19. Loss: 0.074808
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+20. Loss: 0.081985
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+21. Loss: 0.084504
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+22. Loss: 0.085019
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+23. Loss: 0.098737
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+24. Loss: 0.101094
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+25. Loss: 0.108522
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+26. Loss: 0.129252
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+27. Loss: 0.179884
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+28. Loss: 0.211871
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+29. Loss: 0.220286
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+30. Loss: 0.220887
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+31. Loss: 0.246826
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+32. Loss: 0.255154
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+33. Loss: 0.313371
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [2], S: 2, DA: None, MI: 2000
+
+34. Loss: 0.319930
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [2, 2], BK: [3], S: 2, DA: None, MI: 2000
+
+35. Loss: 0.351164
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+36. Loss: 0.351597
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+37. Loss: 0.360453
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+38. Loss: 0.397347
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [3], S: 2, DA: None, MI: 2000
+
+39. Loss: 0.433124
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+
+40. Loss: 0.435978
+Model: Sequential(
+  (0): Linear(in_features=1, out_features=8, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=8, out_features=16, bias=True)
+  (3): ReLU()
+  (4): Linear(in_features=16, out_features=8, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=8, out_features=1, bias=True)
+  (7): Tanh()
+)
+QF: 10, PR: (-20, 20), WK: [3, 3], BK: [2], S: 2, DA: None, MI: 2000
+

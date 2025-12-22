@@ -134,7 +134,7 @@ grid_search_trainer.generate_final_loss_summary(file_name="sine_test_quantizatio
 
 #TESTING ONLY PARAMETER RANGE PARAMETER: -5 to 5, -10 to 10 and -20 to 20
 
-"""
+#"""
 grid_search_trainer = GridSearchTrainer(
     models=[model],
     loss_funcs=[nn.MSELoss()],
@@ -157,7 +157,7 @@ grid_search_trainer.plot_avg_loss(file_name="sine_test_parameter_range", paramet
 grid_search_trainer.plot_final_loss_boxplot(file_name="sine_test_parameter_range", x_label="parameter_range")
 
 grid_search_trainer.generate_final_loss_summary(file_name="sine_test_parameter_range")
-"""
+#"""
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -165,7 +165,7 @@ grid_search_trainer.generate_final_loss_summary(file_name="sine_test_parameter_r
 
 #TESTING ONLY WEIGHT KERNEL SIZE 
 
-#"""
+"""
 grid_search_trainer = GridSearchTrainer(
     models=[model],
     loss_funcs=[nn.MSELoss()],
@@ -190,4 +190,4 @@ grid_search_trainer.plot_avg_loss(file_name="sine_test_kernel_stride", parameter
 grid_search_trainer.plot_final_loss_boxplot(file_name="sine_test_kernel_stride", x_label=["weight_kernel", "bias_kernel", "stride"])
 
 grid_search_trainer.generate_final_loss_summary(file_name="sine_test_kernel_stride")
-#"""
+"""

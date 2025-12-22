@@ -240,7 +240,7 @@ grad_mean_loss = np.mean(grad_losses_array, axis=0)
 grad_std_loss = np.std(grad_losses_array, axis=0)
 
 # mean loss with standard deviation shading
-plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss, ITERATIONS, "sine_mean_loss_comparison_with_std.png", "Sine Function")
+plot_mean_loss_with_std(astar_mean_loss, astar_std_loss, grad_mean_loss, grad_std_loss, RUNS, "sine_mean_loss_comparison_with_std.png", "Sine Function")
 
 # box and whisker of final losses
-plot_final_loss_distribution(astar_final_losses, grad_final_losses, ITERATIONS, "sine_final_loss_distribution_comparison.png", "Sine Function")
+plot_final_loss_distribution(astar_final_losses, grad_final_losses, RUNS, "sine_final_loss_distribution_comparison.png", "Sine Function")

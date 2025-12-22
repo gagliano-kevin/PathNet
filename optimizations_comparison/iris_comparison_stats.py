@@ -16,11 +16,14 @@ import matplotlib.pyplot as plt
 
 
 RUNS = 10                       # Number of times to run the experiment for statistical analysis
-MAX_ITERATIONS = 2500           # Number of iterations/epochs for both methods
+MAX_ITERATIONS = 2000           # Number of iterations/epochs for both methods
 
 INPUT_SIZE = 4
+HIDDEN_SIZE_1 = 8
+HIDDEN_SIZE_2 = 16
+HIDDEN_SIZE_3 = 8
 OUTPUT_SIZE = 3
-HIDDEN_SIZE = 8
+
 
 ASTAR_METRICS = {
     "losses": [],
@@ -56,16 +59,18 @@ for run in range(RUNS):
 
     # No softmax/log_softmax here, as CrossEntropyLoss expects logits.
     model = nn.Sequential(
-        nn.Linear(INPUT_SIZE, HIDDEN_SIZE),
-        nn.ReLU(),
-        nn.Linear(HIDDEN_SIZE, HIDDEN_SIZE),
-        nn.ReLU(),
-        nn.Linear(HIDDEN_SIZE, OUTPUT_SIZE),
-    ) 
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            )
 
 
     trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
-                weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
+                weight_kernel=[2,2], bias_kernel=[2], x_stride=2, y_stride=2, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
                     measure_time=True, save_trained_model=False, model_name="iris_classification_model")
 
 
@@ -89,7 +94,7 @@ LEARNING_RATE = 0.01
 
 for run in range(RUNS):
     
-    model = IrisMLP(INPUT_SIZE, HIDDEN_SIZE, OUTPUT_SIZE)
+    model = IrisMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, output_size=OUTPUT_SIZE)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 

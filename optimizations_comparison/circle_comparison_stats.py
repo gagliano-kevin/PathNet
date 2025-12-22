@@ -18,7 +18,7 @@ from source.general_utils import plot_mean_loss_with_std, plot_final_loss_distri
 
 # --- GLOBAL CONFIGURATION ---
 RUNS = 10                   # Number of times to run the experiment for statistical analysis
-MAX_ITERATIONS = 2500       # Number of iterations/epochs for both methods (This value will be overridden if any run exceeds it)
+MAX_ITERATIONS = 2000       # Number of iterations/epochs for both methods (This value will be overridden if any run exceeds it)
 LEARNING_RATE = 0.01
 
 # Dataset parameters
@@ -29,7 +29,9 @@ RANDOM_SEED = 42
 
 # Model parameters
 INPUT_SIZE = 2      # X, Y coordinates
-HIDDEN_SIZE = 4
+HIDDEN_SIZE_1 = 8
+HIDDEN_SIZE_2 = 16
+HIDDEN_SIZE_3 = 8
 OUTPUT_SIZE = 2     # Two classes (inner/outer circle)
 
 ASTAR_METRICS = {
@@ -66,16 +68,20 @@ train_loader = DataLoader(train_dataset, batch_size=X_train_tensor.shape[0], shu
 for run in range(RUNS):
     print(f"\n--- ASTAR Training Run {run + 1}/{RUNS} ---\n")
 
-    # Simple neural network model for circle classification (CrossEntropyLoss expects logits)
+    # No softmax/log_softmax here, as CrossEntropyLoss expects logits.
     model = nn.Sequential(
-        nn.Linear(INPUT_SIZE, HIDDEN_SIZE),
-        nn.ReLU(),
-        nn.Linear(HIDDEN_SIZE, OUTPUT_SIZE),
-    ) 
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            )
 
 
     trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
-                    weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
+                    weight_kernel=[2,2], bias_kernel=[2], x_stride=2, y_stride=2, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
                         measure_time=True, save_trained_model=False, model_name="circle_classification_model")
 
 
@@ -95,12 +101,16 @@ for run in range(RUNS):
 
 for run in range(RUNS):
     
-    # Model definition
+    # No softmax/log_softmax here, as CrossEntropyLoss expects logits.
     model = nn.Sequential(
-        nn.Linear(INPUT_SIZE, HIDDEN_SIZE),
-        nn.ReLU(),
-        nn.Linear(HIDDEN_SIZE, OUTPUT_SIZE),
-    ) 
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            )
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 

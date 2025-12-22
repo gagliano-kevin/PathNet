@@ -23,9 +23,17 @@ NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1
-ITERATIONS = 100
 
-RUNS = 2
+ITERATIONS = 2000
+
+RUNS = 10
+
+# MLP Hyperparameters
+INPUT_SIZE = 1
+HIDDEN_SIZE_1 = 8
+HIDDEN_SIZE_2 = 16
+HIDDEN_SIZE_3 = 8
+OUTPUT_SIZE = 1
 
 ASTAR_METRICS = {
     "losses": [],
@@ -53,17 +61,20 @@ for run in range(RUNS):
     print(f"\n--- ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
-        nn.Linear(1, 4),  
-        nn.ReLU(),
-        nn.Linear(4, 4),
-        nn.ReLU(),
-        nn.Linear(4, 1),
-        nn.Tanh()
-        )
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            nn.Tanh()
+            )
+
     
 
     trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
-            weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=ITERATIONS, log_freq=100, \
+            weight_kernel=[2,2], bias_kernel=[2], x_stride=2, y_stride=2, delta_abs=None, max_iterations=ITERATIONS, log_freq=100, \
                 measure_time=True, save_trained_model=False, model_name="sine_regression_model")
 
 
@@ -89,14 +100,13 @@ for run in range(RUNS):
 BATCH_SIZE = NUM_SAMPLES    # Full batch
 LEARNING_RATE = 0.001
 EPOCHS = ITERATIONS
-HIDDEN_SIZE = 4
 
 dataset = SinDataset(NUM_SAMPLES, MIN_ANGLE, MAX_ANGLE, NOISE_LEVEL)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 for run in range(RUNS):
     
-    sin_model_tanh_out = SinusoidalMLP(hidden_size=HIDDEN_SIZE)
+    sin_model_tanh_out = SinusoidalMLP(input_size=INPUT_SIZE,hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, output_size=OUTPUT_SIZE)
     criterion = nn.MSELoss()
     sin_optimizer = torch.optim.Adam(sin_model_tanh_out.parameters(), lr=LEARNING_RATE)
 

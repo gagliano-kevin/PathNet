@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 
 
-NUM_SAMPLES = 000
+NUM_SAMPLES = 1000
 MIN_ANGLE = 0
 MAX_ANGLE = 4 * np.pi
 NOISE_LEVEL = 0.1

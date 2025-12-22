@@ -82,7 +82,7 @@ for run in range(RUNS):
 
     trainer = Trainer(model, nn.CrossEntropyLoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
                     weight_kernel=[2,2], bias_kernel=[2], x_stride=2, y_stride=2, delta_abs=None, max_iterations=MAX_ITERATIONS, log_freq=100, \
-                        measure_time=True, save_trained_model=False, model_name="circle_classification_model")
+                        measure_time=True, save_trained_model=True, model_name=f"circle_classification_model_run_{run + 1}")
 
 
     trainer.train(X_train_tensor, y_train_tensor)

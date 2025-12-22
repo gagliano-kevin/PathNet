@@ -8,10 +8,10 @@ The primary objective of this study is to analyze a novel approach using A* sear
 \section{Experimental Methodology}
 \label{sec:experimental_methodology}
 
-To systematically evaluate the proposed A* search framework, a three-stage comparative protocol was designed and applied uniformly to every dataset. This approach allows for a rigorous analysis of the A* algorithm's behavior under different hyperparameter settings and a direct performance comparison with a conventional gradient descent method.
+To systematically evaluate the proposed A* search framework, a three-stage comparative protocol was designed and applied uniformly to sine dataset. This approach allows for a rigorous analysis of the A* algorithm's behavior under different hyperparameter settings and a direct performance comparison with a conventional gradient descent method.
 
 \subsection{MLP Architecture and Evaluation}
-For all experiments, a small Multilayer Perceptron (MLP) architecture suitable for the complexity of the dataset was chosen. The loss function $L(n)$ for both A* evaluation (heuristic $h(n)$) and the Backpropagation baseline was chosen based on the task.
+For all experiments, a Multilayer Perceptron (MLP) architecture suitable for the complexity of the dataset was chosen. The loss function $L(n)$ for both A* evaluation (heuristic $h(n)$) and the Backpropagation baseline was chosen based on the task.
 
 \subsection{Three-Stage Comparative Protocol}
 
@@ -23,20 +23,18 @@ The A* search performance is critically dependent on the discretization of the w
 \end{enumerate}
 The key hyperparameters subjected to optimization were:
 \begin{itemize}
+    \item \textbf{Maximum Iterations ($\text{max\_iterations}$):} The upper limit of the number of total node expansions.
     \item \textbf{Quantization Factor ($Q$):} Defining the granularity of the weight space ($1/Q$).
     \item \textbf{Parameter Range:} The boundary $[\text{min\_range}, \text{max\_range}]$ for the weights.
-    \item \textbf{Parameter Fraction ($\text{param\_fraction}$):} The proportion of scalar weights mutated per neighbor generation.
-    \item \textbf{Target Loss ($L_{\text{target}}$):} The goal condition for search termination.
-    \item \textbf{Maximum Iterations ($\text{max\_iterations}$):} The upper limit of the number of total node expansions.
+    \item \textbf{Kernels Shape and Strides:} This parameter set defines the window dimensions ($H \times W$) for the weight and bias matrices, alongside the horizontal ($x_s$) and vertical ($y_s$) strides.
 \end{itemize}
-
 \subsubsection{Stage 2: A* Training with Optimal Configuration}
 The best-performing hyperparameter set from Stage 1 was selected and used to train the final MLP model. This training run recorded the total number of node expansions, the path taken (sequence of weight states), and the overall wall-clock time required for the optimization.
 
 \subsubsection{Stage 3: Backpropagation Baseline and Comparison}
 The A* performance was compared against the standard Stochastic Gradient Descent algorithm with Backpropagation. For a fair comparison, the SGD baseline was trained using its own optimal learning rate ($\eta$) derived from preliminary tuning. The final comparison focused on three critical metrics:
 \begin{itemize}
-    \item \textbf{Convergence Speed:} Total A* node expansions vs. total SGD epochs required to be close to $L_{\text{target}}$.
+    \item \textbf{Convergence Speed:} Total A* node expansions vs. total SGD epochs required to achieve the minimum loss.
     \item \textbf{Final Loss Value:} The best loss achieved during training for both methods.
     \item \textbf{Wall-Clock Time:} Comparison of total training time.
 \end{itemize}
@@ -47,7 +45,7 @@ The A* performance was compared against the standard Stochastic Gradient Descent
 %-------------------------------------------------------------------    SINE DATASET -----------------------------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Synthetic Dataset: One-Dimensional Sine Function Regression}
+\section{Synthetic Dataset: Sine Function Regression}
 \label{sec:sine_regression}
 
 The first experiment applies the A* training framework to a non-linear regression problem, assessing its ability to learn complex continuous functions.
@@ -57,8 +55,7 @@ The synthetic dataset was generated using the one-dimensional sine function with
 \begin{itemize}
     \item \textbf{Input ($x$):} 1,000 evenly spaced samples in the range $x \in [0, 4\pi]$.
     \item \textbf{Output ($y$):} Generated as $y = \sin(x) + \epsilon$, where $\epsilon \sim \mathcal{N}(0, 0.1)$.
-    \item \textbf{MLP Architecture:} Input (1 neuron) $\rightarrow$ Hidden Layer 1 (4 neurons, $relu$ activation) $\rightarrow$ Hidden Layer 2 (4 neurons, $relu$ activation) $\rightarrow$ Output (1 neuron, $tanh$  activation).
-\end{itemize}
+\item \textbf{MLP Architecture:} Input (1 neuron) $\rightarrow$ Hidden Layer 1 (8 neurons, \textit{ReLU}) $\rightarrow$ Hidden Layer 2 (16 neurons, \textit{ReLU}) $\rightarrow$ Hidden Layer 3 (8 neurons, \textit{ReLU}) $\rightarrow$ Output (1 neuron, \textit{tanh}).\end{itemize}
 The network's task is to learn the underlying $\sin(x)$ mapping, minimizing the Mean Squared Error loss.
 
 \begin{center}
@@ -71,39 +68,49 @@ The network's task is to learn the underlying $\sin(x)$ mapping, minimizing the 
 
 \subsection{Stage 1: Grid Search Findings}
 
-The grid search confirmed that the A* framework is most efficient when the quantization factor is high enough to capture the function's complexity but low enough to keep the neighbor generation tractable.
+\noindent Except for the specific parameter under evaluation during the grid search, the system is initialized with the following default hyperparameters:
 
-Except for the parameter examined during the grid search, all hyperparameters are set with the following values:  $Q=10$, Parameter Range $[-5, 5]$, $\text{param\_fraction}=1.0$, $\text{max\_iterations}=5000$ and $L_{\text{target}}=0.01$.
-
+\begin{itemize}
+    \item \textbf{Quantization Factor ($Q$):} $10$
+    \item \textbf{Parameter Range:} $[-20, 20]$
+    \item \textbf{Kernel Geometry:} Weight kernels of size $3 \times 3$ and bias kernels of size $3$.
+    \item \textbf{Traversal Strides:} Horizontal ($x_s$) and vertical ($y_s$) strides are both set to $2$.
+    \item \textbf{Search Constraints:} A maximum of $2000$ iterations.
+\end{itemize}
 %------------------------------------------------------------------- quantization factor test -------------------------------------------------------------------
-\newpage
 
 \noindent \textbf{Impact of the Quantization Factor}
 
-\noindent Based on the empirical results presented in the accompanying figure, the hyperparameter grid search demonstrated a clear dependency of the final achieved loss on the selected quantization factor, $Q$. Specifically, among the three tested values ($Q=1$, $Q=10$, and $Q=100$), the intermediate quantization factor of $Q=10$ yielded the most favorable outcome, resulting in the lowest terminal loss across the benchmark dataset. This suggests that $Q=10$ strikes the optimal balance between aggressive parameter quantization (which risks excessive information loss, as potentially seen with $Q=1$) and insufficient quantization (where the search space remains overly large and continuous, hindering the A* pathfinding approach, as potentially observed with $Q=100$).
+\noindent Based on the empirical results presented in the accompanying figure, the hyperparameter grid search demonstrated a clear dependency of the final achieved loss on the selected quantization factor, $Q$. Specifically, among the tested values ($Q=10$, $Q=100$, and $Q=1000$), the lower and intermediate factors of $Q=10$ and $Q=100$ yielded the most favorable and comparable outcomes, both achieving a final mean loss of approximately $0.17$. 
+
+In contrast, the highest quantization factor, $Q=1000$, resulted in significantly poorer performance, with a final mean loss of $0.41$. This suggests that while $Q=10$ and $Q=100$ provide a sufficiently discretized weight space for efficient A* traversal, $Q=1000$ leads to a search space that is too fine-grained. At this higher resolution, the distance between meaningful states may hinder the algorithm's ability to reach a global minimum within the allocated iteration budget.
+
+To evaluate the stability and convergence of the proposed methodology, the following results represent the average loss across 10 independent runs for each tested hyperparameter configuration. Figure below provides a clear measure of statistical variability and reproducibility, where the solid lines represent the average loss and the surrounding shaded regions indicate the one standard deviation ($\pm 1\sigma$) interval.
 
 \begin{center}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.2\textwidth]{figures/sine_tests/sine_test_quantization_factor_loss_trend.png}
-     \caption{Plot of the loss trend in function of Quantization Factor}
+    \includegraphics[width=1.1\textwidth]{figures/sine_grid_search/sine_test_quantization_factor_avg_loss.png}
+    \caption{Comparison of the mean loss across training iterations for varying quantization factors ($Q \in \{10, 100, 1000\}$)}
 \end{figure}
 \end{center}
 
 
 \begin{table}[htbp]
 \centering
-\caption{Impact of Quantization Factor on Sine Regression Performance (Other HPs Fixed)}
+\caption{Impact of Quantization Factor ($Q$) on Sine Regression Performance}
 \label{tab:sine_gs_q_impact}
-\begin{tabular}{|c|c|c|c|}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-\textbf{QF} & \textbf{Avg. Time (s)} & \textbf{Avg. Final Loss} \\
+\textbf{QF ($Q$)} & \textbf{Mean Loss} & \textbf{Median Loss} & \textbf{Std. Dev.} & \textbf{Min Loss} & \textbf{Max Loss} & \textbf{Mean Time (s)} \\
 \hline
-1 & 438.8 & 0.3865205 \\
-\textbf{10} & 433.6 & \textbf{0.369744} \\
-100 & 432.5 & 0.509892 \\
+\textbf{10} & \textbf{0.1705} & \textbf{0.1049} & 0.1261 & 0.0570 & 0.4328 & \textbf{367.11} \\
+100 & 0.1788 & 0.1093 & 0.1373 & 0.0435 & 0.3834 & 423.68 \\
+1000 & 0.4192 & 0.4222 & 0.0088 & 0.4018 & 0.4304 & 431.09 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 
@@ -112,116 +119,37 @@ Except for the parameter examined during the grid search, all hyperparameters ar
 
 \noindent \textbf{Impact of the Network Parameters Range}
 
-\noindent A second crucial set of experiments involved determining the optimal numerical weight range for the network parameters, which defines the extreme minimum and maximum values that a quantized weight can assume. We evaluated three distinct ranges: $[-3, 3]$, $[-5, 5]$, and $[-10, 10]$.
+\noindent A second set of experiments was conducted to determine the optimal numerical weight range for the network parameters, defining the boundary constraints for the quantized weights. We evaluated three distinct intervals: $[-5, 5]$, $[-10, 10]$, and $[-20, 20]$.
 
-\noindent Analysis of the results, as depicted in the following figure, demonstrates a clear trend: the wider range of $[-10, 10]$ consistently yielded the best performance, achieving the lowest terminal loss value. This observation suggests that restricting the weight space to narrower ranges, such as $[-3, 3]$, excessively limits the expressiveness and search capacity of the MLP. Conversely, the increased capacity provided by the $[-10, 10]$ range allows the A* search to navigate a sufficiently large weight space, enabling it to locate more effective parameter configurations for minimization of the loss function.
+\noindent Analysis of the results demonstrates a non-monotonic trend in performance relative to the range width. The intermediate range of $[-10, 10]$ yielded the best performance, achieving the lowest mean loss of $0.1672$. In comparison, the narrowest range ($[-5, 5]$) resulted in a higher mean loss of $0.2507$, likely due to insufficient model expressiveness. Interestingly, the widest range ($[-20, 20]$) also showed a performance degradation compared to the medium interval, with a mean loss of $0.2100$. 
+
+\noindent These observations suggest that while a range must be broad enough to provide the necessary search capacity, an excessively wide weight space may increase the search complexity. Consequently, the $[-10, 10]$ interval strikes the most effective balance between parameter flexibility and search efficiency for this architecture.
 
 \begin{center}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.2\textwidth]{figures/sine_tests/sine_test_parameter_range_loss_trend.png}
-     \caption{Plot of the loss trend in function of Parameter Range}
+    \includegraphics[width=1.2\textwidth]{figures/sine_grid_search/sine_test_parameter_range_avg_loss.png}
+    \caption{Comparison of the mean loss across training iterations for varying Parameter Ranges}
 \end{figure}
 \end{center}
 
 
 \begin{table}[htbp]
 \centering
-\caption{Impact of Parameter Range on Sine Regression Performance (Other HPs Fixed)}
-\label{tab:sine_gs_q_impact}
-\begin{tabular}{|c|c|c|c|}
+\caption{Impact of Parameter Range (PR) on Sine Regression Performance}
+\label{tab:sine_gs_range_impact}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-\textbf{PR} & \textbf{Avg. Time (s)} & \textbf{Avg. Final Loss} \\
+\textbf{PR} & \textbf{Mean Loss} & \textbf{Median Loss} & \textbf{Std. Dev.} & \textbf{Min Loss} & \textbf{Max Loss} & \textbf{Mean Time (s)} \\
 \hline
-$[-3,3]$ & 427.86 & 0.3895117 \\
-$[-5,5]$  & 433.9 & 0.369744 \\
-\textbf{[-10,10]} & 433.0 & \textbf{0.211066} \\
+$[-5, 5]$   & 0.2507 & 0.2666 & 0.1200 & 0.0599 & 0.4259 & 274.99 \\
+\textbf{[-10, 10]} & \textbf{0.1672} & \textbf{0.1456} & 0.1003 & 0.0618 & 0.3893 & 312.69 \\
+$[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
-
-
-%------------------------------------------------------------------- parameter fraction test -------------------------------------------------------------------
-\newpage
-
-\noindent \textbf{Analysis of Parameter Fraction ($\text{param\_fraction}$)}
-
-\noindent The final hyperparameter test evaluated the $\text{param\_fraction} \in \{1.0, 0.5, 0.25\}$, which controls the percentage of total network parameters considered as candidates for single-weight modification during neighbor generation. This parameter directly influences the size and diversity of the explored neighborhood at each A* step.
-
-\noindent As shown in the subsequent figure, the results across two runs for each setting suggest the following:
-\begin{itemize}
-    \item The $\text{param\_fraction}=0.25$ setting consistently exhibited the worst performance, leading to a higher average loss, indicating that severely restricting the neighborhood size hinders effective search exploration.
-    \item The $\text{param\_fraction}=1.0$ (100\% of parameters considered) maintained a stable behavior across both runs, achieving a reliable average loss of approximately $0.36$.
-    \item The $\text{param\_fraction}=0.5$ configuration showed a higher degree of variability. While one run achieved the absolute lowest loss, the second run's result was comparable to the stable performance of the $1.0$ setting.
-\end{itemize}
-
-\noindent Given the minimal difference in average loss ($\approx 0.35$ vs. $\approx 0.36$) and the superior stability of the $\text{param\_fraction}=1.0$ setting, the best result obtained by $0.5$ is likely an outlier. The data suggest that for this problem, the exact value of the parameter fraction between $0.5$ and $1.0$ has a negligible or inconsistent impact on the final loss achieved.
-\begin{center}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.2\textwidth]{figures/sine_tests/sine_test_param_fraction_loss_trend.png}
-     \caption{Plot of the loss trend in function of Parameter Fraction}
-\end{figure}
-\end{center}
-
-
-\begin{table}[htbp]
-\centering
-\caption{Impact of Parameter Fraction on Sine Regression Performance (Other HPs Fixed)}
-\label{tab:sine_gs_q_impact}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{PF} & \textbf{Avg. Time (s)} & \textbf{Avg. Final Loss} \\
-\hline
-0.25 & 121.0 & 0.3801825 \\
-\textbf{0.50}  & 224.3 & \textbf{0.35161} \\
-1.00  & 433.5 & 0.363121 \\
-\hline
-\end{tabular}
-\end{table}
-
-
-%------------------------------------------------------------------- target loss test -------------------------------------------------------------------
-
-\newpage
-
-\noindent \textbf{Influence of the Target Loss ($L_{\text{target}}$)}
-
-\noindent This experiment investigated the impact of the target loss value, $L_{\text{target}}$, which is intrinsically linked to the $g(n)$ path cost formulation:
-
-\begin{equation}
-    g(n) = \left( \frac{L_{\text{initial}} - L_{\text{target}}}{I_{\text{max}}} \right) \times k
-\end{equation}
-
-where $k$ is the number of expansions (or steps) from the start node to the current node $n$.
-
-Three distinct target values were tested: $L_{\text{target}} \in \{0.1, 0.01, 0.001\}$.
-
-\noindent As demonstrated in the figure below, the variation of the target loss across these three orders of magnitude had no practically significant effect on the terminal loss achieved by the search algorithm. Every configuration converged to a statistically similar minimum loss value. This finding suggests that while the target loss is a component in the heuristic $h(n)$ (where $h(n) = L(n) - L_{\text{target}}$), the absolute value chosen within this tested range does not critically influence the overall search trajectory or the final solution quality. The primary guidance remains dictated by the current loss $L(n)$, and the target is simply a lower bound reference that does not alter the relative priorities between nodes during the search.
-\begin{center}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.2\textwidth]{figures/sine_tests/sine_test_target_loss_loss_trend.png}
-     \caption{Plot of the loss trend in function of Target Loss}
-\end{figure}
-\end{center}
-
-
-\begin{table}[htbp]
-\centering
-\caption{Impact of Target Loss on Sine Regression Performance (Other HPs Fixed)}
-\label{tab:sine_gs_q_impact}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{TL} & \textbf{Avg. Time (s)} & \textbf{Avg. Final Loss} \\
-\hline
-0.1 & 434.3 & 0.369744 \\
-0.01 & 435.22 & 0.369744 \\
-0.001  & 432.0 & 0.369744 \\
-\hline
-\end{tabular}
-\end{table}
-
 
 %------------------------------------------------------------------- max iterations test -------------------------------------------------------------------
 
@@ -229,40 +157,77 @@ Three distinct target values were tested: $L_{\text{target}} \in \{0.1, 0.01, 0.
 
 \noindent \textbf{Effect of Maximum Iterations ($I_{\text{max}}$)}
 
-\noindent The final parameter evaluated was the maximum number of search iterations ($I_{\text{max}}$), testing the values $1,000$, $5,000$, and $10,000$. This parameter directly governs the computational budget and is critically linked to the $g(n)$ path cost component via the $\Delta g$ step size: $\Delta g = ( L_{\text{initial}} - L_{\text{target}} )/ I_{\text{max}}$.
+\noindent The third parameter evaluated was the maximum number of search iterations ($I_{\text{max}}$), testing values of $1,000$ and $2,000$. Unlike fixed-step methodologies, in this framework, $I_{\text{max}}$ acts as a hard cap on the exploration budget within the weight space.
 
-\noindent As demonstrated in the figure below, the results indicate a clear optimum: the shortest search duration of $I_{\text{max}}=1,000$ iterations led to the best overall performance. This configuration achieved both the lowest average terminal loss (substantially smaller than the losses obtained with $5,000$ and $10,000$) and the smallest training time (measured in seconds).
+\noindent As demonstrated by the empirical results, the configuration with $I_{\text{max}} = 1,000$ iterations proved to be the most efficient, achieving a mean terminal loss of $0.1789$. Interestingly, doubling the computational budget to $I_{\text{max}} = 2,000$ did not yield a performance gain, instead resulting in a slightly higher mean loss of $0.1884$ and a significant increase in average execution time from approximately $201$ seconds to $348$ seconds.
 
-\noindent This counter-intuitive finding is likely explained by the inverse relationship between $I_{\text{max}}$ and the $\Delta g$ step size. With $I_{\text{max}}=1,000$, the corresponding $\Delta g$ value is significantly larger, resulting in a bigger penalty term for the $g(n)$ function as the search progresses. This stronger penalty term makes the search more explorative by rapidly increasing the $f(n)$ value of configurations where many iterations have been spent. Conversely, larger $I_{\text{max}}$ values imply a smaller $\Delta g$, leading to a smaller $g(n)$ penalty, which allows the search to focus for longer periods on local minima configurations, ultimately hindering the discovery of better global solutions. This behavior confirms that the intended purpose of $g(n)$ avoiding greedy focus is maximized when $I_{\text{max}}$ is set lower.
-
+\noindent This observation suggests that the search typically converges to a stable local minimum or a satisfactory solution within the first $1,000$ iterations. Rather than facilitating the discovery of deeper minima, the extended budget allows the algorithm to persist in high-dimensional plateaus or oscillate in local regions without meaningful improvement.
 \begin{center}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.2\textwidth]{figures/sine_tests/sine_test_max_iterations_loss_trend.png}
-     \caption{Plot of the loss trend in function of Max Iterations}
+    \includegraphics[width=1.2\textwidth]{figures/sine_grid_search/sine_test_max_iterations_avg_loss.png}
+    \caption{Comparison of the mean loss across training iterations for varying $I_{\text{max}}$ parameter}
+
 \end{figure}
 \end{center}
 
 
 \begin{table}[htbp]
 \centering
-\caption{Impact of Max Iterations on Sine Regression Performance (Other HPs Fixed)}
-\label{tab:sine_gs_q_impact}
-\begin{tabular}{|c|c|c|c|}
+\caption{Impact of Maximum Iterations on Sine Regression Performance}
+\label{tab:sine_gs_iter_impact}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-\textbf{MI} & \textbf{Avg. Time (s)} & \textbf{Avg. Final Loss} \\
+\textbf{Iterations} & \textbf{Mean Loss} & \textbf{Median Loss} & \textbf{Std. Dev.} & \textbf{Min Loss} & \textbf{Max Loss} & \textbf{Mean Time (s)} \\
 \hline
-\textbf{1000} & 91.1 & \textbf{0.167127} \\
-5000 & 430.5 & 0.291490 \\
-10000  & 856.4 & 0.291483 \\
+\textbf{1000} & \textbf{0.1789} & \textbf{0.1360} & 0.1283 & 0.0380 & 0.3563 & \textbf{201.29} \\
+2000 & 0.1884 & 0.1591 & 0.1176 & 0.0566 & 0.3546 & 347.74 \\
 \hline
 \end{tabular}
+}
 \end{table}
 
 
 \newpage
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+\noindent \textbf{Effect of Kernel Geometry and Traversal Strides}
+
+\noindent A critical set of experiments was conducted to evaluate the influence of the sliding window geometry on search efficiency. We tested four configurations varying the Weight Kernel size ($WK$), Bias Kernel size ($BK$), and the uniform traversal stride ($S$), where horizontal and vertical strides were kept equal ($x_s = y_s = S$). These parameters determine the search graph's branching factor and the 'spatial span' of each transition, effectively governing the extent of weight space coverage per exploration step.
+
+\noindent Analysis of the results indicates that the choice of kernel dimensions significantly impacts the convergence rate and terminal loss. Larger kernels effectively "squash" the search depth by updating more parameters per hop, while the stride regulates the overlap between successive updates. 
+
+\begin{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.2\textwidth]{figures/sine_grid_search/sine_test_kernel_stride_avg_loss.png}
+     \caption{Evolution of mean loss across iterations for varying kernel geometries}
+\end{figure}
+\end{center}
+
+
+\begin{table}[htbp]
+\centering
+\caption{Impact of Kernel Sizes and Strides on Sine Regression Performance (10 Repetitions)}
+\label{tab:sine_gs_kernel_impact}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{WK} & \textbf{BK} & \textbf{S} & \textbf{Mean Loss} & \textbf{Median Loss} & \textbf{Std. Dev.} & \textbf{Min Loss} & \textbf{Max Loss} & \textbf{Mean Time (s)} \\
+\hline
+(2, 2) & (2) & 2 & 0.0987 & 0.0565 & 0.0892 & 0.0196 & 0.3134 & 499.99 \\
+(2, 2) & (3) & 2 & \textbf{0.0975} & 0.0673 & 0.0848 & 0.0217 & 0.3199 & 478.15 \\
+(3, 3) & (2) & 2 & 0.2136 & 0.1644 & 0.1560 & 0.0505 & 0.4360 & 395.87 \\
+(3, 3) & (3) & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.17} \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+\noindent This structured traversal ensures that the search focuses on localized functional blocks, prioritizing regional weight adjustments. By optimizing these geometric parameters, the algorithm achieves a balance between granular precision and broad exploration, mitigating the computational overhead typically associated with discrete search in high-dimensional spaces.
+
+%------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 %The optimal hyperparameters selected for the final training (Stage 2) were: $Q=10$, Parameter Range $[-10, 10]$, $\text{param\_fraction}=1.0$, $\text{max\_iterations}=5000$ and $L_{\text{target}}=0.01$.
 
@@ -284,6 +249,7 @@ Three distinct target values were tested: $L_{\text{target}} \in \{0.1, 0.01, 0.
     \item A wide shaded band means the method is volatile ($\sigma$ is large) and highly dependent on the random initialization. A wide band often signals that the algorithm frequently gets stuck in poor local minima or conversely, occasionally finds good solutions.
 \end{itemize}
 
+\newpage
 \noindent \textbf{Final Loss Box Plot}
 
 \noindent This plot provides a concise summary of the distribution of the final terminal loss achieved by each method after the completion of $I_{\text{max}}$ iterations. It is ideal for comparing the final state quality.

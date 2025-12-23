@@ -13,7 +13,7 @@
 \contentsline {chapter}{\numberline {2}The Multilayer Perceptron and Traditional Training Methods}{6}{}%
 \contentsline {section}{\numberline {2.1}Multilayer Perceptron (MLP) Architecture}{6}{}%
 \contentsline {subsection}{\numberline {2.1.1}Neuron Structure and Function}{6}{}%
-\contentsline {subsection}{\numberline {2.1.2}The Cost Function}{7}{}%
+\contentsline {subsection}{\numberline {2.1.2}The Loss Function}{7}{}%
 \contentsline {section}{\numberline {2.2}The Standard Training Method: Backpropagation}{7}{}%
 \contentsline {subsection}{\numberline {2.2.1}Gradient Descent}{7}{}%
 \contentsline {subsection}{\numberline {2.2.2}Error Backpropagation}{7}{}%

@@ -11,7 +11,7 @@ The central innovation of the A* algorithm lies in its heuristic evaluation func
 $$f(n) = g(n) + h(n)$$
 
 \subsection{Path Cost ($g(n)$)}
-The function $g(n)$ represents the actual cost of the path taken from the initial starting node to the current node $n$. This is a known, objective value and is a direct measure of the work done so far. In traditional pathfinding, $g(n)$ might be the distance traveled; in optimization problems like the one discussed in this report, $g(n)$ represents the product between the initial loss and the percentage of search iterations performed.
+The function $g(n)$ represents the actual cost of the path taken from the initial starting node to the current node $n$. This is a known, objective value and is a direct measure of the work done so far. In traditional pathfinding, $g(n)$ might be the distance traveled; in optimization problems like the one discussed in this report, $g(n)$ represents the cumulative loss differential between two consecutive node while traversing the search graph.
 
 \subsection{Heuristic Estimate ($h(n)$)}
 The function $h(n)$ is the heuristic estimate of the cost from the current node $n$ to the final goal node. A heuristic is an educated guess that guides the search towards the most promising regions of the search space. The effectiveness and properties of the A* algorithm are highly dependent on the quality of this heuristic.
@@ -71,7 +71,7 @@ The A* search algorithm is known for two key theoretical properties:
 
 \begin{itemize}
     \item \textbf{Completeness:} If a solution path exists from the start node to the goal node, A* is guaranteed to find it, provided the branching factor is finite and edge costs are non-negative.
-    \item \textbf{Optimality:} A* is optimally efficient and guaranteed to find the lowest-cost path if the heuristic function $h(n)$ is admissible. This makes it a preferred method for problems where minimizing the cost (or, in the context of this project, minimizing the training error) is paramount.
+    \item \textbf{Optimality:} A* is guaranteed to find the lowest-cost path if the heuristic function $h(n)$ is admissible. This makes it a preferred method for problems where minimizing the cost (or, in the context of this project, minimizing the training error) is paramount.
 \end{itemize}
 
 The adaptation of A* from a simple pathfinding tool to a machine learning optimization technique, as explored in this report, requires careful consideration of the state space, the definition of the path cost $g(n)$, and the design of an effective, possibly admissible heuristic $h(n)$.

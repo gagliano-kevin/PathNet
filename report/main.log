@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.11.7)  23 DEC 2025 17:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.11.7)  24 DEC 2025 16:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -712,34 +712,29 @@ Overfull \hbox (85.9996pt too wide) in paragraph at lines 204--205
  []
 
 [26] [27 <./figures/sine_grid_search/sine_test_kernel_stride_avg_loss.png>] [28] [29]
-<figures/sine_tests/mean_loss_comparison_with_std_1k.png, id=166, 722.7pt x 433.62pt>
-File: figures/sine_tests/mean_loss_comparison_with_std_1k.png Graphic file (type png)
-<use figures/sine_tests/mean_loss_comparison_with_std_1k.png>
-Package pdftex.def Info: figures/sine_tests/mean_loss_comparison_with_std_1k.png  used on input line 292.
+<figures/sine_tests/sine_mean_loss_comparison_with_std_1k.png, id=166, 722.7pt x 433.62pt>
+File: figures/sine_tests/sine_mean_loss_comparison_with_std_1k.png Graphic file (type png)
+<use figures/sine_tests/sine_mean_loss_comparison_with_std_1k.png>
+Package pdftex.def Info: figures/sine_tests/sine_mean_loss_comparison_with_std_1k.png  used on input line 292.
 (pdftex.def)             Requested size: 430.00462pt x 258.0038pt.
-<figures/sine_tests/final_loss_boxplot_1k.png, id=167, 578.16pt x 433.62pt>
-File: figures/sine_tests/final_loss_boxplot_1k.png Graphic file (type png)
-<use figures/sine_tests/final_loss_boxplot_1k.png>
-Package pdftex.def Info: figures/sine_tests/final_loss_boxplot_1k.png  used on input line 300.
+<figures/sine_tests/sine_final_loss_boxplot_1k.png, id=167, 578.16pt x 433.62pt>
+File: figures/sine_tests/sine_final_loss_boxplot_1k.png Graphic file (type png)
+<use figures/sine_tests/sine_final_loss_boxplot_1k.png>
+Package pdftex.def Info: figures/sine_tests/sine_final_loss_boxplot_1k.png  used on input line 300.
 (pdftex.def)             Requested size: 430.00462pt x 322.50143pt.
- [30 <./figures/sine_tests/mean_loss_comparison_with_std_1k.png>]
-Overfull \hbox (10.8357pt too wide) in paragraph at lines 309--322
- [][] 
- []
-
-[31 <./figures/sine_tests/final_loss_boxplot_1k.png>] [32]
+ [30 <./figures/sine_tests/sine_mean_loss_comparison_with_std_1k.png>] [31 <./figures/sine_tests/sine_final_loss_boxplot_1k.png>] [32]
 <figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png, id=180, 1003.75pt x 569.12625pt>
 File: figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png Graphic file (type png)
 <use figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png>
-Package pdftex.def Info: figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png  used on input line 342.
+Package pdftex.def Info: figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png  used on input line 344.
 (pdftex.def)             Requested size: 430.00462pt x 243.81636pt.
 <figures/sine_tests/sine_final_loss_distribution_comparison_2k.png, id=181, 803.0pt x 571.13374pt>
 File: figures/sine_tests/sine_final_loss_distribution_comparison_2k.png Graphic file (type png)
 <use figures/sine_tests/sine_final_loss_distribution_comparison_2k.png>
-Package pdftex.def Info: figures/sine_tests/sine_final_loss_distribution_comparison_2k.png  used on input line 350.
+Package pdftex.def Info: figures/sine_tests/sine_final_loss_distribution_comparison_2k.png  used on input line 352.
 (pdftex.def)             Requested size: 430.00462pt x 305.84547pt.
  [33 <./figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png>] [34 <./figures/sine_tests/sine_final_loss_distribution_comparison_2k.png>] [35]
-Overfull \hbox (41.73526pt too wide) in paragraph at lines 418--419
+Overfull \hbox (41.73526pt too wide) in paragraph at lines 420--421
 []\OT1/cmr/bx/n/12 Kernels Shape and Stride: $[] \OT1/cmr/m/n/12 = (2\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 2)\OML/cmm/m/it/12 ; [] \OT1/cmr/m/n/12 = (2\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 1)[] =
  []
 
@@ -747,86 +742,44 @@ Overfull \hbox (41.73526pt too wide) in paragraph at lines 418--419
 <figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png, id=197, 722.7pt x 433.62pt>
 File: figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png Graphic file (type png)
 <use figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png>
-Package pdftex.def Info: figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png  used on input line 436.
+Package pdftex.def Info: figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png  used on input line 438.
 (pdftex.def)             Requested size: 430.00462pt x 258.0038pt.
 <figures/iris_tests/iris_final_loss_boxplot_1k.png, id=198, 578.16pt x 433.62pt>
 File: figures/iris_tests/iris_final_loss_boxplot_1k.png Graphic file (type png)
 <use figures/iris_tests/iris_final_loss_boxplot_1k.png>
-Package pdftex.def Info: figures/iris_tests/iris_final_loss_boxplot_1k.png  used on input line 444.
+Package pdftex.def Info: figures/iris_tests/iris_final_loss_boxplot_1k.png  used on input line 446.
 (pdftex.def)             Requested size: 430.00462pt x 322.50143pt.
- [37 <./figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png>]
-Overfull \hbox (10.8357pt too wide) in paragraph at lines 453--466
- [][] 
- []
-
-[38 <./figures/iris_tests/iris_final_loss_boxplot_1k.png>] [39]
-<figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png, id=211, 722.7pt x 433.62pt>
+ [37 <./figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png>] [38 <./figures/iris_tests/iris_final_loss_boxplot_1k.png>]
+<figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png, id=207, 722.7pt x 433.62pt>
 File: figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png Graphic file (type png)
 <use figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png>
-Package pdftex.def Info: figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png  used on input line 487.
+Package pdftex.def Info: figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png  used on input line 491.
 (pdftex.def)             Requested size: 430.00462pt x 258.0038pt.
+ [39]
 <figures/iris_tests/iris_final_loss_boxplot_2k.png, id=212, 578.16pt x 433.62pt>
 File: figures/iris_tests/iris_final_loss_boxplot_2k.png Graphic file (type png)
 <use figures/iris_tests/iris_final_loss_boxplot_2k.png>
-Package pdftex.def Info: figures/iris_tests/iris_final_loss_boxplot_2k.png  used on input line 495.
+Package pdftex.def Info: figures/iris_tests/iris_final_loss_boxplot_2k.png  used on input line 499.
 (pdftex.def)             Requested size: 430.00462pt x 322.50143pt.
- [40 <./figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png>] [41 <./figures/iris_tests/iris_final_loss_boxplot_2k.png>] [42] [43]
-<figures/circle_tests/circles_dataset.png, id=228, 433.62pt x 433.62pt>
-File: figures/circle_tests/circles_dataset.png Graphic file (type png)
-<use figures/circle_tests/circles_dataset.png>
-Package pdftex.def Info: figures/circle_tests/circles_dataset.png  used on input line 555.
-(pdftex.def)             Requested size: 258.00539pt x 258.01703pt.
- [44] [45 <./figures/circle_tests/circles_dataset.png>]
-<figures/circle_tests/circle_mean_loss_comparison_with_std_1k.png, id=237, 722.7pt x 433.62pt>
-File: figures/circle_tests/circle_mean_loss_comparison_with_std_1k.png Graphic file (type png)
-<use figures/circle_tests/circle_mean_loss_comparison_with_std_1k.png>
-Package pdftex.def Info: figures/circle_tests/circle_mean_loss_comparison_with_std_1k.png  used on input line 583.
-(pdftex.def)             Requested size: 430.00462pt x 258.0038pt.
-<figures/circle_tests/circle_final_loss_boxplot_1k.png, id=238, 578.16pt x 433.62pt>
-File: figures/circle_tests/circle_final_loss_boxplot_1k.png Graphic file (type png)
-<use figures/circle_tests/circle_final_loss_boxplot_1k.png>
-Package pdftex.def Info: figures/circle_tests/circle_final_loss_boxplot_1k.png  used on input line 591.
-(pdftex.def)             Requested size: 430.00462pt x 322.50143pt.
- [46 <./figures/circle_tests/circle_mean_loss_comparison_with_std_1k.png>]
-Overfull \hbox (10.8357pt too wide) in paragraph at lines 600--613
- [][] 
- []
-
-[47 <./figures/circle_tests/circle_final_loss_boxplot_1k.png>] [48]
-<figures/circle_tests/circle_mean_loss_comparison_with_std_2_5k.png, id=250, 722.7pt x 433.62pt>
-File: figures/circle_tests/circle_mean_loss_comparison_with_std_2_5k.png Graphic file (type png)
-<use figures/circle_tests/circle_mean_loss_comparison_with_std_2_5k.png>
-Package pdftex.def Info: figures/circle_tests/circle_mean_loss_comparison_with_std_2_5k.png  used on input line 635.
-(pdftex.def)             Requested size: 430.00462pt x 258.0038pt.
-<figures/circle_tests/circle_final_loss_boxplot_2_5k.png, id=251, 578.16pt x 433.62pt>
-File: figures/circle_tests/circle_final_loss_boxplot_2_5k.png Graphic file (type png)
-<use figures/circle_tests/circle_final_loss_boxplot_2_5k.png>
-Package pdftex.def Info: figures/circle_tests/circle_final_loss_boxplot_2_5k.png  used on input line 643.
-(pdftex.def)             Requested size: 430.00462pt x 322.50143pt.
- [49 <./figures/circle_tests/circle_mean_loss_comparison_with_std_2_5k.png>]
-Overfull \hbox (10.8357pt too wide) in paragraph at lines 652--665
- [][] 
- []
-
-[50 <./figures/circle_tests/circle_final_loss_boxplot_2_5k.png>]) (./chapters/conclusions.tex [51] [52] [53] [54]) [55] (./main.aux)
+ [40 <./figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png>] [41 <./figures/iris_tests/iris_final_loss_boxplot_2k.png>]) (./chapters/conclusions.tex [42] [43] [44] [45]) [46] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 17246 strings out of 474222
- 338114 string characters out of 5748733
- 1934975 words of memory out of 5000000
- 39204 multiletter control sequences out of 15000+600000
+ 17208 strings out of 474222
+ 335925 string characters out of 5748733
+ 1932975 words of memory out of 5000000
+ 39166 multiletter control sequences out of 15000+600000
  576018 words of font info for 101 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,11n,93p,820b,390s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on main.pdf (59 pages, 2718526 bytes).
+Output written on main.pdf (50 pages, 2380406 bytes).
 PDF statistics:
- 355 PDF objects out of 1000 (max. 8388607)
- 201 compressed objects within 3 object streams
+ 316 PDF objects out of 1000 (max. 8388607)
+ 182 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 118 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 93 words of extra memory for PDF output out of 10000 (max. 10000000)
 

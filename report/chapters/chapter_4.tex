@@ -284,13 +284,13 @@ $[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.
 
 \subsection{Comparison with Gradient Descent: $I_{\text{max}} = 1,000$}
 
-\noindent To evaluate the mid-term behavior of both A* search and Gradient Descent, the comparative study was conducted using a computational budget of $I_{\text{max}}=1,000$ steps. Ten independent runs ($n=10$) were executed for each method to ensure statistical relevance. The results are summarized in Table \ref{tab:2k_stats}, followed by an analysis of the performance metrics.
+\noindent To evaluate the mid-term behavior of both A* search and Gradient Descent, the comparative study was conducted using a computational budget of $I_{\text{max}}=1,000$ steps. Ten independent runs ($n=10$) were executed for each method to ensure statistical relevance. The results are summarized in Table \ref{tab:1k_stats}, followed by an analysis of the performance metrics.
 
 \begin{center}
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/sine_tests/sine_mean_loss_comparison_with_std_1k.png}
-     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations. This plot illustrates the average loss over ten independent runs for both A* Search and Gradient Descent.}
+     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{1,000}$ Iterations.}
 \end{figure}
 \end{center}
 
@@ -298,7 +298,7 @@ $[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/sine_tests/sine_final_loss_boxplot_1k.png}
-     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{1,000}$ Iterations. The plot summarizes the distribution of terminal loss values.}
+     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{1,000}$ Iterations.}
 \end{figure}
 \end{center}
 
@@ -308,7 +308,7 @@ $[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.
     \label{tab:1k_stats}
     \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{A* Search (Novel)} & \textbf{Gradient Descent (Classic)} \\
+        \textbf{Metric} & \textbf{A* Search} & \textbf{Gradient Descent} \\
         \hline
         Average Loss ($\bar{L}$) & \textbf{0.135254} & 0.257953 \\
         Median Loss & \textbf{0.090426} & 0.353416 \\
@@ -323,15 +323,15 @@ $[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.
 
 \subsection*{Statistical and Trajectory Analysis}
 
-\noindent \textbf{Dominance in Performance:} At the $1,000$ iteration mark, the A* Search algorithm demonstrates a clear lead in terms of central tendency. The average loss for A* ($\bar{L} = 0.1353$) is significantly lower than that recorded for Gradient Descent ($\bar{L} = 0.2580$). The stark disparity in Median Loss ($0.0904$ for A* vs. $0.3534$ for GD) suggests that, within this specific iteration window, the heuristic approach is more effective at converging rapidly toward low-loss states, whereas GD appears to suffer from slower convergence or a higher susceptibility to sub-optimal local minima.
+\noindent \textbf{Dominance in Performance:} At the $1,000$ iteration, the A* Search algorithm demonstrates a clear lead in terms of central tendency. The average loss for A* ($\bar{L} = 0.1353$) is significantly lower than that recorded for Gradient Descent ($\bar{L} = 0.2580$). The disparity in Median Loss ($0.0904$ for A* vs. $0.3534$ for GD) suggests that, within this specific iteration window, the heuristic approach is more effective at converging rapidly toward low-loss states, whereas GD appears to suffer from slower convergence.
 
-\noindent \textbf{Convergence and Best-Case Performance:} When examining the peak potential of both methods, the results appear highly competitive. Gradient Descent achieved the absolute Minimum Loss ($L_{\min} = 0.0381$), narrowly surpassing the best performance of A* ($L_{\min} = 0.0440$). However, the proximity between the average and the minimum in the A* results indicates that the latter identifies high-quality solutions with greater frequency, while GD—despite hitting the lowest point in a single run—presents a distribution of results less centered toward the optimum.
+\noindent \textbf{Convergence and Best-Case Performance:} When examining the peak potential of both methods, the results appear highly competitive. Gradient Descent achieved the absolute Minimum Loss ($L_{\min} = 0.0381$), narrowly surpassing the best performance of A* ($L_{\min} = 0.0440$). However, the proximity between the average and the minimum in the A* results indicates that the latter identifies high-quality solutions with greater frequency, while GD despite hitting the lowest point in a single run presents a distribution of results less centered toward the optimum.
 
 \noindent \textbf{Reliability and Variance:} In terms of consistency, A* Search demonstrates superior stability in this scenario. With a standard deviation of $\sigma = 0.1174$ (lower than the $0.1387$ of GD), the Novel method shows less dispersion across different runs. This suggests that the heuristic-guided exploration is less influenced by stochasticity or initial conditions compared to the continuous nature of gradient updates, ensuring a more predictable output.
 
 \noindent \textbf{Computational Efficiency:} The gap in computational efficiency remains the most critical factor. Gradient Descent completed the training in an average of only $12.69$ seconds, while A* required $281.61$ seconds. This approximately $22\times$ advantage in favor of the classic method highlights the computational overhead inherent in priority queue management and node expansion typical of A*, contrasted with the simplicity of analytical weight updates in GD.
 
-\noindent \textbf{Conclusion for $I_{\text{max}}=1,000$:} At $1,000$ iterations, A* Search emerges as the better-performing option in terms of precision, offering superior average loss and statistical stability compared to Gradient Descent. Although GD maintains an insurmountable advantage in execution speed, A*'s ability to identify higher-quality solutions within a limited number of iterations confirms the strong potential of this heuristic framework as a robust alternative to traditional optimization methods.
+\noindent \textbf{Conclusion for $I_{\text{max}}=1,000$:} At $1,000$ iterations, A* Search emerges as the better-performing option, offering superior average loss and statistical stability compared to Gradient Descent. Although GD maintains an insurmountable advantage in execution speed, A*'s ability to identify higher-quality solutions within a limited number of iterations confirms the strong potential of this heuristic framework as a robust alternative to traditional optimization methods.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Comparison with Gradient Descent: $I_{\text{max}} = 2,000$}
@@ -342,7 +342,7 @@ $[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png}
-     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations. This plot illustrates the average loss over ten independent runs for both A* Search and Gradient Descent.}
+     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations.}
 \end{figure}
 \end{center}
 
@@ -350,7 +350,7 @@ $[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/sine_tests/sine_final_loss_distribution_comparison_2k.png}
-     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations. The plot summarizes the distribution of terminal loss values.}
+     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations.}
 \end{figure}
 \end{center}
 
@@ -391,7 +391,7 @@ $[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section{Classic Dataset: Iris Flower Classification}
+\section{Iris Flower Classification}
 \label{sec:iris_classification}
 
 \noindent The second experiment applies the A* training framework to a classic classification task, assessing its ability to perform MLP parameter optimization in a well known dataset.
@@ -409,11 +409,11 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
       Hidden Layer 3 (8 neurons, ReLU) $\rightarrow$ 
       Output (3 neurons).\end{itemize}
 
-\noindent The network's task is a three-class classification, aiming to learn the mapping from the four physical measurements to the correct species, minimizing the Categorical Cross-Entropy loss. The performance comparison between A* and Gradient Descent will be primarily evaluated based on this loss function.
+\noindent The network's task is a three class classification, aiming to learn the mapping from the four physical measurements to the correct species, minimizing the Categorical Cross-Entropy loss. The performance comparison between A* and Gradient Descent will be primarily evaluated based on this loss function.
 
 \subsection{Stage 1: Optimal Hyperparameters}
 
-\noindent Given the architectural similarities between the sine regression model and the Iris classification model, the optimal hyperparameters found during the sine experiment were adopted for the final comparison phase of the Iris dataset:
+\noindent The optimal hyperparameters found during the sine experiment were adopted for the final comparison phase of this dataset:
 \begin{itemize}
     \item \textbf{Quantization Factor:} $Q=10$
     \item \textbf{Parameter Range:} $[-10, 10]$
@@ -423,20 +423,20 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 
 \subsection{Stage 2 \& 3: Training and Comparative Analysis}
 
-\noindent The methodology for visualization and statistical analysis remains identical to that employed for the sine dataset (see Section \ref{sec:sine_regression}, Stage 2 \& 3). The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,500$. The same Mean Loss with Standard Deviation Shading and Final Loss Box Plot visualizations are utilized.
+\noindent The methodology for visualization and statistical analysis remains identical to that employed for the sine dataset. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$. The same Mean Loss with Standard Deviation Shading and Final Loss Box Plot visualizations are utilized.
 
 
 %===================================== 1k iterations %=====================================
 
 \subsection{Comparison with Gradient Descent: $I_{\text{max}} = 1,000$}
 
-\noindent The comparative study between A* and GD was first executed with a budget of $I_{\text{max}}=1,000$ steps to assess performance under time constraints. The statistical results are summarized in Table \ref{tab:iris_1k_stats}, and the performance trajectory is presented in the following figures.
+\noindent The comparative study between A* and GD was first executed with a budget of $I_{\text{max}}=1,000$ steps. The statistical results are summarized in Table \ref{tab:iris_1k_stats}, and the performance trajectory is presented in the following figures.
 
 \begin{center}
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/iris_tests/iris_mean_loss_comparison_with_std_1k.png}
-     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{1,000}$ Iterations (Iris Dataset).}
+     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{1,000}$ Iterations}
 \end{figure}
 \end{center}
 
@@ -444,17 +444,17 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/iris_tests/iris_final_loss_boxplot_1k.png}
-     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{1,000}$ Iterations (Iris Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}
+     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{1,000}$ Iterations}
 \end{figure}
 \end{center}
 
 \begin{table}[H]
     \centering
-    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=1,000$ Iterations (Iris Dataset)}
+    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=1,000$ Iterations}
     \label{tab:iris_1k_stats}
     \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{Metric} & \textbf{A* Search (Novel)} & \textbf{Gradient Descent (Classic)} \\
+        \textbf{Metric} & \textbf{A* Search} & \textbf{Gradient Descent} \\
         \hline
         Average Loss ($\bar{L}$) & 0.082992 & \textbf{0.022390} \\
         Median Loss & 0.036709 & \textbf{0.028436} \\
@@ -469,11 +469,11 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 
 \subsection*{Statistical and Trajectory Analysis}
 
-\noindent \textbf{Dominance in Performance:} At the $1,000$ iteration mark on the Iris dataset, Gradient Descent (GD) maintains a consistent lead in terms of central tendency. The average loss for GD ($\bar{L} = 0.0224$) is notably lower than that of A* ($\bar{L} = 0.0830$). Interestingly, the Median Loss values are much closer ($0.0367$ for A* vs. $0.0284$ for GD), suggesting that while GD is more consistent on average, A* is frequently capable of reaching similar performance levels in the majority of its runs.
+\noindent \textbf{Dominance in Performance:} At the $1,000$ iteration on the Iris dataset, Gradient Descent maintains a consistent lead in terms of central tendency. The average loss for GD ($\bar{L} = 0.0224$) is notably lower than that of A* ($\bar{L} = 0.0830$). Interestingly, the Median Loss values are much closer ($0.0367$ for A* vs. $0.0284$ for GD), suggesting that while GD is more consistent on average, A* is frequently capable of reaching similar performance levels in the majority of its runs.
 
-\noindent \textbf{Convergence and Best-Case Performance:} Both algorithms demonstrate the ability to identify high-quality solutions even with a restricted iteration budget. GD achieved a Minimum Loss of $L_{\min} = 0.000017$, while A* reached a remarkably low $L_{\min} = 0.0037$. This indicates that the heuristic search within the A* framework is effective at navigating the Iris loss landscape toward global minima, even if it lacks the fine-grained refinement speed of the classic gradient-based approach at this scale.
+\noindent \textbf{Convergence and Best-Case Performance:} Both algorithms demonstrate the ability to identify high-quality solutions even with a restricted iteration budget. GD achieved a Minimum Loss of $L_{\min} = 0.000017$, while A* reached a remarkably low $L_{\min} = 0.0037$. This indicates that the heuristic search within the A* framework is effective at navigating the Iris loss landscape toward global minima.
 
-\noindent \textbf{Reliability and Variance:} There is a visible difference in the stability of the two methods. GD exhibits very low variance ($\sigma^2 = 0.0002$), indicating high repeatability. In contrast, A* shows a higher Standard Deviation ($\sigma = 0.0976$), which points to a greater sensitivity to the initial search path or node expansion order. However, the fact that the median is significantly lower than the average for A* suggests that the higher mean is driven by a few outlier runs rather than a general lack of performance.
+\noindent \textbf{Reliability and Variance:} There is a visible difference in the stability of the two methods. GD exhibits very low variance ($\sigma^2 = 0.0002$), indicating high repeatability. In contrast, A* shows a higher Standard Deviation ($\sigma = 0.0976$), which points to a greater sensitivity to the initial search path. However, the fact that the median is significantly lower than the average for A* suggests that the higher mean is driven by a few outlier runs rather than a general lack of performance.
 
 \noindent \textbf{Computational Efficiency:} The computational disparity remains significant. Gradient Descent completed the training in an average of $4.50$ seconds, whereas A* required $359.86$ seconds. This approximately $80\times$ speed difference emphasizes that the memory-intensive nature of maintaining a search tree and priority queue in A* involves a much higher cost per iteration compared to the rapid, direct weight updates of the classic gradient descent.
 
@@ -489,7 +489,7 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/iris_tests/iris_mean_loss_comparison_with_std_2k.png}     
-     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations (Iris Dataset). This plot illustrates the average loss over ten independent runs, highlighting the convergence speed of both search methods.}
+     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations.}
 \end{figure}
 \end{center}
 
@@ -497,7 +497,7 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/iris_tests/iris_final_loss_boxplot_2k.png}    
-     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations (Iris Dataset). This plot summarizes the distribution of the terminal loss values achieved by A* and Gradient Descent.}
+     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations.}
 \end{figure}
 \end{center}
 
@@ -531,149 +531,3 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 \noindent \textbf{Computational Efficiency:} There remains a significant difference in computational overhead. GD completed the training in an average of $4.90$ seconds, whereas A* required $469.12$ seconds. This speed advantage for the classic approach highlights the current efficiency of gradient-based updates compared to the more memory-intensive and computationally demanding node expansion process inherent in the A* search framework.
 
 \noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} At $2,000$ iterations, Gradient Descent proves to be highly efficient for the Iris task, offering a lower average loss and near-instant execution. While A* currently requires more time to process its search space and exhibits higher variance, its ability to locate high-precision solutions confirms the significant potential of heuristic-driven frameworks in neural network optimization.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-------------------------------------------------------------------    CIRCLE DATASET -----------------------------------------------------------------------------------------
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newpage
-\section{Non-Linear Dataset: Concentric Circles Classification}
-\label{sec:circle_classification}
-
-\noindent The third and final experiment tests the A* training framework on a non-linear binary classification problem using the synthetic concentric circles dataset. This benchmark is crucial for assessing the algorithm's ability to navigate the parameter space when a simple linear boundary is insufficient.
-
-\subsection{Dataset Generation and Objective}
-
-The experiment utilizes a synthetic dataset generated by the \texttt{make\_circles} function, which creates points forming two interleaved circles.
-
-\begin{itemize}
-    \item \textbf{Input ($x$):} 2 features ($x, y$ coordinates). $1,000$ samples were generated with a noise level of $0.1$ and a scale factor of $0.5$.
-    \item \textbf{Output ($y$):} Two classes (inner circle and outer circle), encoded implicitly by the Cross-Entropy loss structure.
-    \item \textbf{MLP Architecture:} Input (2 neurons) $\rightarrow$ Hidden Layer (4 neurons, $relu$ activation) $\rightarrow$ Output (2 neurons, logits).
-\end{itemize}
-
-\noindent The network's task is a binary classification, aiming to find the complex decision boundary required to separate the concentric circles, minimizing the Categorical Cross-Entropy loss.
-
-\begin{center}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.6\textwidth]{figures/circle_tests/circles_dataset.png}
-     \caption{Plot of the circles dataset}
-\end{figure}
-\end{center}
-
-\subsection{Stage 1: Optimal Hyperparameters}
-
-\noindent Following the parameter testing from the sine dataset, the following optimal fixed hyperparameters were used for the comparative analysis of the Circle dataset:
-\begin{itemize}
-    \item \textbf{Quantization Factor:} $Q=10$
-    \item \textbf{Parameter Range:} $(-10, 10)$
-    \item \textbf{Parameter Fraction ($\text{param\_fraction}$):} $1.0$
-    \item \textbf{Target Loss ($L_{\text{target}}$):} $0.0001$
-\end{itemize}
-
-\subsection{Stage 2 \& 3: Training and Comparative Analysis}
-
-\noindent The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$). The analysis utilizes the same statistical methods (Mean Loss with Standard Deviation Shading and Final Loss Box Plot) as used for the previous datasets.
-
-%------------------------------------------------- 1000 iterations -----------------------------------------------
-
-\subsection{Comparison with Gradient Descent: $I_{\text{max}} = 1000$}
-
-\noindent Both A* and GD were executed for a total of $I_{\text{max}}=1000$ steps. The statistical results are summarized in Table \ref{tab:circle_1000_stats}, and the performance trajectory is presented in the following figures.
-
-\begin{center}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{figures/circle_tests/circle_mean_loss_comparison_with_std_1k.png}
-     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{1000}$ Iterations (Circle Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}
-\end{figure}
-\end{center}
-
-\begin{center}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{figures/circle_tests/circle_final_loss_boxplot_1k.png}
-     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{1000}$ Iterations (Circle Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}
-\end{figure}
-\end{center}
-
-\begin{table}[H]
-    \centering
-    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=1000$ Iterations (Circle Dataset)}
-    \label{tab:circle_1000_stats}
-    \begin{tabular}{|l|c|c|}
-        \hline
-        \textbf{Metric} & \textbf{A* Search (Novel)} & \textbf{Gradient Descent (Classic)} \\
-        \hline
-        Average Loss ($\bar{L}$) & 0.240124 & \textbf{0.148245} \\
-        Median Loss & 0.150237 & \textbf{0.026805} \\
-        Standard Deviation ($\sigma$) & \textbf{0.177546} & 0.232974 \\
-        Variance ($\sigma^2$) & \textbf{0.031522} & 0.054277 \\
-        Minimum Loss ($L_{\min}$) & 0.094537 & \textbf{0.015414} \\
-        Maximum Loss ($L_{\max}$) & 0.541776 & \textbf{0.693137} \\
-        Average Training Time (s) & 46.892284 & \textbf{6.829286} \\
-        \hline
-    \end{tabular}
-\end{table}
-
-\subsection*{Statistical and Trajectory Analysis}
-
-\noindent \textbf{Performance (Average vs. Median):} For the $1,000$-iteration budget on the Circle dataset, Gradient Descent achieves a superior Average Loss ($\bar{L} = 0.1482$) compared to A* ($\bar{L} = 0.2401$). This difference is even more pronounced in the Median Loss, where GD ($0.0268$) is substantially better than A* ($0.1502$), indicating that GD typically converges to a much stronger solution. GD also found the best-case result, achieving a significantly lower Minimum Loss ($L_{\min} = 0.0154$).
-
-\noindent \textbf{Consistency Trade-off:} The primary performance difference lies in consistency. A* demonstrates superior consistency with a lower Standard Deviation ($\sigma = 0.1775$) and Variance than GD ($\sigma = 0.2330$). This suggests that while GD finds better solutions on average and achieves the absolute minimum, it also produces significantly worse maximum loss results ($L_{\max} = 0.6931$), indicating a higher risk of failed runs or poor local minima entrapment compared to the A* search.
-
-\noindent \textbf{Computational Efficiency:} GD is vastly more efficient, completing the $1,000$ steps in approximately 6.83 seconds, whereas the A* search requires 46.89 seconds due to its high algorithmic overhead.
-
-\noindent \textbf{Conclusion for $I_{\text{max}}=1000$:} Gradient Descent is the performance leader, achieving lower average and minimum loss, but it is less reliable than A* due to its higher variance and susceptibility to poor initializations. A* provides a more consistent, low-variance alternative, albeit at a higher computational cost.
-
-
-%------------------------------------------------- 2500 iterations -----------------------------------------------
-
-\subsection{Comparison with Gradient Descent: $I_{\text{max}} = 2,500$}
-
-\noindent The comparative study was extended to $I_{\text{max}}=2,500$ steps to evaluate the extended convergence behavior of both methods on the challenging non-linear Circle dataset. The statistical results are summarized in Table \ref{tab:circle_2500_stats}, and the performance trajectory is presented in the following figures.
-
-\begin{center}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{figures/circle_tests/circle_mean_loss_comparison_with_std_2_5k.png}
-     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,500}$ Iterations (Circle Dataset). This plot illustrates the average loss over ten independent runs, highlighting convergence and consistency.}
-\end{figure}
-\end{center}
-
-\begin{center}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{figures/circle_tests/circle_final_loss_boxplot_2_5k.png}
-     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,500}$ Iterations (Circle Dataset). This plot summarizes the distribution of the terminal loss values achieved by both search methods.}
-\end{figure}
-\end{center}
-
-\begin{table}[H]
-    \centering
-    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=2,500$ Iterations (Circle Dataset)}
-    \label{tab:circle_2500_stats}
-    \begin{tabular}{|l|c|c|}
-        \hline
-        \textbf{Metric} & \textbf{A* Search (Novel)} & \textbf{Gradient Descent (Classic)} \\
-        \hline
-        Average Loss ($\bar{L}$) & \textbf{0.170333} & 0.206681 \\
-        Median Loss & 0.058771 & \textbf{0.044057} \\
-        Standard Deviation ($\sigma$) & \textbf{0.212892} & 0.268925 \\
-        Variance ($\sigma^2$) & \textbf{0.045323} & 0.072320 \\
-        Minimum Loss ($L_{\min}$) & 0.048488 & \textbf{0.012027} \\
-        Maximum Loss ($L_{\max}$) & \textbf{0.693058} & 0.693147 \\
-        Average Training Time (s) & 126.002429 & \textbf{19.916831} \\
-        \hline
-    \end{tabular}
-\end{table}
-
-\subsection*{Statistical and Trajectory Analysis}
-
-\noindent \textbf{Central Tendency Comparison:} With $2,500$ iterations, the performance metrics show a complex trade-off. A* achieves a slightly better Average Loss ($\bar{L}=0.1703$) than GD ($\bar{L}=0.2067$). However, the Median Loss of GD ($0.0441$) is superior to A*'s Median Loss ($0.0588$). This implies that A* is less penalized by outliers (or failed runs) than GD, but GD, when successful, typically finds a marginally better solution.
-
-\noindent \textbf{Best-Case vs. Consistency:} Gradient Descent retains the ability to find the absolute best solutions, achieving a significantly lower Minimum Loss ($L_{\min}=0.0120$) than A* ($L_{\min}=0.0485$). Nevertheless, A* demonstrates superior consistency with a lower Standard Deviation ($\sigma=0.2129$) and Variance ($\sigma^2=0.0453$) compared to GD ($\sigma=0.2689$). Both methods still suffer from the high-variance risk of getting stuck, evidenced by Max Loss values near $0.693$, but A* does so slightly less frequently.
-
-\noindent \textbf{Computational Efficiency:} Gradient Descent remains vastly more efficient, completing $2,500$ steps in approximately 19.92 seconds, while A* requires 126.00 seconds.
-
-\noindent \textbf{Conclusion for $I_{\text{max}}=2,500$:} On the Circle dataset with an extended budget, A* achieves a better overall average loss due to a less frequent occurrence of catastrophic failure runs. However, GD still offers a better median performance and the best minimum loss. The primary distinction is that A* provides a more consistent (lower variance) solution than GD, confirming its robustness in the face of a complex non-linear loss landscape.

@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1766501463.47123 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1766501467.25512 0
+["pdflatex"] 1766507340.07965 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1766507344.62511 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/kevin/Desktop/PathNet/report/main.tex" 1766346994.73692 1111 1bf92b47fc85238be61aa2bb811d6f43 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -162,8 +162,8 @@
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1762527140 8214665 b63933ffebe73c8733810b8a3bee343b ""
   "chapters/chapter_1.tex" 1766499502.0214 9667 be541a615cff302108dca178ae24d4bf ""
   "chapters/chapter_2.tex" 1766499915.57911 3755 642bbb22baddb7c6c46ce326e74bc9b8 ""
-  "chapters/chapter_3.tex" 1766501463.25135 14790 081c3b42011abc985d4116228b46a818 ""
-  "chapters/chapter_4.tex" 1766488736.61792 50863 0c465983102e28db608b96d3c88abbbb ""
+  "chapters/chapter_3.tex" 1766504523.35318 13731 a90024dc236356a96153c371c4b54653 ""
+  "chapters/chapter_4.tex" 1766507339.85688 50429 931bac3756308d88b565ee24114388fb ""
   "chapters/conclusions.tex" 1765711398.78434 8034 eb6ac90ec2e6d73df6b4f2d6077d8f65 ""
   "figures/LOGO_UNISI_VERTICALE_NERO_0.pdf" 1762523336 317420 0fd7c19e2c74e4b82b58ccf968648f7e ""
   "figures/circle_tests/circle_final_loss_boxplot_1k.png" 1762978646.75432 31169 bd5ca0c019d441988a0bba17ce07bbc8 ""
@@ -186,9 +186,9 @@
   "figures/sine_tests/sine_dataset.png" 1763030736.66618 66142 9072df00841f73c0cc91d8ac823a3b7e ""
   "figures/sine_tests/sine_final_loss_distribution_comparison_2k.png" 1766485976.69222 22000 40e00fab40d7e50c165ef1708c6df72b ""
   "figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png" 1766485876.9189 74901 25ed595eeb390acba3574810548af454 ""
-  "main.aux" 1766501467.15999 16969 16a10634696e4c1c42490f7d7b5b1c5e "pdflatex"
+  "main.aux" 1766507344.50299 16796 5edc2b451a3b13f5a0f0596dee2b1f73 "pdflatex"
   "main.tex" 1766346994.73692 1111 1bf92b47fc85238be61aa2bb811d6f43 ""
-  "main.toc" 1766501467.16155 5521 7ca246ffee952513cc9c436e4f8039e1 "pdflatex"
+  "main.toc" 1766507344.50588 5388 5192ddc729949d5763f7ae4ba087d145 "pdflatex"
   "title.tex" 1765663071.03744 760 0e726c8938c8ad23e21e7c6dc3b81bd8 ""
   (generated)
   "main.aux"

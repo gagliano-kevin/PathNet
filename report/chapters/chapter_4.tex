@@ -3,7 +3,7 @@
 
 This report conducts a comparative analysis of two optimization methodologies, focusing on their respective strengths and weaknesses. 
 
-The primary objective of this study is to analyze a novel approach using A* search principles, experimentally comparing its performance and behavior against the well-established optimization methodology of Gradient Descent. Furthermore, a crucial element of this comparison involves a detailed investigation into the A* framework's sensitivity to its core parameters; a systematic hyperparameter finetuning process has been performed to understand their influence on achieving superior performance.
+The primary objective of this study is to analyze a novel approach using A* search principles, experimentally comparing its performance and behavior against the well-established optimization methodology of Gradient Descent. Furthermore, a crucial element of this comparison involves a detailed investigation into the A* framework's sensitivity to its core parameters; a hyperparameter finetuning process has been performed to understand their influence on achieving superior performance.
 
 \section{Experimental Methodology}
 \label{sec:experimental_methodology}
@@ -45,7 +45,7 @@ The A* performance was compared against the standard Stochastic Gradient Descent
 %-------------------------------------------------------------------    SINE DATASET -----------------------------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Synthetic Dataset: Sine Function Regression}
+\section{Noisy Sine Function}
 \label{sec:sine_regression}
 
 The first experiment applies the A* training framework to a non-linear regression problem, assessing its ability to learn complex continuous functions.
@@ -105,9 +105,9 @@ To evaluate the stability and convergence of the proposed methodology, the follo
 \hline
 \textbf{QF ($Q$)} & \textbf{Mean Loss} & \textbf{Median Loss} & \textbf{Std. Dev.} & \textbf{Min Loss} & \textbf{Max Loss} & \textbf{Mean Time (s)} \\
 \hline
-\textbf{10} & \textbf{0.1705} & \textbf{0.1049} & 0.1261 & 0.0570 & 0.4328 & \textbf{367.11} \\
-100 & 0.1788 & 0.1093 & 0.1373 & 0.0435 & 0.3834 & 423.68 \\
-1000 & 0.4192 & 0.4222 & 0.0088 & 0.4018 & 0.4304 & 431.09 \\
+10 & \textbf{0.1705} & \textbf{0.1049} & 0.1261 & 0.0570 & 0.4328 & \textbf{367.11} \\
+100 & 0.1788 & 0.1093 & 0.1373 & \textbf{0.0435} & \textbf{0.3834} & 423.68 \\
+1000 & 0.4192 & 0.4222 & \textbf{0.0088} & 0.4018 & 0.4304 & 431.09 \\
 \hline
 \end{tabular}%
 }
@@ -143,9 +143,9 @@ To evaluate the stability and convergence of the proposed methodology, the follo
 \hline
 \textbf{PR} & \textbf{Mean Loss} & \textbf{Median Loss} & \textbf{Std. Dev.} & \textbf{Min Loss} & \textbf{Max Loss} & \textbf{Mean Time (s)} \\
 \hline
-$[-5, 5]$   & 0.2507 & 0.2666 & 0.1200 & 0.0599 & 0.4259 & 274.99 \\
-\textbf{[-10, 10]} & \textbf{0.1672} & \textbf{0.1456} & 0.1003 & 0.0618 & 0.3893 & 312.69 \\
-$[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
+$[-5, 5]$   & 0.2507 & 0.2666 & 0.1200 & 0.0599 & 0.4259 & \textbf{274.99} \\
+$[-10, 10]$ & \textbf{0.1672} & \textbf{0.1456} & \textbf{0.1003} & 0.0618 & 0.3893 & 312.69 \\
+$[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & \textbf{0.0433} & \textbf{0.3717} & 369.17 \\
 \hline
 \end{tabular}%
 }
@@ -161,7 +161,7 @@ $[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
 
 \noindent As demonstrated by the empirical results, the configuration with $I_{\text{max}} = 1,000$ iterations proved to be the most efficient, achieving a mean terminal loss of $0.1789$. Interestingly, doubling the computational budget to $I_{\text{max}} = 2,000$ did not yield a performance gain, instead resulting in a slightly higher mean loss of $0.1884$ and a significant increase in average execution time from approximately $201$ seconds to $348$ seconds.
 
-\noindent This observation suggests that the search typically converges to a stable local minimum or a satisfactory solution within the first $1,000$ iterations. Rather than facilitating the discovery of deeper minima, the extended budget allows the algorithm to persist in high-dimensional plateaus or oscillate in local regions without meaningful improvement.
+\noindent This observation suggests that the search typically converges to a stable local minimum within the first $1,000$ iterations. Rather than facilitating the discovery of deeper minima, the extended budget allows the algorithm to persist in high-dimensional plateaus without meaningful improvement.
 \begin{center}
 \begin{figure}[H]
     \centering
@@ -189,7 +189,7 @@ $[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
 \end{table}
 
 
-\newpage
+%\newpage
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 \noindent \textbf{Effect of Kernel Geometry and Traversal Strides}
@@ -202,24 +202,24 @@ $[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.2\textwidth]{figures/sine_grid_search/sine_test_kernel_stride_avg_loss.png}
-     \caption{Evolution of mean loss across iterations for varying kernel geometries}
+     \caption{Evolution of mean loss across iterations for varying kernel geometries and stride values}
 \end{figure}
 \end{center}
 
 
 \begin{table}[htbp]
 \centering
-\caption{Impact of Kernel Sizes and Strides on Sine Regression Performance (10 Repetitions)}
+\caption{Impact of Kernel Sizes and Strides on Sine Regression Performance}
 \label{tab:sine_gs_kernel_impact}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
 \textbf{WK} & \textbf{BK} & \textbf{S} & \textbf{Mean Loss} & \textbf{Median Loss} & \textbf{Std. Dev.} & \textbf{Min Loss} & \textbf{Max Loss} & \textbf{Mean Time (s)} \\
 \hline
-(2, 2) & (2) & 2 & 0.0987 & 0.0565 & 0.0892 & 0.0196 & 0.3134 & 499.99 \\
-(2, 2) & (3) & 2 & \textbf{0.0975} & 0.0673 & 0.0848 & 0.0217 & 0.3199 & 478.15 \\
-(3, 3) & (2) & 2 & 0.2136 & 0.1644 & 0.1560 & 0.0505 & 0.4360 & 395.87 \\
-(3, 3) & (3) & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.17} \\
+$[2, 2]$ & $[2]$ & 2 & 0.0987 & \textbf{0.0565} & 0.0892 & \textbf{0.0196} & \textbf{0.3134} & 499.99 \\
+$[2, 2]$ & $[3]$ & 2 & \textbf{0.0975} & 0.0673 & \textbf{0.0848} & 0.0217 & 0.3199 & 478.15 \\
+$[3, 3]$ & $[2]$ & 2 & 0.2136 & 0.1644 & 0.1560 & 0.0505 & 0.4360 & 395.87 \\
+$[3, 3]$ & $[3]$ & 2 & 0.1902 & 0.1706 & 0.1168 & 0.0673 & 0.3973 & \textbf{357.17} \\
 \hline
 \end{tabular}
 }
@@ -262,8 +262,7 @@ $[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   TO CHECK!!!!!     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \noindent \textbf{Calculation of Whisker Range and Outliers}
 
@@ -374,15 +373,15 @@ $[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
 
 \subsection*{Statistical and Trajectory Analysis}
 
-\noindent \textbf{Dominance in Performance:} At the $2,000$ iteration mark, Gradient Descent (GD) exhibits a clear performance lead in terms of central tendency. The average loss for GD ($\bar{L} = 0.0533$) is significantly lower than that of A* ($\bar{L} = 0.1971$). The disparity in Median Loss ($0.0139$ for GD vs. $0.1836$ for A*) further suggests that GD more frequently reaches a high-precision state within this specific computational window.
+\noindent \textbf{Dominance in Performance:} At the $2,000$ iteration mark, Gradient Descent exhibits a clear performance lead in terms of central tendency. The average loss for GD ($\bar{L} = 0.0533$) is significantly lower than that of A* ($\bar{L} = 0.1971$). The disparity in Median Loss ($0.0139$ for GD vs. $0.1836$ for A*) further suggests that GD more frequently reaches a high-precision state within this specific computational window.
 
 \noindent \textbf{Convergence and Best-Case Performance:} When examining the peak potential of both algorithms, the results are remarkably competitive. GD achieved a Minimum Loss of $L_{\min} = 0.0098$, while A* followed closely with $L_{\min} = 0.0179$. This comparison indicates that both methods are capable of identifying high-quality solutions; while GD’s continuous gradient exploitation gives it a slight edge in refinement, A* demonstrates that its heuristic search can successfully navigate to the same neighborhood of the global minimum.
 
-\noindent \textbf{Reliability and Variance:} The consistency of the two methods is quite comparable at this scale. GD maintains a Standard Deviation of $\sigma = 0.0997$, which is only slightly lower than the $\sigma = 0.1178$ recorded for A*. This narrow margin suggests that both algorithms offer a similar level of reliability across independent runs. The small difference indicates that A* remains a robust contender in terms of stability, even as GD benefits from the predictable nature of the loss landscape at this iteration count.
+\noindent \textbf{Reliability and Variance:} The consistency of the two methods is quite comparable at this scale. GD maintains a Standard Deviation of $\sigma = 0.0997$, which is only slightly lower than the $\sigma = 0.1178$ recorded for A*. This narrow margin suggests that both algorithms offer a similar level of reliability across independent runs. The small difference indicates that A* remains a robust contender in terms of stability.
 
 \noindent \textbf{Computational Efficiency:} There remains a significant difference in computational overhead. GD completed the training in an average of $18.07$ seconds, whereas A* required $453.53$ seconds. This $25\times$ speed advantage for the classic approach highlights the current efficiency of gradient-based updates compared to the more memory-intensive node expansion process inherent in A* search.
 
-\noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} At $2,000$ iterations, Gradient Descent proves to be highly efficient, offering a lower average loss and faster execution. However, the A* method remains a compelling novel alternative; it achieves a best-case minimum loss and a level of statistical consistency (standard deviation) that are nearly on par with the classic approach. While A* currently requires more time to process its search space, its ability to reach competitive high-quality solutions suggests significant potential for the heuristic-driven framework.
+\noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} At $2,000$ iterations, Gradient Descent proves to be highly efficient, offering a lower average loss and faster execution. However, the A* method remains a novel alternative; it achieves a minimum loss and a level of statistical consistency (standard deviation) that are comparable with the classic approach. While A* currently requires more time to process its search space, its ability to reach competitive high-quality solutions suggests significant potential for the heuristic-driven framework.
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -393,7 +392,7 @@ $[-20, 20]$ & 0.2100 & 0.2104 & 0.1363 & 0.0433 & 0.3717 & 369.17 \\
 \section{Classic Dataset: Iris Flower Classification}
 \label{sec:iris_classification}
 
-\noindent The second experiment applies the A* training framework to a classic and well-established classification task, assessing its ability to perform parameter quantization and optimization within a widely recognized benchmark domain.
+\noindent The second experiment applies the A* training framework to a classic classification task, assessing its ability to perform MLP parameter optimization in a well known dataset.
 
 \subsection{Dataset and Objective}
 

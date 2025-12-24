@@ -45,8 +45,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3.4}Admissibility Analysis}{14}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3.5}Consistency Analysis}{14}{}\protected@file@percent }
 \newlabel{sec:consistency_analysis}{{3.3.5}{14}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.6}Efficiency and Scalability of Kernel-Based Transitions}{15}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{15}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {chapter}{\numberline {4}Experimental Methodology and Results}{17}{}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -58,7 +57,7 @@
 \@writefile{toc}{\contentsline {subsubsection}{Stage 1: Hyperparameter Grid Search and Sensitivity Analysis}{18}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Stage 2: A* Training with Optimal Configuration}{18}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Stage 3: Backpropagation Baseline and Comparison}{18}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Synthetic Dataset: Sine Function Regression}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Noisy Sine Function}{20}{}\protected@file@percent }
 \newlabel{sec:sine_regression}{{4.2}{20}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Dataset Generation and Objective}{20}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Plot of the noisy sine dataset}}{20}{}\protected@file@percent }
@@ -70,12 +69,12 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Comparison of the mean loss across training iterations for varying Parameter Ranges}}{24}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces Impact of Parameter Range (PR) on Sine Regression Performance}}{24}{}\protected@file@percent }
 \newlabel{tab:sine_gs_range_impact}{{4.2}{24}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Comparison of the mean loss across training iterations for varying $I_{\text  {max}}$ parameter}}{26}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Comparison of the mean loss across training iterations for varying $I_{\text  {max}}$ parameter}}{25}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Impact of Maximum Iterations on Sine Regression Performance}}{26}{}\protected@file@percent }
 \newlabel{tab:sine_gs_iter_impact}{{4.3}{26}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Evolution of mean loss across iterations for varying kernel geometries}}{27}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Impact of Kernel Sizes and Strides on Sine Regression Performance (10 Repetitions)}}{28}{}\protected@file@percent }
-\newlabel{tab:sine_gs_kernel_impact}{{4.4}{28}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Evolution of mean loss across iterations for varying kernel geometries and stride values}}{27}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Impact of Kernel Sizes and Strides on Sine Regression Performance}}{27}{}\protected@file@percent }
+\newlabel{tab:sine_gs_kernel_impact}{{4.4}{27}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{28}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2.4}Comparison with Gradient Descent: $I_{\text  {max}} = 1,000$}{30}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Mean Loss Trajectory with Standard Deviation Shading for $I_{\text  {max}}=\text  {1,000}$ Iterations. This plot illustrates the average loss over ten independent runs for both A* Search (Novel) and Gradient Descent (Classic), with the shaded region representing $\pm 1$ standard deviation. It highlights convergence speed and the consistency of each algorithm's performance over time.}}{30}{}\protected@file@percent }

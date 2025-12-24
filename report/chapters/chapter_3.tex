@@ -52,7 +52,7 @@ The number of possible transitions (neighbors) per layer is determined by the to
 
 $$\text{Slides} = \left( \lfloor \frac{M - H}{y_s} \rfloor + 1 \right) \times \left( \lfloor \frac{N - W}{x_s} \rfloor + 1 \right)$$
 
-This structured transition model is adopted to provide several key benefits over traditional single-scalar modifications:
+This structured transition model is adopted to provide several key benefits:
 
 \begin{itemize}
     \item \textbf{Exploitation of Spatial Locality:} By updating clusters of weights simultaneously, the search effectively navigates the functional block nature of neural network layers. This aligns with the intuition that neighboring weights often contribute to the same local feature representations.
@@ -162,16 +162,6 @@ Unlike the previous version, consistency is now tied directly to the direction o
     \item \textbf{Scenario 3: Stationary Loss ($\Delta L = 0$):}
     In plateaus where $L(n') = L(n)$, the heuristic is perfectly consistent.
 \end{enumerate}
-
-
-\subsection{Efficiency and Scalability of Kernel-Based Transitions}
-
-The implementation of sliding window kernels, paired with the loss-differential cost function, provides a robust framework for navigating high-dimensional weight spaces. This structured approach ensures the search remains computationally feasible through several key mechanisms:
-
-\begin{itemize}
-    \item \textbf{Memory Optimization:} By generating transitions based on window "hops", the algorithm significantly restricts the branching factor of the search graph. This keeps the A* Open List manageable and prevents memory exhaustion, even when applied to larger Multi-Layer Perceptron (MLP) architectures.
-    \item \textbf{Temporal Acceleration:} Each kernel application updates a block of $H \times W$ parameters simultaneously. This spatial grouping effectively "squashes" the required search depth, allowing the algorithm to achieve significant loss reduction in fewer state explorations compared to unstructured methods.
-\end{itemize}
 
 
 By leveraging these efficiencies, the kernel-based method mitigates the "curse of dimensionality," making it possible to apply discrete search-based optimization to complex neural network structures that would otherwise be computationally prohibitive.%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

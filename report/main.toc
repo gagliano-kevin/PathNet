@@ -31,8 +31,7 @@
 \contentsline {subsection}{\numberline {3.3.3}Total Evaluation Function $f(n)$}{13}{}%
 \contentsline {subsection}{\numberline {3.3.4}Admissibility Analysis}{14}{}%
 \contentsline {subsection}{\numberline {3.3.5}Consistency Analysis}{14}{}%
-\contentsline {subsection}{\numberline {3.3.6}Efficiency and Scalability of Kernel-Based Transitions}{15}{}%
-\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{16}{}%
+\contentsline {section}{\numberline {3.4}The A* Training Loop Implementation}{15}{}%
 \contentsline {chapter}{\numberline {4}Experimental Methodology and Results}{17}{}%
 \contentsline {section}{\numberline {4.1}Experimental Methodology}{17}{}%
 \contentsline {subsection}{\numberline {4.1.1}MLP Architecture and Evaluation}{17}{}%
@@ -40,7 +39,7 @@
 \contentsline {subsubsection}{Stage 1: Hyperparameter Grid Search and Sensitivity Analysis}{18}{}%
 \contentsline {subsubsection}{Stage 2: A* Training with Optimal Configuration}{18}{}%
 \contentsline {subsubsection}{Stage 3: Backpropagation Baseline and Comparison}{18}{}%
-\contentsline {section}{\numberline {4.2}Synthetic Dataset: Sine Function Regression}{20}{}%
+\contentsline {section}{\numberline {4.2}Noisy Sine Function}{20}{}%
 \contentsline {subsection}{\numberline {4.2.1}Dataset Generation and Objective}{20}{}%
 \contentsline {subsection}{\numberline {4.2.2}Stage 1: Grid Search Findings}{21}{}%
 \contentsline {subsection}{\numberline {4.2.3}Stage 2 \& 3: Training and Comparative Analysis}{28}{}%

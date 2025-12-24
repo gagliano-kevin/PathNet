@@ -531,3 +531,83 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 \noindent \textbf{Computational Efficiency:} There remains a significant difference in computational overhead. GD completed the training in an average of $4.90$ seconds, whereas A* required $469.12$ seconds. This speed advantage for the classic approach highlights the current efficiency of gradient-based updates compared to the more memory-intensive and computationally demanding node expansion process inherent in the A* search framework.
 
 \noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} At $2,000$ iterations, Gradient Descent proves to be highly efficient for the Iris task, offering a lower average loss and near-instant execution. While A* currently requires more time to process its search space and exhibits higher variance, its ability to locate high-precision solutions confirms the significant potential of heuristic-driven frameworks in neural network optimization.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------------------------------    HOUSING DATASET -----------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{California Housing Regression}
+\label{sec:california_housing}
+
+\noindent The second experiment applies the A* training framework to a classic regression task, assessing its ability to perform MLP parameter optimization on a high-dimensional, real-world dataset.
+
+\subsection{Dataset and Objective}
+
+The experiment utilizes the California Housing dataset, whichs contains $20,640$ samples across $8$ economic and geographic features, used to predict the median house value in California districts.
+
+\begin{itemize}
+    \item \textbf{Input ($x$):} 8 features (e.g., MedInc, HouseAge, AveRooms, Latitude) standardized to zero mean and unit variance.
+    \item \textbf{Output ($y$):} A continuous scalar value representing the median house value (in $100,000$s).
+    \item \textbf{MLP Architecture:} Input (8 neurons) $\rightarrow$ 
+      Hidden Layer 1 (16 neurons, ReLU) $\rightarrow$ 
+      Hidden Layer 2 (32 neurons, ReLU) $\rightarrow$ 
+      Hidden Layer 3 (16 neurons, ReLU) $\rightarrow$ 
+      Output (1 neuron).
+\end{itemize}
+
+\noindent The network's task is a regression problem, aiming to learn the mapping from demographic and spatial features to housing prices by minimizing the Mean Squared Error (MSE) loss. The performance comparison between A* and Gradient Descent will be primarily evaluated based on this loss function.
+
+\subsection{Stage 1: Optimal Hyperparameters}
+
+\noindent The optimal hyperparameters found during the previous phase were adopted for the final comparison phase of this dataset:
+\begin{itemize}
+    \item \textbf{Quantization Factor:} $Q=10$
+    \item \textbf{Parameter Range:} $[-10, 10]$
+    \item \textbf{Kernels Shape and Stride:} $\text{Weight\_kernel}=(2,2), \text{Bias\_kernel}=(2,1) \text{ and Stride}=2$
+\end{itemize}
+
+\subsection{Stage 2 \& 3: Training and Comparative Analysis}
+
+\noindent The methodology for visualization and statistical analysis remains identical to that employed for the sine dataset. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$. The same Mean Loss with Standard Deviation Shading and Final Loss Box Plot visualizations are utilized.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------------------------------    WINE QUALITY DATASET -----------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Wine Quality Classification}
+\label{sec:wine_quality}
+
+\noindent The second experiment applies the A* training framework to a more complex classification task, assessing its ability to optimize MLP parameters for the Wine Quality dataset, which features a higher dimensionality and significantly more samples than the previous benchmarks.
+
+\subsection{Dataset and Objective}
+
+The experiment utilizes the Wine Quality dataset (Red variant), which consists of $1,599$ samples of Portuguese "Vinho Verde" wine. The goal is to classify the quality of the wine based on eleven physicochemical tests.
+
+\begin{itemize}
+    \item \textbf{Input ($x$):} 11 features (e.g., fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, and alcohol) standardized to a common scale.
+    \item \textbf{Output ($y$):} Six quality classes (typically ranging from scores 3 to 8), encoded using one-hot encoding.
+    \item \textbf{MLP Architecture:} Input (11 neurons) $\rightarrow$ 
+      Hidden Layer 1 (32 neurons, ReLU) $\rightarrow$ 
+      Hidden Layer 2 (64 neurons, ReLU) $\rightarrow$ 
+      Hidden Layer 3 (32 neurons, ReLU) $\rightarrow$ 
+      Output (6 neurons).
+\end{itemize}
+
+\noindent The network's task is a multiclass classification, aiming to learn the mapping from chemical composition to the expert-assigned quality rating, minimizing the Categorical Cross-Entropy loss. The performance comparison between A* and Gradient Descent will be evaluated based on the convergence rate of this loss.
+
+\subsection{Stage 1: Optimal Hyperparameters}
+
+\noindent The optimal hyperparameters identified in Stage 1 were maintained to ensure consistency in the comparative analysis:
+\begin{itemize}
+    \item \textbf{Quantization Factor:} $Q=10$
+    \item \textbf{Parameter Range:} $[-10, 10]$
+    \item \textbf{Kernels Shape and Stride:} $\text{Weight\_kernel}=(2,2), \text{Bias\_kernel}=(2,1) \text{ and Stride}=2$
+\end{itemize}
+
+\subsection{Stage 2 \& 3: Training and Comparative Analysis}
+
+\noindent The methodology for visualization and statistical analysis remains identical to that employed for the previous datasets. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$. The analysis utilizes Mean Loss with Standard Deviation Shading and Final Loss Box Plot visualizations to determine the efficiency of the A* search in high-dimensional weight spaces.

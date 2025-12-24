@@ -16,7 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-ITERATIONS = 1000
+ITERATIONS = 2000
 
 RUNS = 10
 

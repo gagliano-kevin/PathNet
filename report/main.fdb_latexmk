@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1766693441.35338 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1766693447.68265 0
+["pdflatex"] 1766695032.55855 "/home/kevin/Desktop/PathNet/report/main.tex" "main.pdf" "main" 1766695038.85794 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/kevin/Desktop/PathNet/report/main.tex" 1766346994.73692 1111 1bf92b47fc85238be61aa2bb811d6f43 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -163,7 +163,7 @@
   "chapters/chapter_1.tex" 1766499502.0214 9667 be541a615cff302108dca178ae24d4bf ""
   "chapters/chapter_2.tex" 1766499915.57911 3755 642bbb22baddb7c6c46ce326e74bc9b8 ""
   "chapters/chapter_3.tex" 1766504523.35318 13731 a90024dc236356a96153c371c4b54653 ""
-  "chapters/chapter_4.tex" 1766693434.50351 54312 b0c9aaf59aa6035102537d7da0af9070 ""
+  "chapters/chapter_4.tex" 1766695032.15568 53830 5822bee63acdff67fc07cff4201f4ba4 ""
   "chapters/conclusions.tex" 1765711398.78434 8034 eb6ac90ec2e6d73df6b4f2d6077d8f65 ""
   "figures/LOGO_UNISI_VERTICALE_NERO_0.pdf" 1762523336 317420 0fd7c19e2c74e4b82b58ccf968648f7e ""
   "figures/housing_tests/housing_final_loss_distribution_comparison_2k.png" 1766692383.16861 24271 d61f3ba8a3c69d488cc2146ad0067716 ""
@@ -185,9 +185,9 @@
   "figures/sine_tests/sine_mean_loss_comparison_with_std_2k.png" 1766485876.9189 74901 25ed595eeb390acba3574810548af454 ""
   "figures/wine_tests/wine_final_loss_distribution_comparison_2k.png" 1766693391.8679 22802 42e410fcd64e4c6499fa445eb3447730 ""
   "figures/wine_tests/wine_mean_loss_comparison_with_std_2k.png" 1766693391.87899 77219 1fbac06a6ee80fd10bfa1fd67170f6ce ""
-  "main.aux" 1766693447.49909 15420 87626861cb25bc7c765ae7634f304d4a "pdflatex"
+  "main.aux" 1766695038.67708 15343 ccf1324eccc88b887e3f8701f8159eea "pdflatex"
   "main.tex" 1766346994.73692 1111 1bf92b47fc85238be61aa2bb811d6f43 ""
-  "main.toc" 1766693447.50109 5679 45ad9216dd7431c9e660d34c265473b7 "pdflatex"
+  "main.toc" 1766695038.6809 5655 545b26b17e006111cf62b82956407865 "pdflatex"
   "title.tex" 1765663071.03744 760 0e726c8938c8ad23e21e7c6dc3b81bd8 ""
   (generated)
   "main.aux"

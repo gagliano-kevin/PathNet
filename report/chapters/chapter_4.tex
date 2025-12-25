@@ -411,9 +411,9 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 
 \noindent The network's task is a three class classification, aiming to learn the mapping from the four physical measurements to the correct species, minimizing the Categorical Cross-Entropy loss. The performance comparison between A* and Gradient Descent will be primarily evaluated based on this loss function.
 
-\subsection{Stage 1: Optimal Hyperparameters}
+\subsection{Stage 1: Hyperparameters}
 
-\noindent The optimal hyperparameters found during the sine experiment were adopted for the final comparison phase of this dataset:
+\noindent The hyperparameters found during the sine experiment were adopted for the final comparison phase of this dataset:
 \begin{itemize}
     \item \textbf{Quantization Factor:} $Q=10$
     \item \textbf{Parameter Range:} $[-10, 10]$
@@ -559,9 +559,9 @@ The experiment utilizes a subset of the California Housing dataset, whichs conta
 
 \noindent The network's task is a regression problem, aiming to learn the mapping from demographic and spatial features to housing prices by minimizing the Mean Squared Error (MSE) loss. The performance comparison between A* and Gradient Descent will be primarily evaluated based on this loss function.
 
-\subsection{Stage 1: Optimal Hyperparameters}
+\subsection{Stage 1: Hyperparameters}
 
-\noindent The optimal hyperparameters found during the previous experiments were adopted for the performance comparison on this dataset:
+\noindent The hyperparameters found during the previous experiments were adopted for the performance comparison on this dataset:
 \begin{itemize}
     \item \textbf{Quantization Factor:} $Q=10$
     \item \textbf{Parameter Range:} $[-10, 10]$
@@ -632,7 +632,7 @@ The experiment utilizes a subset of the California Housing dataset, whichs conta
 \section{Wine Quality Classification}
 \label{sec:wine_quality}
 
-\noindent The second experiment applies the A* training framework to a more complex classification task, assessing its ability to optimize MLP parameters for the Wine Quality dataset, which features a higher dimensionality and significantly more samples than the previous benchmarks.
+\noindent The fourth experiment applies the A* training framework to a more complex classification task, assessing its ability to optimize MLP parameters for the Wine Quality dataset, which features a higher dimensionality and significantly more samples than the previous benchmarks.
 
 \subsection{Dataset and Objective}
 
@@ -640,19 +640,19 @@ The experiment utilizes the Wine Quality dataset (Red variant), which consists o
 
 \begin{itemize}
     \item \textbf{Input ($x$):} 11 features (e.g., fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, and alcohol) standardized to a common scale.
-    \item \textbf{Output ($y$):} Six quality classes (typically ranging from scores 3 to 8), encoded using one-hot encoding.
+    \item \textbf{Output ($y$):} Six quality classes (typically ranging from scores 3 to 8), shifted within the range 0 - 5 and encoded using one-hot encoding.
     \item \textbf{MLP Architecture:} Input (11 neurons) $\rightarrow$ 
-      Hidden Layer 1 (32 neurons, ReLU) $\rightarrow$ 
-      Hidden Layer 2 (64 neurons, ReLU) $\rightarrow$ 
-      Hidden Layer 3 (32 neurons, ReLU) $\rightarrow$ 
+      Hidden Layer 1 (8 neurons, ReLU) $\rightarrow$ 
+      Hidden Layer 2 (16 neurons, ReLU) $\rightarrow$ 
+      Hidden Layer 3 (8 neurons, ReLU) $\rightarrow$ 
       Output (6 neurons).
 \end{itemize}
 
 \noindent The network's task is a multiclass classification, aiming to learn the mapping from chemical composition to the expert-assigned quality rating, minimizing the Categorical Cross-Entropy loss. The performance comparison between A* and Gradient Descent will be evaluated based on the convergence rate of this loss.
 
-\subsection{Stage 1: Optimal Hyperparameters}
+\subsection{Stage 1: Hyperparameters}
 
-\noindent The optimal hyperparameters identified in Stage 1 were maintained to ensure consistency in the comparative analysis:
+\noindent The hyperparameters identified in sine function test were maintained to ensure consistency in the comparative analysis:
 \begin{itemize}
     \item \textbf{Quantization Factor:} $Q=10$
     \item \textbf{Parameter Range:} $[-10, 10]$
@@ -661,17 +661,17 @@ The experiment utilizes the Wine Quality dataset (Red variant), which consists o
 
 \subsection{Stage 2 \& 3: Training and Comparative Analysis}
 
-\noindent The methodology for visualization and statistical analysis remains identical to that employed for the previous datasets. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$. The analysis utilizes Mean Loss with Standard Deviation Shading and Final Loss Box Plot visualizations to determine the efficiency of the A* search in high-dimensional weight spaces.
+\noindent The methodology for visualization and statistical analysis remains identical to that employed for the previous datasets. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$.
 
 \subsection{Comparison with Gradient Descent: $I_{\text{max}} = 2,000$}
 
-\noindent To assess the scalability and convergence properties of the two optimization strategies on a multi-class regression/classification task, the study was extended to $I_{\text{max}}=2,000$ iterations using the Wine Quality dataset. The statistical outcomes derived from ten independent trials are summarized in Table \ref{tab:wine_2k_stats}, providing a basis for comparing the efficiency and stability of A* against standard Gradient Descent.
+\noindent To assess the scalability and convergence properties of the two optimization strategies, the study was extended to $I_{\text{max}}=2,000$ iterations using the Wine Quality dataset. The statistical outcomes derived from ten independent trials are summarized in Table \ref{tab:wine_2k_stats}, providing a basis for comparing the efficiency and stability of A* against standard Gradient Descent.
 
 \begin{center}
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/wine_tests/wine_mean_loss_comparison_with_std_2k.png}
-     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations (Wine Quality).}
+     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations.}
 \end{figure}
 \end{center}
 
@@ -679,13 +679,13 @@ The experiment utilizes the Wine Quality dataset (Red variant), which consists o
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/wine_tests/wine_final_loss_distribution_comparison_2k.png}
-     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations (Wine Quality).}
+     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations.}
 \end{figure}
 \end{center}
 
 \begin{table}[H]
     \centering
-    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=2,000$ Iterations (Wine Quality Dataset)}
+    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=2,000$ Iterations}
     \label{tab:wine_2k_stats}
     \begin{tabular}{|l|c|c|}
         \hline
@@ -704,12 +704,12 @@ The experiment utilizes the Wine Quality dataset (Red variant), which consists o
 
 \subsection*{Statistical and Trajectory Analysis}
 
-\noindent \textbf{Loss Performance and Optimization:} On the Wine Quality dataset, Gradient Descent (GD) continues to demonstrate a performance advantage in minimizing the loss function. The average loss achieved by GD ($\bar{L} = 0.7463$) is lower than the $\bar{L} = 0.9510$ observed for the A* search. The Median Loss for A* ($0.9333$) indicates that while it is navigating toward an optimal region, the gradient-based method finds a more direct route to lower error states within this specific iteration window.
+\noindent \textbf{Dominance in Performance:} On the Wine Quality dataset, Gradient Descent continues to demonstrate a performance advantage in minimizing the loss function. The average loss achieved by GD ($\bar{L} = 0.7463$) is lower than the $\bar{L} = 0.9510$ observed for the A* search. The Median Loss for A* ($0.9333$) indicates that while it is navigating toward an optimal region, the gradient-based method finds a more direct route to lower error states.
 
-\noindent \textbf{Convergence and Potential:} Evaluating the best-case results, the minimum loss for A* ($L_{\min} = 0.9030$) shows that the heuristic is successfully exploring the weight space of the MLP. Although GD reaches a lower minimum ($L_{\min} = 0.7046$), the ability of A* to maintain a sub-1.0 loss on this non-trivial dataset confirms its capacity for handling more complex feature sets beyond basic benchmark problems.
+\noindent \textbf{Convergence and Best-Case Performance:} Evaluating the best-case results, the minimum loss for A* ($L_{\min} = 0.9030$) shows that the heuristic is successfully exploring the weight space of the MLP. Although GD reaches a lower minimum ($L_{\min} = 0.7046$), the ability of A* to maintain a sub-1.0 loss on this non-trivial dataset confirms its capacity for handling more complex feature sets beyond basic benchmark problems.
 
-\noindent \textbf{Reliability and Consistency:} Both algorithms show a high degree of stability, though GD retains a tighter grouping with a Standard Deviation of $\sigma = 0.0213$. The A* search recorded a $\sigma = 0.0575$, indicating a slightly broader distribution of final outcomes. Nevertheless, the low variance ($\sigma^2 = 0.0033$) for A* suggests it is a reliable optimizer that avoids erratic behavior across different initialization trials.
+\noindent \textbf{Reliability and Variance:} Both algorithms show a high degree of stability, though GD retains a tighter grouping with a Standard Deviation of $\sigma = 0.0213$. The A* search recorded a $\sigma = 0.0575$, indicating a slightly broader distribution of final outcomes. Nevertheless, the low variance ($\sigma^2 = 0.0033$) for A* suggests it is a reliable optimizer that avoids irregular behavior across different initialization trials.
 
-\noindent \textbf{Computational Efficiency:} The difference in execution speed is significant, as the Wine Quality dataset requires more complex node evaluations. GD completed the task in an average of $30.29$ seconds, while A* required $755.80$ seconds. This time gap reflects the computational intensity of the neighbor generation and priority queue management inherent in the A* framework when scaled to larger search spaces.
+\noindent \textbf{Computational Efficiency:} The difference in execution speed is significant, as the Wine Quality dataset requires more complex node evaluations. GD completed the task in an average of $30.29$ seconds, while A* required $755.80$ seconds. This time gap reflects the computational intensity of the A* framework when scaled to larger dataset.
 
-\noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} Within the Wine Quality optimization framework, Gradient Descent remains a highly efficient standard, yielding lower error rates with minimal temporal cost. However, the A* approach successfully demonstrates that non-gradient optimization is a viable alternative even for higher-dimensional tasks. While GD currently leads in precision, the results from A* provide a promising foundation, suggesting that with further tuning of the heuristic function or more advanced search pruning, this method could become an increasingly competitive tool for navigating complex regression landscapes.
+\noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} While Gradient Descent remains the more pragmatic choice for this regression task due to its rapid execution and lower loss values, the A* framework demonstrates remarkable resilience in exploring the neural network's weight space. The results provide a promising foundation, indicating that A* could narrow the margin with Gradient Descent if paired with optimized neighbor-generation techniques or enhanced heuristic functions, ultimately offering a stable and reliable non-gradient path to optimization.

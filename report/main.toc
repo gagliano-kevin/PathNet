@@ -51,7 +51,17 @@
 \contentsline {subsection}{\numberline {4.3.3}Stage 2 \& 3: Training and Comparative Analysis}{37}{}%
 \contentsline {subsection}{\numberline {4.3.4}Comparison with Gradient Descent: $I_{\text {max}} = 1,000$}{37}{}%
 \contentsline {subsection}{\numberline {4.3.5}Comparison with Gradient Descent: $I_{\text {max}} = 2,000$}{39}{}%
-\contentsline {section}{\numberline {4.4}Conclusion and Future Work}{43}{}%
-\contentsline {subsection}{\numberline {4.4.1}Summary of A* Framework Performance}{43}{}%
-\contentsline {subsection}{\numberline {4.4.2}Summary of Comparative Findings}{45}{}%
-\contentsline {subsection}{\numberline {4.4.3}Future Work}{45}{}%
+\contentsline {section}{\numberline {4.4}California Housing Regression}{43}{}%
+\contentsline {subsection}{\numberline {4.4.1}Dataset and Objective}{43}{}%
+\contentsline {subsection}{\numberline {4.4.2}Stage 1: Optimal Hyperparameters}{43}{}%
+\contentsline {subsection}{\numberline {4.4.3}Stage 2 \& 3: Training and Comparative Analysis}{44}{}%
+\contentsline {subsection}{\numberline {4.4.4}Comparison with Gradient Descent: $I_{\text {max}} = 2,000$}{44}{}%
+\contentsline {section}{\numberline {4.5}Wine Quality Classification}{47}{}%
+\contentsline {subsection}{\numberline {4.5.1}Dataset and Objective}{47}{}%
+\contentsline {subsection}{\numberline {4.5.2}Stage 1: Optimal Hyperparameters}{47}{}%
+\contentsline {subsection}{\numberline {4.5.3}Stage 2 \& 3: Training and Comparative Analysis}{48}{}%
+\contentsline {subsection}{\numberline {4.5.4}Comparison with Gradient Descent: $I_{\text {max}} = 2,000$}{48}{}%
+\contentsline {section}{\numberline {4.6}Conclusion and Future Work}{52}{}%
+\contentsline {subsection}{\numberline {4.6.1}Summary of A* Framework Performance}{52}{}%
+\contentsline {subsection}{\numberline {4.6.2}Summary of Comparative Findings}{54}{}%
+\contentsline {subsection}{\numberline {4.6.3}Future Work}{54}{}%

@@ -532,20 +532,20 @@ The experiment utilizes the canonical Iris dataset, which consists of $150$ samp
 
 \noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} At $2,000$ iterations, Gradient Descent proves to be highly efficient for the Iris task, offering a lower average loss and near-instant execution. While A* currently requires more time to process its search space and exhibits higher variance, its ability to locate high-precision solutions confirms the significant potential of heuristic-driven frameworks in neural network optimization.
 
-
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %-------------------------------------------------------------------    HOUSING DATASET -----------------------------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\newpage
 
 \section{California Housing Regression}
 \label{sec:california_housing}
 
-\noindent The second experiment applies the A* training framework to a classic regression task, assessing its ability to perform MLP parameter optimization on a high-dimensional, real-world dataset.
+\noindent The third experiment applies the A* training framework to a classic regression task, assessing its ability to perform MLP parameter optimization on a high-dimensional, real-world dataset.
 
 \subsection{Dataset and Objective}
 
-The experiment utilizes the California Housing dataset, whichs contains $20,640$ samples across $8$ economic and geographic features, used to predict the median house value in California districts.
+The experiment utilizes a subset of the California Housing dataset, whichs contains $20,640$ samples in total, across $8$ economic and geographic features, used to predict the median house value in California districts.
 
 \begin{itemize}
     \item \textbf{Input ($x$):} 8 features (e.g., MedInc, HouseAge, AveRooms, Latitude) standardized to zero mean and unit variance.
@@ -561,7 +561,7 @@ The experiment utilizes the California Housing dataset, whichs contains $20,640$
 
 \subsection{Stage 1: Optimal Hyperparameters}
 
-\noindent The optimal hyperparameters found during the previous phase were adopted for the final comparison phase of this dataset:
+\noindent The optimal hyperparameters found during the previous experiments were adopted for the performance comparison on this dataset:
 \begin{itemize}
     \item \textbf{Quantization Factor:} $Q=10$
     \item \textbf{Parameter Range:} $[-10, 10]$
@@ -570,13 +570,64 @@ The experiment utilizes the California Housing dataset, whichs contains $20,640$
 
 \subsection{Stage 2 \& 3: Training and Comparative Analysis}
 
-\noindent The methodology for visualization and statistical analysis remains identical to that employed for the sine dataset. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$. The same Mean Loss with Standard Deviation Shading and Final Loss Box Plot visualizations are utilized.
+\noindent The methodology for visualization and statistical analysis remains identical to that employed for the sine dataset. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$.
+
+\subsection{Comparison with Gradient Descent: $I_{\text{max}} = 2,000$}
+
+\noindent To assess the scalability and convergence properties of the two optimization strategies on a regression task, the study was extended to $I_{\text{max}}=2,000$ iterations using the California Housing dataset. The statistical outcomes derived from ten independent trials are summarized in Table \ref{tab:cali_2k_stats}, providing a basis for comparing the efficiency and stability of A* against standard Gradient Descent.
+
+\begin{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/housing_tests/housing_mean_loss_comparison_with_std_2k.png}
+     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations.}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/housing_tests/housing_final_loss_distribution_comparison_2k.png}
+     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations.}
+\end{figure}
+\end{center}
+
+\begin{table}[H]
+    \centering
+    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=2,000$ Iterations}
+    \label{tab:cali_2k_stats}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Metric} & \textbf{A* Search} & \textbf{Gradient Descent} \\
+        \hline
+        Average Loss ($\bar{L}$) & 0.489066 & \textbf{0.305924} \\
+        Median Loss & 0.500392 & \textbf{0.308301} \\
+        Standard Deviation ($\sigma$) & 0.023495 & \textbf{0.019317} \\
+        Variance ($\sigma^2$) & 0.000552 & \textbf{0.000373} \\
+        Minimum Loss ($L_{\min}$) & 0.455220 & \textbf{0.272443} \\
+        Maximum Loss ($L_{\max}$) & 0.517800 & \textbf{0.331831} \\
+        Average Training Time (s) & 632.321497 & \textbf{36.716074} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection*{Statistical and Trajectory Analysis}
+
+\noindent \textbf{Dominance in Performance:} On the California Housing dataset Gradient Descent demonstrates a substantial advantage in minimizing the objective function. The average loss achieved by GD ($\bar{L} = 0.3059$) is considerably lower than the $\bar{L} = 0.4891$ observed for A*. The proximity of the Median Loss ($0.3083$) to the mean suggests that GD consistently reaches a more favorable loss value than the heuristic search approach.
+
+\noindent \textbf{Convergence and Best-Case Performance:} Evaluating the best-case scenarios, the minimum loss for GD ($L_{\min} = 0.2724$) remains significantly lower than that of A* ($L_{\min} = 0.4552$). While A* is able to find valid solutions within the weight space, the continuous nature of the California Housing dataset appears to favor the gradient-based optimization.
+
+\noindent \textbf{Reliability and Variance:} Both algorithms exhibit relatively low variance, indicating high repeatability across runs. However, GD retains a tighter distribution with a Standard Deviation of $\sigma = 0.0193$, compared to $\sigma = 0.0235$ for A*. This suggests that while A* is stable, GD offers slightly more predictable outcomes when dealing with the increased complexity and dimensionality of data.
+
+\noindent \textbf{Computational Efficiency:} The disparity in computational cost is pronounced in this larger dataset. GD required an average of $36.72$ seconds to complete the $2,000$ iterations, whereas A* demanded $632.32$ seconds. This highlights the overhead associated with maintaining a priority queue and expanding nodes in the neighbors generation.
+
+\noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} Within the California Housing regression framework, Gradient Descent remains a highly efficient standard, yielding lower error rates with minimal temporal cost. However, the A* approach successfully demonstrates that non-gradient optimization is a viable alternative even for higher-dimensional tasks. While GD currently leads in precision, the results from A* provide a promising foundation, suggesting that with further tuning of the heuristic function or more advanced search pruning, this method could become an increasingly competitive tool for navigating complex regression landscapes.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %-------------------------------------------------------------------    WINE QUALITY DATASET -----------------------------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\newpage
 
 \section{Wine Quality Classification}
 \label{sec:wine_quality}
@@ -611,3 +662,54 @@ The experiment utilizes the Wine Quality dataset (Red variant), which consists o
 \subsection{Stage 2 \& 3: Training and Comparative Analysis}
 
 \noindent The methodology for visualization and statistical analysis remains identical to that employed for the previous datasets. The comparison between A* and Gradient Descent is performed over ten independent runs ($n=10$) for two iteration budgets: $I_{\text{max}}=1,000$ and $I_{\text{max}}=2,000$. The analysis utilizes Mean Loss with Standard Deviation Shading and Final Loss Box Plot visualizations to determine the efficiency of the A* search in high-dimensional weight spaces.
+
+\subsection{Comparison with Gradient Descent: $I_{\text{max}} = 2,000$}
+
+\noindent To assess the scalability and convergence properties of the two optimization strategies on a multi-class regression/classification task, the study was extended to $I_{\text{max}}=2,000$ iterations using the Wine Quality dataset. The statistical outcomes derived from ten independent trials are summarized in Table \ref{tab:wine_2k_stats}, providing a basis for comparing the efficiency and stability of A* against standard Gradient Descent.
+
+\begin{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/wine_tests/wine_mean_loss_comparison_with_std_2k.png}
+     \caption{Mean Loss Trajectory with Standard Deviation Shading for $I_{\text{max}}=\text{2,000}$ Iterations (Wine Quality).}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/wine_tests/wine_final_loss_distribution_comparison_2k.png}
+     \caption{Final Loss Box Plot for $I_{\text{max}}=\text{2,000}$ Iterations (Wine Quality).}
+\end{figure}
+\end{center}
+
+\begin{table}[H]
+    \centering
+    \caption{Comparative Statistics Over Ten Runs for $I_{\text{max}}=2,000$ Iterations (Wine Quality Dataset)}
+    \label{tab:wine_2k_stats}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Metric} & \textbf{A* Search} & \textbf{Gradient Descent} \\
+        \hline
+        Average Loss ($\bar{L}$) & 0.950977 & \textbf{0.746319} \\
+        Median Loss & 0.933282 & \textbf{0.750876} \\
+        Standard Deviation ($\sigma$) & 0.057514 & \textbf{0.021268} \\
+        Variance ($\sigma^2$) & 0.003308 & \textbf{0.000452} \\
+        Minimum Loss ($L_{\min}$) & 0.903004 & \textbf{0.704592} \\
+        Maximum Loss ($L_{\max}$) & 1.118898 & \textbf{0.774106} \\
+        Average Training Time (s) & 755.802688 & \textbf{30.294616} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\subsection*{Statistical and Trajectory Analysis}
+
+\noindent \textbf{Loss Performance and Optimization:} On the Wine Quality dataset, Gradient Descent (GD) continues to demonstrate a performance advantage in minimizing the loss function. The average loss achieved by GD ($\bar{L} = 0.7463$) is lower than the $\bar{L} = 0.9510$ observed for the A* search. The Median Loss for A* ($0.9333$) indicates that while it is navigating toward an optimal region, the gradient-based method finds a more direct route to lower error states within this specific iteration window.
+
+\noindent \textbf{Convergence and Potential:} Evaluating the best-case results, the minimum loss for A* ($L_{\min} = 0.9030$) shows that the heuristic is successfully exploring the weight space of the MLP. Although GD reaches a lower minimum ($L_{\min} = 0.7046$), the ability of A* to maintain a sub-1.0 loss on this non-trivial dataset confirms its capacity for handling more complex feature sets beyond basic benchmark problems.
+
+\noindent \textbf{Reliability and Consistency:} Both algorithms show a high degree of stability, though GD retains a tighter grouping with a Standard Deviation of $\sigma = 0.0213$. The A* search recorded a $\sigma = 0.0575$, indicating a slightly broader distribution of final outcomes. Nevertheless, the low variance ($\sigma^2 = 0.0033$) for A* suggests it is a reliable optimizer that avoids erratic behavior across different initialization trials.
+
+\noindent \textbf{Computational Efficiency:} The difference in execution speed is significant, as the Wine Quality dataset requires more complex node evaluations. GD completed the task in an average of $30.29$ seconds, while A* required $755.80$ seconds. This time gap reflects the computational intensity of the neighbor generation and priority queue management inherent in the A* framework when scaled to larger search spaces.
+
+\noindent \textbf{Conclusion for $I_{\text{max}}=2,000$:} Within the Wine Quality optimization framework, Gradient Descent remains a highly efficient standard, yielding lower error rates with minimal temporal cost. However, the A* approach successfully demonstrates that non-gradient optimization is a viable alternative even for higher-dimensional tasks. While GD currently leads in precision, the results from A* provide a promising foundation, suggesting that with further tuning of the heuristic function or more advanced search pruning, this method could become an increasingly competitive tool for navigating complex regression landscapes.

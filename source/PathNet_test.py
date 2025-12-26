@@ -450,7 +450,7 @@ class Trainer:
 class AdaptiveTrainer:
     def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, 
                  weight_kernel=[6,6], bias_kernel=[6], x_stride=6, y_stride=6, delta_abs=None, 
-                 max_iterations=1000, log_freq=100, measure_time=True, save_trained_model=False, 
+                 max_iterations=1000, log_freq=100, measure_time=True, save_trained_model=True, 
                  model_name='best_model',
                  # Nuovi parametri per adattività
                  adaptive_kernel=True,
@@ -616,6 +616,93 @@ class AdaptiveTrainer:
         if self.save_trained_model:
             self.save_model(filename=self.model_name + '.pth')
         return
+    
+    def plot_training_history(self, filename='astar_loss_plot.png'):
+        """
+        Plots the loss (h), the total cost (f) and the cost g per iteration over all the iterations and saves the plot to a file.
+
+        Parameters:
+            filename (str): The name of the file to save the plot.
+        """
+        plt.figure(figsize=(10, 6))
+        plt.plot(self.loss_history, label='Loss (h) per Iteration')
+        plt.plot(self.f_history, label='Total Cost (f) per Iteration')
+        plt.plot(self.g_history, label='Cost g per Iteration')
+        plt.xlabel('Number of Iterations')
+        plt.ylabel('Value')
+        plt.title('Loss (h), Total Cost (f) and Cost (g) Over Iterations with A*')
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(filename)
+        print(f"Training plot saved in file: {filename}")
+
+    def save_model(self, filename='best_model.pth'):
+        """
+        Saves the best model's state dictionary to a specified file.
+
+        Parameters:
+            filename (str): The name of the file to save the model.
+        """
+        if self.best_node is not None:
+            torch.save(self.best_node.quantized_mlp.model.state_dict(), filename)
+            print(f"Best model saved to {filename}")
+        else:
+            print("No best model to save.")
+
+    def load_model(self, model_architecture, loss_fn, quantization_factor=10, parameter_range=(-5, 5), enable_quantization=True, debug=False, filename='best_model.pth'):
+        """
+        Loads a model's state dictionary from a specified file and returns a QuantizedMLP instance
+        
+        Parameters:
+            model_architecture (nn.Module): The architecture of the model to load.
+            loss_fn (callable): The loss function to use.
+            quantization_factor (int): The quantization factor to use.
+            parameter_range (tuple): The parameter range for quantization.
+            enable_quantization (bool): Whether to enable quantization.
+            debug (bool): Whether to enable debug mode.
+            filename (str): The name of the file to load the model from.
+            
+            Returns:
+            QuantizedMLP: The loaded quantized MLP model.
+        """
+        state_dict = torch.load(filename, weights_only=True)
+        model_architecture.load_state_dict(state_dict)
+        quantized_mlp = QuantizedMLP(model_architecture, loss_fn, quantization_factor, parameter_range, enable_quantization, debug)
+        print(f"Model loaded from {filename}")
+        return quantized_mlp
+
+    def log_to_txt_file(self, filename='training_log.txt'):
+        """
+        Logs the training history to a specified file.
+
+        Parameters:
+            filename (str): The name of the file to log the training history.
+        """
+        with open(filename, 'a') as f:
+            f.write("Iteration\tLoss (h)\tTotal Cost (f)\tCost g\n")
+            for i in range(len(self.loss_history)):
+                f.write(f"{i+1}\t{self.loss_history[i]}\t{self.f_history[i]}\t{self.g_history[i]}\n")
+            f.write(f"\nBest Loss: {self.best_node.h_val}\n\n")
+            f.write(f"Training Time (seconds): {self.training_time}\n")
+        print(f"Training log saved to {filename}")
+
+    def log_to_json_file(self, filename='training_log.json'):
+        """
+        Logs the training history to a specified JSON file.
+
+        Parameters:
+            filename (str): The name of the JSON file to log the training history.
+        """
+        log_data = {
+            "loss_history": self.loss_history,
+            "f_history": self.f_history,
+            "g_history": self.g_history,
+            "best_loss": self.best_node.h_val,
+            "training_time_seconds": self.training_time
+        }
+        with open(filename, 'w') as f:
+            json.dump(log_data, f, indent=4)
+        print(f"Training log saved to {filename}")
 
 class GridSearchTrainer:
     """

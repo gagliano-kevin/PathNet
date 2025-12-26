@@ -17,9 +17,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-ITERATIONS = 1000
+ITERATIONS = 700
 
-RUNS = 10
+RUNS = 5
 
 # MLP Hyperparameters
 INPUT_SIZE = 8

@@ -5,16 +5,14 @@ import torch.nn as nn
 
 
 class WineMLP(nn.Module):
-    def __init__(self, input_size=11, hidden_size_1=32, hidden_size_2=32, hidden_size_3=32, output_size=6):
+    def __init__(self, input_size=11, hidden_size_1=32, hidden_size_2=32, output_size=6):
         super(WineMLP, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_size, hidden_size_1),
             nn.ReLU(),
             nn.Linear(hidden_size_1, hidden_size_2),
             nn.ReLU(),
-            nn.Linear(hidden_size_2, hidden_size_3),
-            nn.ReLU(),
-            nn.Linear(hidden_size_3, output_size)
+            nn.Linear(hidden_size_2, output_size)
         )
         
     def forward(self, x):

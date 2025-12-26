@@ -4,6 +4,7 @@
 #===================================================================================================================================
 #===================================================================================================================================
 
+from source.PathNet_test import AdaptiveTrainer
 from source.california_housing_utils import get_california_housing_data, create_dataloader
 from source.general_utils import HousingMLP, plot_final_loss_distribution, plot_mean_loss_with_std
 from source.PathNet import Trainer
@@ -24,7 +25,6 @@ RUNS = 10
 INPUT_SIZE = 8
 HIDDEN_SIZE_1 = 64
 HIDDEN_SIZE_2 = 32
-HIDDEN_SIZE_3 = 16
 OUTPUT_SIZE = 1
 
 ASTAR_METRICS = {
@@ -60,15 +60,36 @@ for run in range(RUNS):
             nn.ReLU(),
             nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
             nn.ReLU(),
-            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),  
-            nn.ReLU(),
-            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            nn.Linear(HIDDEN_SIZE_2, OUTPUT_SIZE),
             )
 
-    trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
+    """
+        trainer = Trainer(model, nn.MSELoss(), quantization_factor=10, parameter_range=(-10, 10), debug_mlp=True, \
             weight_kernel=[6,6], bias_kernel=[6], x_stride=6, y_stride=6, delta_abs=None, max_iterations=ITERATIONS, log_freq=100, \
                 measure_time=True, save_trained_model=True, model_name=f"housing_regression_model_run_{run + 1}")
+    """
 
+    trainer = AdaptiveTrainer(
+        model, 
+        nn.MSELoss(), 
+        quantization_factor=10, 
+        parameter_range=(-10, 10), 
+        debug_mlp=True,
+        # Kernel iniziali grandi per esplorazione veloce
+        weight_kernel=[12, 12], 
+        bias_kernel=[12], 
+        x_stride=12, 
+        y_stride=12,
+        # Limiti minimi per raffinamento finale
+        min_weight_kernel=[2, 2],
+        min_bias_kernel=[2],
+        min_stride=2,
+        # Parametri adattività
+        adaptive_kernel=True,
+        plateau_patience=50,  # Riduci dopo 50 iter senza miglioramento
+        reduction_factor=2,    # Dimezza kernel/stride
+        max_iterations=ITERATIONS
+    )
 
     trainer.train(X_train, Y_train)
 
@@ -92,7 +113,7 @@ dataloader = create_dataloader(X_train, Y_train, batch_size=BATCH_SIZE)
 
 for run in range(RUNS):
     
-    housing_model = HousingMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, output_size=OUTPUT_SIZE)
+    housing_model = HousingMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, output_size=OUTPUT_SIZE)
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(housing_model.parameters(), lr=LEARNING_RATE)
 

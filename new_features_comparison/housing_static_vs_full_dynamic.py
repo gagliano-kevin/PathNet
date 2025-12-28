@@ -250,8 +250,17 @@ dynamic_astar_losses_array = DYNAMIC_ASTAR_METRICS["losses"]
 static_astar_mean_loss = np.mean(static_astar_losses_array, axis=0)
 static_astar_std_loss = np.std(static_astar_losses_array, axis=0)
 
-dynamic_astar_mean_loss = np.mean(dynamic_astar_losses_array, axis=0)
-dynamic_astar_std_loss = np.std(dynamic_astar_losses_array, axis=0)
+# Find the length of the longest list
+max_len = max(len(l) for l in dynamic_astar_losses_array)
+
+# Pad shorter lists with np.nan
+padded = [l + [np.nan] * (max_len - len(l)) for l in dynamic_astar_losses_array]
+padded_array = np.array(padded)
+
+# Calculate mean/std ignoring the NaNs
+dynamic_astar_mean_loss = np.nanmean(padded_array, axis=0)
+dynamic_astar_std_loss = np.nanstd(padded_array, axis=0)
+
 
 labels = ["STATIC A-Star", "DYNAMIC A-Star"]
 

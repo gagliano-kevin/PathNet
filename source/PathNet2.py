@@ -439,16 +439,7 @@ class Trainer:
                 self.increment_dynamic_counters()
 
             if self.early_stopping and self.e_s_wait >= self.e_s_patience:
-                print(f"Search completed after {iteration+1} iterations.")
                 print(f"Early stopping triggered after {self.e_s_patience} iterations without improvement.")
-                print(f"Best loss found: {self.best_node.h_val}")
-                if self.measure_time:
-                    end_time = time.perf_counter()
-                    total_time = end_time - start_time
-                    self.training_time = total_time
-                    print(f"Total training time: {total_time:.4f} seconds")
-                if self.save_trained_model:
-                    self.save_model(filename=self.model_name + '.pth')
                 break
             #==================================================================================================
 

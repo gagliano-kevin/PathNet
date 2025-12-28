@@ -263,7 +263,7 @@ class Trainer:
                  #----------------------------------------------------------------------------------
                  dynamic_quantization=False, d_q_patience=100, 
                  quantization_factor_multiplier=10, max_quantization_factor=1e4,
-                #-----------------------------------------------------------------------------------
+                 #-----------------------------------------------------------------------------------
                  dynamic_kernel_reshaping=False, d_k_r_patience=100, 
                  x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
                  min_weight_kernel=[1,1], min_bias_kernel=[1],

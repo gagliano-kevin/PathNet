@@ -1,6 +1,6 @@
 #===================================================================================================================================
 #===================================================================================================================================
-#--------------- run this file from project root: python -m new_features_comparison.housing_static_vs_full_dynamic -- --------------
+#--------------- run this file from project root: python -m new_features_comparison.housing_static_vs_full_dynamic -----------------
 #===================================================================================================================================
 #===================================================================================================================================
 
@@ -13,7 +13,7 @@ import torch.nn as nn
 import numpy as np
 
 
-ITERATIONS = 1000
+ITERATIONS = 10
 
 RUNS = 1
 
@@ -22,6 +22,44 @@ INPUT_SIZE = 8
 HIDDEN_SIZE_1 = 32
 HIDDEN_SIZE_2 = 32
 OUTPUT_SIZE = 1
+
+QUANTIZATION_FACTOR = 10
+PARAMETER_RANGE = (-10, 10)
+
+# Initial Kernel and Stride Settings
+WEIGHT_KERNEL = [4,4]
+BIAS_KERNEL = [4]
+X_STRIDE = 4
+Y_STRIDE = 4
+DELTA_ABS = None
+
+EARLY_STOPPING = True
+E_S_PATIENCE = 200
+
+# Dynamic Quantization Settings
+DYNAMIC_QUANTIZATION = True
+D_Q_PATIENCE = 100
+QUANTIZATION_FACTOR_MULTIPLIER = 10
+MAX_QUANTIZATION_FACTOR = 1e4
+
+# Dynamic Kernel Reshaping Settings
+DYNAMIC_KERNEL_RESHAPING = True
+D_K_R_PATIENCE = 100
+X_WEIGHT_KERNEL_DECR = 1
+Y_WEIGHT_KERNEL_DECR = 1
+Y_BIAS_KERNEL_DECR = 1
+MIN_WEIGHT_KERNEL = [2,2]
+MIN_BIAS_KERNEL = [2]
+X_STRIDE_DECR = 1
+Y_STRIDE_DECR = 1
+MIN_X_STRIDE = 2
+MIN_Y_STRIDE = 2
+
+LOSS_IMPROVEMENT_THRESHOLD = 1e-3
+
+SAVE_TRAINED_MODEL = False
+MODEL_NAME_PREFIX = "housing_model"
+
 
 STATIC_ASTAR_METRICS = {
     "losses": [],
@@ -62,25 +100,25 @@ for run in range(RUNS):
 
     trainer = Trainer(model=model,
                              loss_fn=nn.MSELoss(),
-                             quantization_factor=10,
-                             parameter_range=(-10, 10),
+                             quantization_factor=QUANTIZATION_FACTOR,
+                             parameter_range=PARAMETER_RANGE,
                              debug_mlp=False,
                              #----------------------------------------------------------------------------------
-                             weight_kernel = [4,4], bias_kernel = [4], x_stride=4, y_stride=4, delta_abs=None,
+                             weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
                              #----------------------------------------------------------------------------------
-                             early_stopping=True, e_s_patience=250,
+                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
                              #----------------------------------------------------------------------------------
-                             dynamic_quantization=True, d_q_patience=100, 
-                             quantization_factor_multiplier=10, max_quantization_factor=1e4,
+                             dynamic_quantization=DYNAMIC_QUANTIZATION, d_q_patience=D_Q_PATIENCE, 
+                             quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
                              #-----------------------------------------------------------------------------------
-                             dynamic_kernel_reshaping=True, d_k_r_patience=100, 
-                             x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
-                             min_weight_kernel=[2,2], min_bias_kernel=[2],
-                             x_stride_decr=1, y_stride_decr=1, min_x_stride=2, min_y_stride=2,
+                             dynamic_kernel_reshaping=DYNAMIC_KERNEL_RESHAPING, d_k_r_patience=D_K_R_PATIENCE, 
+                             x_weight_kernel_decr=X_WEIGHT_KERNEL_DECR, y_weight_kernel_decr=Y_WEIGHT_KERNEL_DECR, y_bias_kernel_decr=Y_BIAS_KERNEL_DECR, 
+                             min_weight_kernel=MIN_WEIGHT_KERNEL, min_bias_kernel=MIN_BIAS_KERNEL,
+                             x_stride_decr=X_STRIDE_DECR, y_stride_decr=Y_STRIDE_DECR, min_x_stride=MIN_X_STRIDE, min_y_stride=MIN_Y_STRIDE,
                              #----------------------------------------------------------------------------------
-                             loss_improvement_threshold=1e-3,
+                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                              #----------------------------------------------------------------------------------
-                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=False, model_name=f'housing_dynamic_astar_run_{run + 1}'
+                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
                              )
 
     trainer.train(X_train, Y_train)
@@ -88,8 +126,6 @@ for run in range(RUNS):
     DYNAMIC_ASTAR_METRICS["losses"].append(trainer.loss_history)
     DYNAMIC_ASTAR_METRICS["training_times"].append(trainer.training_time)
     DYNAMIC_ASTAR_METRICS["final_losses"].append(trainer.best_node.h_val)
-
-#    trainer.log_to_txt_file(f"{LOG_FILE_ASTAR}_run_{run + 1}.txt")
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -115,25 +151,25 @@ for run in range(RUNS):
 
     trainer = Trainer(model=model,
                              loss_fn=nn.MSELoss(),
-                             quantization_factor=10,
-                             parameter_range=(-10, 10),
+                             quantization_factor=QUANTIZATION_FACTOR,
+                             parameter_range=PARAMETER_RANGE,
                              debug_mlp=False,
                              #----------------------------------------------------------------------------------
-                             weight_kernel = [4,4], bias_kernel = [4], x_stride=4, y_stride=4, delta_abs=None,
+                             weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
                              #----------------------------------------------------------------------------------
-                             early_stopping=False, e_s_patience=250,
+                             early_stopping=False, e_s_patience=E_S_PATIENCE,
                              #----------------------------------------------------------------------------------
-                             dynamic_quantization=False, d_q_patience=100, 
-                             quantization_factor_multiplier=10, max_quantization_factor=1e4,
+                             dynamic_quantization=False, d_q_patience=D_Q_PATIENCE, 
+                             quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
                              #-----------------------------------------------------------------------------------
-                             dynamic_kernel_reshaping=False, d_k_r_patience=100, 
-                             x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
-                             min_weight_kernel=[1,1], min_bias_kernel=[1],
-                             x_stride_decr=0, y_stride_decr=0, min_x_stride=1, min_y_stride=1,
+                             dynamic_kernel_reshaping=False, d_k_r_patience=D_K_R_PATIENCE, 
+                             x_weight_kernel_decr=X_WEIGHT_KERNEL_DECR, y_weight_kernel_decr=Y_WEIGHT_KERNEL_DECR, y_bias_kernel_decr=Y_BIAS_KERNEL_DECR, 
+                             min_weight_kernel=MIN_WEIGHT_KERNEL, min_bias_kernel=MIN_BIAS_KERNEL,
+                             x_stride_decr=X_STRIDE_DECR, y_stride_decr=Y_STRIDE_DECR, min_x_stride=MIN_X_STRIDE, min_y_stride=MIN_Y_STRIDE,
                              #----------------------------------------------------------------------------------
-                             loss_improvement_threshold=1e-3,
+                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                              #----------------------------------------------------------------------------------
-                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=False, model_name=f'housing_dynamic_astar_run_{run + 1}'
+                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_static_astar_run_{run + 1}'
                              )
 
     trainer.train(X_train, Y_train)
@@ -141,8 +177,6 @@ for run in range(RUNS):
     STATIC_ASTAR_METRICS["losses"].append(trainer.loss_history)
     STATIC_ASTAR_METRICS["training_times"].append(trainer.training_time)
     STATIC_ASTAR_METRICS["final_losses"].append(trainer.best_node.h_val)
-
-#    trainer.log_to_txt_file(f"{LOG_FILE_ASTAR}_run_{run + 1}.txt")
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -222,7 +256,7 @@ dynamic_astar_std_loss = np.std(dynamic_astar_losses_array, axis=0)
 labels = ["STATIC A-Star", "DYNAMIC A-Star"]
 
 # mean loss with standard deviation shading
-plot_mean_loss_with_std(labels, static_astar_mean_loss, static_astar_std_loss, dynamic_astar_mean_loss, dynamic_astar_std_loss, RUNS, "housing_mean_loss_comparison_with_std.png", "California Housing")
+plot_mean_loss_with_std(labels, static_astar_mean_loss, static_astar_std_loss, dynamic_astar_mean_loss, dynamic_astar_std_loss, RUNS, "housing_mean_loss_ASTAR_comparison.png", "California Housing")
 
 # box and whisker of final losses
-plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, RUNS, "housing_final_loss_distribution_comparison.png", "California Housing")
+plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, RUNS, "housing_final_loss_distribution_ASTAR_comparison.png", "California Housing")

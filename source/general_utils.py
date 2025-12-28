@@ -170,29 +170,28 @@ def plot_final_loss_distribution(astar_final_losses, grad_final_losses, runs, fi
     print(f"Saved plot: {filename}")
 
 
+# function to handle multiple training runs with varying lengths
+def pad_to_max(list_of_lists, total_len):
+    return np.array([
+        l + [np.nan] * (total_len - len(l)) 
+        for l in list_of_lists
+    ])
+
+
 def plot_mean_loss_with_std(labels, static_astar_mean, static_astar_std, dynamic_astar_mean, dynamic_astar_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
     """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
     
-    # epochs is now correctly determined by the global maximum length
-    epochs = np.arange(len(static_astar_mean)) + 1
+    # get the maximum length for epochs
+    epochs = np.arange(max(len(static_astar_mean), len(dynamic_astar_mean))) + 1
     
     plt.figure(figsize=(10, 6))
 
-    # Plot A-Star 
+    # Plot Static A-Star
     plt.plot(epochs, static_astar_mean, label=f'{labels[0]} (Mean Loss)', color='blue')
     plt.fill_between(epochs, static_astar_mean - static_astar_std, static_astar_mean + static_astar_std, 
                      alpha=0.2, color='blue', label=f'{labels[0]} ($\pm 1 \sigma$)')
 
-    # pad with nan the shorter one if lengths differ
-    len_static = len(static_astar_mean)
-    len_dynamic = len(dynamic_astar_mean)
-    if len_static < len_dynamic:
-        static_astar_mean = np.pad(static_astar_mean, (0, len_dynamic - len_static), constant_values=np.nan)
-        static_astar_std = np.pad(static_astar_std, (0, len_dynamic - len_static), constant_values=np.nan)
-    elif len_dynamic < len_static:
-        dynamic_astar_mean = np.pad(dynamic_astar_mean, (0, len_static - len_dynamic), constant_values=np.nan)
-        dynamic_astar_std = np.pad(dynamic_astar_std, (0, len_static - len_dynamic), constant_values=np.nan)
-
+    # Plot Dynamic A-Star
     plt.plot(epochs, dynamic_astar_mean, label=f'{labels[1]}  (Mean Loss)', color='red')
     plt.fill_between(epochs, dynamic_astar_mean - dynamic_astar_std, dynamic_astar_mean + dynamic_astar_std, 
                      alpha=0.2, color='red', label=f'{labels[1]} ($\pm 1 \sigma$)')

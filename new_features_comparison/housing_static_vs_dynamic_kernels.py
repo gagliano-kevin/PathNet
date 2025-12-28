@@ -7,10 +7,12 @@
 from source.PathNet2 import Trainer 
 
 from source.california_housing_utils import get_california_housing_data
-from source.general_utils import plot_final_loss_distribution, plot_mean_loss_with_std
+from source.general_utils import plot_final_loss_distribution, plot_mean_loss_with_std, pad_to_max
 
 import torch.nn as nn
 import numpy as np
+
+import warnings
 
 
 ITERATIONS = 1000
@@ -246,21 +248,25 @@ print(f"\nSaved statistical summary to 'housing_training_statistics_summary_{RUN
 static_astar_losses_array = STATIC_ASTAR_METRICS["losses"]
 dynamic_astar_losses_array = DYNAMIC_ASTAR_METRICS["losses"]
 
-# mean and standard deviation across all runs for each iteration
-static_astar_mean_loss = np.mean(static_astar_losses_array, axis=0)
-static_astar_std_loss = np.std(static_astar_losses_array, axis=0)
+# Find the overall maximum length across both datasets
+max_len = max(
+    max((len(l) for l in static_astar_losses_array), default=0),
+    max((len(l) for l in dynamic_astar_losses_array), default=0)
+)
 
-# Find the length of the longest list
-max_len = max(len(l) for l in dynamic_astar_losses_array)
+# padded numpy arrays
+static_astar_padded = pad_to_max(static_astar_losses_array, max_len)
+dynamic_astar_padded = pad_to_max(dynamic_astar_losses_array, max_len)
 
-# Pad shorter lists with np.nan
-padded = [l + [np.nan] * (max_len - len(l)) for l in dynamic_astar_losses_array]
-padded_array = np.array(padded)
+# mean and std dev calculations with warnings ignored for NaN slices
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", category=RuntimeWarning)
+    
+    static_astar_mean_loss = np.nanmean(static_astar_padded, axis=0)
+    static_astar_std_loss = np.nanstd(static_astar_padded, axis=0)
 
-# Calculate mean/std ignoring the NaNs
-dynamic_astar_mean_loss = np.nanmean(padded_array, axis=0)
-dynamic_astar_std_loss = np.nanstd(padded_array, axis=0)
-
+    dynamic_astar_mean_loss = np.nanmean(dynamic_astar_padded, axis=0)
+    dynamic_astar_std_loss = np.nanstd(dynamic_astar_padded, axis=0)
 
 labels = ["STATIC A-Star", "DYNAMIC A-Star"]
 

@@ -168,3 +168,59 @@ def plot_final_loss_distribution(astar_final_losses, grad_final_losses, runs, fi
     plt.savefig(filename)
     plt.close()
     print(f"Saved plot: {filename}")
+
+
+def plot_mean_loss_with_std(labels, static_astar_mean, static_astar_std, dynamic_astar_mean, dynamic_astar_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
+    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
+    
+    # epochs is now correctly determined by the global maximum length
+    epochs = np.arange(len(static_astar_mean)) + 1
+    
+    plt.figure(figsize=(10, 6))
+
+    # Plot A-Star 
+    plt.plot(epochs, static_astar_mean, label=f'{labels[0]} (Mean Loss)', color='blue')
+    plt.fill_between(epochs, static_astar_mean - static_astar_std, static_astar_mean + static_astar_std, 
+                     alpha=0.2, color='blue', label=f'{labels[0]} ($\pm 1 \sigma$)')
+
+    # Plot Gradient Descent 
+    plt.plot(epochs, dynamic_astar_mean, label=f'{labels[1]}  (Mean Loss)', color='red')
+    plt.fill_between(epochs, dynamic_astar_mean - dynamic_astar_std, dynamic_astar_mean + dynamic_astar_std, 
+                     alpha=0.2, color='red', label=f'{labels[1]} ($\pm 1 \sigma$)')
+
+    plt.title(f'Mean Training Loss Comparison on {dataset_name} over {runs} Runs')
+    plt.xlabel('Epochs / Iterations')
+    plt.ylabel('Mean Loss')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    print(f"Saved plot: {filename}")
+
+
+def plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
+    """Plots a Box-and-Whisker plot of the final performance metric."""
+    
+    data = [static_astar_final_losses, dynamic_astar_final_losses]
+    
+    plt.figure(figsize=(8, 6))
+    
+    # Boxplot showing median, IQR, and range
+    plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
+                boxprops=dict(facecolor='lightblue'),
+                medianprops=dict(color='darkred'))
+    
+    # Add individual points (jitter) to show all run results
+    for i, losses in enumerate(data):
+        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
+        plt.scatter(x, losses, color='black', alpha=0.6, s=10)
+
+    plt.title(f'Distribution of Final Loss on {dataset_name} over {runs} Runs')
+    plt.ylabel('Final Loss')
+    plt.xticks(ticks=[1, 2], labels=labels)
+    plt.grid(axis='y', linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    print(f"Saved plot: {filename}")

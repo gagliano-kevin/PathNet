@@ -6,15 +6,11 @@
 
 from source.PathNet2 import Trainer 
 
-from source.california_housing_utils import get_california_housing_data, create_dataloader
+from source.california_housing_utils import get_california_housing_data
 from source.general_utils import plot_final_loss_distribution, plot_mean_loss_with_std
 
-import time
-
-import torch
 import torch.nn as nn
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 ITERATIONS = 100
@@ -70,7 +66,7 @@ for run in range(RUNS):
                              parameter_range=(-10, 10),
                              debug_mlp=False,
                              #----------------------------------------------------------------------------------
-                             weight_kernel = [2,2], bias_kernel = [2], x_stride=1, y_stride=1, delta_abs=None,
+                             weight_kernel = [4,4], bias_kernel = [4], x_stride=4, y_stride=4, delta_abs=None,
                              #----------------------------------------------------------------------------------
                              early_stopping=True, e_s_patience=250,
                              #----------------------------------------------------------------------------------
@@ -79,8 +75,8 @@ for run in range(RUNS):
                              #-----------------------------------------------------------------------------------
                              dynamic_kernel_reshaping=True, d_k_r_patience=100, 
                              x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
-                             min_weight_kernel=[1,1], min_bias_kernel=[1],
-                             x_stride_decr=0, y_stride_decr=0, min_x_stride=1, min_y_stride=1,
+                             min_weight_kernel=[2,2], min_bias_kernel=[2],
+                             x_stride_decr=1, y_stride_decr=1, min_x_stride=2, min_y_stride=2,
                              #----------------------------------------------------------------------------------
                              loss_improvement_threshold=1e-5,
                              #----------------------------------------------------------------------------------
@@ -123,7 +119,7 @@ for run in range(RUNS):
                              parameter_range=(-10, 10),
                              debug_mlp=False,
                              #----------------------------------------------------------------------------------
-                             weight_kernel = [2,2], bias_kernel = [2], x_stride=1, y_stride=1, delta_abs=None,
+                             weight_kernel = [4,4], bias_kernel = [4], x_stride=4, y_stride=4, delta_abs=None,
                              #----------------------------------------------------------------------------------
                              early_stopping=False, e_s_patience=250,
                              #----------------------------------------------------------------------------------

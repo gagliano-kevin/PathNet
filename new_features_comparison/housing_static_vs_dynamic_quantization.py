@@ -152,25 +152,25 @@ for run in range(RUNS):
 
     trainer = Trainer(model=model,
                              loss_fn=nn.MSELoss(),
-                             quantization_factor=10,
-                             parameter_range=(-10, 10),
+                             quantization_factor=QUANTIZATION_FACTOR,
+                             parameter_range=PARAMETER_RANGE,
                              debug_mlp=False,
                              #----------------------------------------------------------------------------------
-                             weight_kernel = [4,4], bias_kernel = [4], x_stride=4, y_stride=4, delta_abs=None,
+                             weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
                              #----------------------------------------------------------------------------------
-                             early_stopping=False, e_s_patience=250,
+                             early_stopping=False, e_s_patience=E_S_PATIENCE,
                              #----------------------------------------------------------------------------------
-                             dynamic_quantization=False, d_q_patience=100, 
-                             quantization_factor_multiplier=10, max_quantization_factor=1e4,
+                             dynamic_quantization=False, d_q_patience=D_Q_PATIENCE, 
+                             quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
                              #-----------------------------------------------------------------------------------
-                             dynamic_kernel_reshaping=False, d_k_r_patience=100, 
-                             x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
-                             min_weight_kernel=[1,1], min_bias_kernel=[1],
-                             x_stride_decr=0, y_stride_decr=0, min_x_stride=1, min_y_stride=1,
+                             dynamic_kernel_reshaping=False, d_k_r_patience=D_K_R_PATIENCE, 
+                             x_weight_kernel_decr=X_WEIGHT_KERNEL_DECR, y_weight_kernel_decr=Y_WEIGHT_KERNEL_DECR, y_bias_kernel_decr=Y_BIAS_KERNEL_DECR, 
+                             min_weight_kernel=MIN_WEIGHT_KERNEL, min_bias_kernel=MIN_BIAS_KERNEL,
+                             x_stride_decr=X_STRIDE_DECR, y_stride_decr=Y_STRIDE_DECR, min_x_stride=MIN_X_STRIDE, min_y_stride=MIN_Y_STRIDE,
                              #----------------------------------------------------------------------------------
-                             loss_improvement_threshold=1e-3,
+                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                              #----------------------------------------------------------------------------------
-                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=False, model_name=MODEL_NAME_PREFIX + f'_static_astar_run_{run + 1}'
+                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
                              )
 
     trainer.train(X_train, Y_train)

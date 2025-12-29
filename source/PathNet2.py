@@ -21,7 +21,6 @@ class QuantizedMLP:
         self.overflow = False
         self.enable_quantization = enable_quantization
         self.debug = debug
-        self.possible_congigurations = ((2 * parameter_range[1] * quantization_factor) + 1) ** len(self.get_flat_weights())
         if self.enable_quantization: self.quantize()
 
     def quantize(self):

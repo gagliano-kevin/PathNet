@@ -4,8 +4,6 @@ import torch
 import torch.nn as nn
 
 import psutil
-import sys
-import time
 
 
 class SystemMemoryGuard:

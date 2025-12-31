@@ -8,6 +8,8 @@ import time
 import json
 import pandas as pd
 
+from source.general_utils import SystemMemoryGuard
+
 class QuantizedMLP:
     """ 
     A class representing a quantized MLP model.
@@ -272,7 +274,9 @@ class Trainer:
                  #----------------------------------------------------------------------------------
                  max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
         
-        
+        # Memory guard for stopping gracefully training when 85% of system memory usage is reached
+        self.memory_guard = SystemMemoryGuard()
+
         self.model = model          # nn.sequential model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
@@ -439,6 +443,10 @@ class Trainer:
 
             if self.early_stopping and self.e_s_wait >= self.e_s_patience:
                 print(f"Early stopping triggered after {self.e_s_patience} iterations without improvement.")
+                break
+
+            if self.memory_guard.memory_exceeded():
+                print("Memory usage exceeded threshold. Terminating training to prevent system instability.")
                 break
             #==================================================================================================
 

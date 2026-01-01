@@ -1,6 +1,9 @@
 import numpy as np
 from source.general_utils import plot_final_loss_distribution, plot_mean_loss_with_std, pad_to_max
 import warnings
+import json
+import os
+
 
 
 def generate_statistical_summary(static_dict, dynamic_dict, filename):
@@ -10,7 +13,6 @@ def generate_statistical_summary(static_dict, dynamic_dict, filename):
     static_astar_training_times = np.array(static_dict["training_times"])
     dynamic_astar_final_losses = np.array(dynamic_dict["final_losses"])
     dynamic_astar_training_times = np.array(dynamic_dict["training_times"])
-
 
     # STATIC A-Star Statistics
     static_astar_avg_loss = np.mean(static_astar_final_losses)
@@ -96,10 +98,46 @@ def generate_plots(static_dict, dynamic_dict, filename):
     static_astar_final_losses = np.array(static_dict["final_losses"])
     dynamic_astar_final_losses = np.array(dynamic_dict["final_losses"])
 
-
-
     # mean loss with standard deviation shading
-    plot_mean_loss_with_std(labels, static_astar_mean_loss, static_astar_std_loss, dynamic_astar_mean_loss, dynamic_astar_std_loss, RUNS, f"{filename}.png", "California Housing")
+    plot_mean_loss_with_std(labels, static_astar_mean_loss, static_astar_std_loss, dynamic_astar_mean_loss, dynamic_astar_std_loss, RUNS, f"{filename}_mean_loss.png", "California Housing")
 
     # box and whisker of final losses
-    plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, RUNS, f"{filename}.png", "California Housing")
+    plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, RUNS, f"{filename}_final_loss.png", "California Housing")
+
+
+
+def save_metrics(metrics_dict, filename):
+    """
+    Saves a dictionary of metrics to a JSON file.
+    :param filename: String path to the file (e.g., 'results.json')
+    :param metrics_dict: The dictionary containing your data
+    """
+    filename = filename + ".json"
+    try:
+        with open(filename, 'w') as f:
+            json.dump(metrics_dict, f, indent=4)
+        print(f"Successfully saved metrics to {filename}")
+    except Exception as e:
+        print(f"Error saving file: {e}")
+
+
+
+def load_metrics(filename):
+    """
+    Loads metrics from a JSON file.
+    :param filename: String path to the file
+    :return: Dictionary containing the loaded data or None if failed
+    """
+    filename = filename + ".json"
+    if not os.path.exists(filename):
+        print(f"File {filename} not found.")
+        return None
+        
+    try:
+        with open(filename, 'r') as f:
+            data = json.load(f)
+        print(f"Successfully loaded metrics from {filename}")
+        return data
+    except Exception as e:
+        print(f"Error loading file: {e}")
+        return None

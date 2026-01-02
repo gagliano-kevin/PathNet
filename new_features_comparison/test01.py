@@ -15,8 +15,8 @@ import numpy as np
 
 import warnings
 
-ITERATIONS = 20
-RUNS = 1
+ITERATIONS = 2000
+RUNS = 3
 SAVE_TRAINED_MODEL = False
 MODEL_NAME_PREFIX = "housing_model"
 EARLY_STOPPING = False

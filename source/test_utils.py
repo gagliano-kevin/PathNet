@@ -47,6 +47,17 @@ def generate_statistical_summary(static_dict, dynamic_dict, filename):
     print(f"| AVG Training Time | {static_astar_avg_training_time:.6f} | {dynamic_astar_avg_training_time:.6f}         |")
     print("=========================================================================================")
 
+    # check if dynamic_quantization_iterations and dynamic_kernel_reshaping_iterations exist in dynamic_dict
+    if "dynamic_quantization_iterations" in dynamic_dict and "dynamic_kernel_reshaping_iterations" in dynamic_dict:
+        dynamic_quantization_iterations = np.array(dynamic_dict["dynamic_quantization_iterations"])
+        dynamic_kernel_reshaping_iterations = np.array(dynamic_dict["dynamic_kernel_reshaping_iterations"])
+        # Print for each RUN the number of dynamic adjustments and the iteration when they occurred
+        print("\nDynamic Adjustments per Run:")
+        for run in range(RUNS):
+            print(f" Run {run + 1}:")
+            print(f"  - Dynamic Quantization Iterations: {dynamic_quantization_iterations[run]}")
+            print(f"  - Dynamic Kernel Reshaping Iterations: {dynamic_kernel_reshaping_iterations[run]}")
+
     with open(f"{filename}.txt", "w") as f:
         f.write("=========================================================================================\n")
         f.write(f"| STATISTICAL SUMMARY over {RUNS} Runs |\n")
@@ -61,6 +72,16 @@ def generate_statistical_summary(static_dict, dynamic_dict, filename):
         f.write(f"| Max Loss    | {static_astar_max:.6f}     | {dynamic_astar_max:.6f}              |\n")
         f.write(f"| AVG Training Time | {static_astar_avg_training_time:.6f} | {dynamic_astar_avg_training_time:.6f}         |\n")
         f.write("=========================================================================================\n")
+
+        if "dynamic_quantization_iterations" in dynamic_dict and "dynamic_kernel_reshaping_iterations" in dynamic_dict:
+            dynamic_quantization_iterations = np.array(dynamic_dict["dynamic_quantization_iterations"])
+            dynamic_kernel_reshaping_iterations = np.array(dynamic_dict["dynamic_kernel_reshaping_iterations"])
+            # Print for each RUN the number of dynamic adjustments and the iteration when they occurred
+            f.write("\nDynamic Adjustments per Run:\n")
+            for run in range(RUNS):
+                f.write(f" Run {run + 1}:\n")
+                f.write(f"  - Dynamic Quantization Iterations: {dynamic_quantization_iterations[run]}\n")
+                f.write(f"  - Dynamic Kernel Reshaping Iterations: {dynamic_kernel_reshaping_iterations[run]}\n")
 
     print(f"\nSaved statistical summary to '{filename}.txt'\n")
 

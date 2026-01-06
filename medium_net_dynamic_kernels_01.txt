@@ -1,0 +1,24 @@
+=========================================================================================
+| STATISTICAL SUMMARY over 3 Runs |
+=========================================================================================
+| Metric      | STATIC A-Star  | DYNAMIC A-Star |
+|-------------|----------------|----------------------------|
+| Average Loss| 0.463966     | 0.402568              |
+| Median Loss | 0.461073     | 0.398610              |
+| Std Dev     | 0.009975     | 0.041279              |
+| Variance    | 0.000100     | 0.001704              |
+| Min Loss    | 0.453455     | 0.354107              |
+| Max Loss    | 0.477370     | 0.454986              |
+| AVG Training Time | 512.806093 | 521.922156         |
+=========================================================================================
+
+Dynamic Adjustments per Run:
+ Run 1:
+  - Dynamic Quantization Iterations: []
+  - Dynamic Kernel Reshaping Iterations: [183, 523, 728]
+ Run 2:
+  - Dynamic Quantization Iterations: []
+  - Dynamic Kernel Reshaping Iterations: [307, 445, 575, 686]
+ Run 3:
+  - Dynamic Quantization Iterations: []
+  - Dynamic Kernel Reshaping Iterations: [345, 536, 636, 738]

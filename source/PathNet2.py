@@ -129,13 +129,6 @@ def get_neighbors_old_version(search_node, X, Y, quantization_factor=None, weigh
                 parent_tensor = list(parent_model.parameters())[tensor_index].data
 
                 # check if any overflow would occur
-                """
-                if (torch.any(parent_tensor == parent_mlp.parameter_range[0]) and delta < 0) or \
-                     (torch.any(parent_tensor == parent_mlp.parameter_range[1]) and delta > 0):
-                    continue
-                """
-                
-                # should be the right way to check for overflow, but need to be tested 
                 if (torch.any(parent_tensor < parent_mlp.parameter_range[0] + delta_abs) and delta < 0) or \
                      (torch.any(parent_tensor > parent_mlp.parameter_range[1] - delta_abs) and delta > 0):
                     continue
@@ -251,7 +244,9 @@ def get_neighbors_old_version(search_node, X, Y, quantization_factor=None, weigh
     return neighbors
 
 
-
+"""
+A revised version of the get_neighbors function that dynamically adjusts the kernel size and strides if the kernel is larger than the tensor itself.
+"""
 def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None):
 
     if quantization_factor is None:
@@ -277,13 +272,6 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
                 parent_tensor = list(parent_model.parameters())[tensor_index].data
 
                 # check if any overflow would occur
-                """
-                if (torch.any(parent_tensor == parent_mlp.parameter_range[0]) and delta < 0) or \
-                     (torch.any(parent_tensor == parent_mlp.parameter_range[1]) and delta > 0):
-                    continue
-                """
-                
-                # should be the right way to check for overflow, but need to be tested 
                 if (torch.any(parent_tensor < parent_mlp.parameter_range[0] + delta_abs) and delta < 0) or \
                      (torch.any(parent_tensor > parent_mlp.parameter_range[1] - delta_abs) and delta > 0):
                     continue
@@ -385,13 +373,13 @@ class Trainer:
                  dynamic_kernel_reshaping=False, d_k_r_patience=100, 
                  x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
                  min_weight_kernel=[1,1], min_bias_kernel=[1],
-                 x_stride_decr=0, y_stride_decr=0, min_x_stride=1, min_y_stride=1,
+                 x_stride_decr=1, y_stride_decr=1, min_x_stride=1, min_y_stride=1,
                  #----------------------------------------------------------------------------------
                  loss_improvement_threshold=1e-5,
                  #----------------------------------------------------------------------------------
                  max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
         
-        # Memory guard for stopping gracefully training when 85% of system memory usage is reached
+        # Memory guard for stopping gracefully training when 90% of system memory usage is reached
         self.memory_guard = SystemMemoryGuard()
 
         self.model = model          # nn.sequential model

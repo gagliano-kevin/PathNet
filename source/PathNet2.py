@@ -1197,3 +1197,555 @@ class GridSearchTrainer:
                 mean_time = np.mean(training_times) if training_times else 0.0
                 f.write(f"{config_index:<10}{mean_loss:<15.6f}{median_loss:<15.6f}{std_loss:<15.6f}{variance_loss:<15.6f}{min_loss:<15.6f}{max_loss:<15.6f}{mean_time:<15.2f}\n")
             f.write("-" * 120 + "\n")
+
+
+
+
+
+"""
+    New Dynamic Grid Search Trainer with additional hyperparameters for dynamic features, such as early stopping, dynamic quantization, and dynamic kernel reshaping.
+"""
+class DynamicGridSearchTrainer:
+    """
+    A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
+    """
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, 
+                 weight_kernels, bias_kernels, x_strides, y_strides, 
+                 max_iterations, log_freq, delta_abs=[None], 
+                 # ------------------ New Hyperparameters ------------------
+                 early_stopping=[False], e_s_patience=[250],
+                 dynamic_quantization=[False], d_q_patience=[100], 
+                 quantization_factor_multiplier=[10], max_quantization_factor=[1e4],
+                 dynamic_kernel_reshaping=[False], d_k_r_patience=[100], 
+                 x_weight_kernel_decr=[1], y_weight_kernel_decr=[1], y_bias_kernel_decr=[1], 
+                 min_weight_kernel=[[1,1]], min_bias_kernel=[[1]],
+                 x_stride_decr=[1], y_stride_decr=[1], min_x_stride=[1], min_y_stride=[1],
+                 loss_improvement_threshold=[1e-5],
+                 # -----------------------------------------------------------
+                 debug_mlps=True, measure_time=True):
+       
+        self.trainers_params = []
+        self.grid_search_data = []
+
+        # Nested loops to generate all combinations of hyperparameters
+        # Note: This depth is necessary to cover all combinations explicitly.
+        for i in range(len(models)):
+            for lf in loss_funcs:
+                for qf in quantization_factors:
+                    for pr in parameter_ranges:
+                        for wk in weight_kernels:
+                            for bk in bias_kernels:
+                                for xst in x_strides:
+                                    for yst in y_strides:
+                                        for da in delta_abs:
+                                            for mi in max_iterations:
+                                                for lfq in log_freq:
+                                                    # dynamic features
+                                                    for es in early_stopping:
+                                                        for esp in e_s_patience:
+                                                            for dq in dynamic_quantization:
+                                                                for dqp in d_q_patience:
+                                                                    for qfm in quantization_factor_multiplier:
+                                                                        for mqf in max_quantization_factor:
+                                                                            for dkr in dynamic_kernel_reshaping:
+                                                                                for dkrp in d_k_r_patience:
+                                                                                    for xwkd in x_weight_kernel_decr:
+                                                                                        for ywkd in y_weight_kernel_decr:
+                                                                                            for ybkd in y_bias_kernel_decr:
+                                                                                                for mwk in min_weight_kernel:
+                                                                                                    for mbk in min_bias_kernel:
+                                                                                                        for xsd in x_stride_decr:
+                                                                                                            for ysd in y_stride_decr:
+                                                                                                                for mxs in min_x_stride:
+                                                                                                                    for mys in min_y_stride:
+                                                                                                                        for lit in loss_improvement_threshold:
+                                                                                                                            self.trainers_params.append((
+                                                                                                                                models[i], lf, qf, pr, debug_mlps, wk, bk, xst, yst, da, mi, lfq, measure_time,
+                                                                                                                                # New params for dynamic features
+                                                                                                                                es, esp,
+                                                                                                                                dq, dqp, qfm, mqf,
+                                                                                                                                dkr, dkrp, xwkd, ywkd, ybkd, mwk, mbk, xsd, ysd, mxs, mys,
+                                                                                                                                lit
+                                                                                                                            ))
+
+
+    def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=True, log_filename='grid_search_results', save_models=False):
+        """
+        Runs the grid search over all trainer configurations and logs the results to a JSON file.
+
+        Parameters:
+            X (torch.Tensor): Input data for training.
+            Y (torch.Tensor): Target labels for training.
+            runs_per_config (int): Number of times to run each configuration (for stability stats).
+            enable_training_history_logging (bool): Whether to save full loss history in JSON.
+            log_filename (str): Filename for the JSON log file.
+            save_models (bool): Whether to save the .pth model file for every run.
+        """
+
+        with open(log_filename + '.txt', 'w') as log_file:
+            log_file.write("=" * 32 + "\n")
+            log_file.write("\tGrid Search Training Log\n")
+            log_file.write("=" * 32 + "\n\n")
+        
+        print("\n" + "=" * 50)
+        print("\tGrid Search")
+        print("=" * 50)
+        
+        for config_index, param_config in enumerate(self.trainers_params):
+            # Unpack all parameters
+            (model_class, loss_fn, qf, pr, debug_mlp, wk, bk, xst, yst, da, mi, lfq, measure_time,
+             es, esp, 
+             dq, dqp, qfm, mqf,
+             dkr, dkrp, xwkd, ywkd, ybkd, mwk, mbk, xsd, ysd, mxs, mys,
+             lit) = param_config
+            
+            hyperparams_dict = {
+                "model_type": str(model_class),
+                "loss_fn": str(loss_fn),
+                "quantization_factor": qf,
+                "parameter_range": pr,
+                "weight_kernel": wk,
+                "bias_kernel": bk,
+                "x_stride": xst,
+                "y_stride": yst,
+                "delta_abs": da,
+                "max_iterations": mi,
+                "log_freq": lfq,
+                "debug_mlp": debug_mlp,
+                "measure_time": measure_time,
+                # New params for dynamic features
+                "early_stopping": es,
+                "early_stopping_patience": esp,
+                "dynamic_quantization": dq,
+                "dynamic_quantization_patience": dqp,
+                "quantization_factor_multiplier": qfm,
+                "max_quantization_factor": mqf,
+                "dynamic_kernel_reshaping": dkr,
+                "dynamic_kernel_reshaping_patience": dkrp,
+                "x_weight_kernel_decr": xwkd,
+                "y_weight_kernel_decr": ywkd,
+                "y_bias_kernel_decr": ybkd,
+                "min_weight_kernel": mwk,
+                "min_bias_kernel": mbk,
+                "x_stride_decr": xsd,
+                "y_stride_decr": ysd,
+                "min_x_stride": mxs,
+                "min_y_stride": mys,
+                "loss_improvement_threshold": lit
+            }
+
+            for run in range(runs_per_config):
+                # Copying the model architecture but reinitializing weights for each run
+                model = deepcopy(model_class)
+                # random initialization of model weights
+                for layer in model.modules():
+                    if hasattr(layer, 'reset_parameters'):
+                        layer.reset_parameters()        
+
+                trainer = Trainer(
+                    model=model,
+                    loss_fn=loss_fn,
+                    quantization_factor=qf,
+                    parameter_range=pr,
+                    debug_mlp=debug_mlp,
+                    weight_kernel=wk,
+                    bias_kernel=bk,
+                    x_stride=xst,
+                    y_stride=yst,
+                    delta_abs=da,
+                    max_iterations=mi,
+                    log_freq=lfq,
+                    measure_time=measure_time,
+                    # New params to Trainer
+                    early_stopping=es,
+                    e_s_patience=esp,
+                    dynamic_quantization=dq,
+                    d_q_patience=dqp,
+                    quantization_factor_multiplier=qfm,
+                    max_quantization_factor=mqf,
+                    dynamic_kernel_reshaping=dkr,
+                    d_k_r_patience=dkrp,
+                    x_weight_kernel_decr=xwkd,
+                    y_weight_kernel_decr=ywkd,
+                    y_bias_kernel_decr=ybkd,
+                    min_weight_kernel=mwk,
+                    min_bias_kernel=mbk,
+                    x_stride_decr=xsd,
+                    y_stride_decr=ysd,
+                    min_x_stride=mxs,
+                    min_y_stride=mys,
+                    loss_improvement_threshold=lit
+                )
+                
+                run_label = f"Config {config_index+1}/{len(self.trainers_params)} (Run {run+1}/{runs_per_config})"
+                print(f"\n--- {run_label} ---")
+                print(f"HPs: QF={qf}, PR={pr}, WK={wk}, BK={bk}, ES={es}, DQ={dq}, DKR={dkr}, Lit={lit}\n")
+
+                with open(log_filename + '.txt', 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Training with parameters: \n"
+                                   f"Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, "
+                                   f"Weight Kernel={trainer.weight_kernel}, Bias Kernel={trainer.bias_kernel}, "
+                                   f"ES={es}, DQ={dq}, DKR={dkr}, LossThreshold={lit}\n\n")
+
+                trainer.train(X, Y)
+
+                final_loss = trainer.best_node.h_val
+                training_time = trainer.training_time if trainer.training_time else 0.0
+
+                run_result = {
+                    "config_index": config_index,
+                    "run_number": run,
+                    "hyperparameters": hyperparams_dict,
+                    "metrics": {
+                        "final_loss": final_loss,
+                        "training_time_seconds": training_time
+                    },
+                    # Log when dynamic adjustments happened
+                    "dynamic_adjustments_log": trainer.dynamic_adjustments_log 
+                }
+                
+                if enable_training_history_logging:
+                    run_result["loss_history"] = trainer.loss_history
+                    run_result["f_history"] = trainer.f_history
+                    run_result["g_history"] = trainer.g_history
+
+                self.grid_search_data.append(run_result)
+                
+                print(f"COMPLETED: Best Loss: {final_loss:.6f} | Time: {training_time:.2f}s")
+
+                with open(log_filename + '.txt', 'a') as log_file:
+                    log_file.write(f"(Run {run}) - Best Loss: {trainer.best_node.h_val}\n")
+                    log_file.write(f"(Run {run}) - Training Time: {trainer.training_time:.4f} seconds\n")
+                    log_file.write(f"\n(Run {run}) - Training completed.\n\n")
+                    log_file.write("-" * 150 + "\n\n")
+
+                if save_models:
+                    model_filename = f"model_config{config_index}_run{run}.pth"
+                    trainer.save_model(filename=model_filename)
+        
+        print("\n" + "-" * 50)
+        print(f"Grid Search completed. Writing {len(self.grid_search_data)} results in {log_filename + '.json'}...")
+        
+        with open(log_filename + '.json', 'w') as f:
+            json.dump(self.grid_search_data, f, indent=4)
+            
+        print("JSON write completed.")
+        
+        sorted_results = sorted(self.grid_search_data, key=lambda x: x["metrics"]["final_loss"])
+        with open(log_filename + '.txt', 'a') as log_file:
+            log_file.write("Sorted Final Losses from Grid Search:\n")
+            for i, res in enumerate(sorted_results):
+                hps = res['hyperparameters']
+                log_file.write(f"{i+1}. Loss: {res['metrics']['final_loss']:.6f}\n")
+                log_file.write(f"Model: {hps['model_type']}\n")
+                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, "
+                               f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}\n\n")
+
+    
+    def plot_grid_search_trend(self, log_filename='grid_search_results', metric='loss_history'):
+        """
+        Reads the JSON log file and plots the loss trend (loss vs. iteration) for each run.
+        """
+
+        json_file = log_filename if log_filename.endswith('.json') else log_filename + '.json'
+
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
+        
+        if not results:
+            print("No results found in the JSON file.")
+            return
+
+        plt.figure(figsize=(14, 8))
+        
+        print(f"\nGenerating trend plot for history key '{metric}'...")
+        
+        plotted_runs = 0
+        for run_result in results:
+            history_list = run_result.get(metric) 
+            
+            if history_list and isinstance(history_list, list) and history_list:
+                try:
+                    history_df = pd.DataFrame({
+                        'iteration': range(1, len(history_list) + 1),
+                        'history_value': history_list          
+                    })
+                    
+                    # Labels for the plot legend, updated with new parameters
+                    hps = run_result["hyperparameters"]
+                    label = (
+                        f"Config {run_result['config_index']} - Run {run_result['run_number']} "
+                        f"[QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, "
+                        f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
+                    )
+                    
+                    plt.plot(history_df['iteration'], history_df['history_value'], label=label, alpha=0.8, linewidth=1.5)
+                    plotted_runs += 1
+
+                except Exception as e:
+                    print(f"Warning: Error plotting run {run_result['config_index']}-{run_result['run_number']}: {e}")
+                    continue
+
+        if plotted_runs == 0:
+            print(f"No useful history data found in the JSON file for key '{metric}'.")
+            plt.close() 
+            return
+        
+        metric2name = {
+            'loss_history': 'Loss',
+            'f_history': 'Total Cost (f)',
+            'g_history': 'Cost (g)'
+        }
+        metric_fullname = metric2name.get(metric, metric)
+        
+        plt.title(f'{metric_fullname} Trend Across Grid Search Runs', fontsize=16)
+        plt.xlabel('Iteration (Number of Steps)', fontsize=14)
+        plt.ylabel(f'{metric_fullname} Value', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.6)
+        
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameter Configurations") 
+        plt.tight_layout(rect=[0, 0, 1.00, 1]) 
+        plt.savefig(log_filename + '_loss_trend.png', dpi=300)
+
+        print("Plot saved as " + log_filename + "_loss_trend.png\n")
+        print("-" * 50)
+
+
+    def plot_avg_loss(self, file_name='grid_search_avg_loss', parameter_name=None):
+        """
+        Plots the average loss with standard deviation shading for each hyperparameter configuration across multiple runs.
+        """
+
+        json_file = file_name if file_name.endswith('.json') else file_name + '.json'
+
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
+
+        if not results:
+            print("No results found in the JSON file.")
+            return
+
+        config_losses = {}
+        config_labels = {}
+        for run_result in results:
+            config_index = run_result['config_index']
+            loss_history = run_result.get('loss_history', [])
+            if config_index not in config_labels:
+                if run_result["hyperparameters"]["delta_abs"] is None:
+                    run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
+                hps = run_result["hyperparameters"]
+                
+                if parameter_name is None:
+                    # Updated default label
+                    config_labels[config_index] = (
+                        f"Config {config_index} [QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, "
+                        f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
+                )
+                else:
+                    if isinstance(parameter_name, list):
+                        labels = []
+                        for pn in parameter_name:
+                            param_value = run_result["hyperparameters"].get(pn)
+                            labels.append(f"{pn}: {param_value}")
+                        config_labels[config_index] = ", ".join(labels)
+                    else:
+                        param_value = run_result["hyperparameters"].get(parameter_name)
+                        config_labels[config_index] = f"{parameter_name}: {param_value}"
+            if loss_history:
+                if config_index not in config_losses:
+                    config_losses[config_index] = []
+                config_losses[config_index].append(loss_history)
+
+        plt.figure(figsize=(14, 8))
+
+        for config_index, loss_lists in config_losses.items():
+            # Pad lists to the same length with the last value (or NaN) to calculate stats if lengths differ
+            max_len = max(len(l) for l in loss_lists)
+            padded_losses = []
+            for l in loss_lists:
+                padded = l + [l[-1]] * (max_len - len(l)) # pad with last value
+                padded_losses.append(padded)
+            
+            loss_array = np.array(padded_losses)
+            
+            mean_loss = np.mean(loss_array, axis=0)
+            std_loss = np.std(loss_array, axis=0)
+            iterations = range(1, len(mean_loss) + 1)
+
+            plt.plot(iterations, mean_loss, label=config_labels[config_index], linewidth=2)
+            plt.fill_between(iterations, mean_loss - std_loss, mean_loss + std_loss, alpha=0.2)
+
+        plt.title('Average Loss with Standard Deviation Across Grid Search Configurations', fontsize=16)
+        plt.xlabel('Iteration (Number of Steps)', fontsize=14)
+        plt.ylabel('Loss Value', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameters Tested") 
+        plt.tight_layout(rect=[0, 0, 1.00, 1])
+        plt.savefig(file_name + '_avg_loss.png', dpi=300)
+        print("Plot saved as " + file_name + "_avg_loss.png\n")
+
+
+    def plot_final_loss_boxplot(self, file_name='grid_search_final_loss_boxplot', x_label=None):
+        """
+        Plots a boxplot of the final losses for each hyperparameter configuration across multiple runs.
+        """
+
+        json_file = file_name if file_name.endswith('.json') else file_name + '.json'
+
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
+
+        if not results:
+            print("No results found in the JSON file.")
+            return
+
+        config_final_losses = {}
+        config_labels = {}
+        for run_result in results:
+            config_index = run_result['config_index']
+            final_loss = run_result['metrics'].get('final_loss')
+            if config_index not in config_labels:
+                if run_result["hyperparameters"]["delta_abs"] is None:
+                    run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
+                if x_label is None:
+                    hps = run_result["hyperparameters"]
+                    # Updated default label
+                    config_labels[config_index] = (
+                        f"Config {config_index} [QF: {hps['quantization_factor']}, ES: {hps['early_stopping']}, "
+                        f"DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
+                    )
+                else:
+                    if isinstance(x_label, list):
+                        labels = []
+                        for xl in x_label:
+                            param_value = run_result["hyperparameters"].get(xl)
+                            labels.append(f"{xl}: {param_value}")
+                        config_labels[config_index] = ", ".join(labels)
+                    else:
+                        param_value = run_result["hyperparameters"].get(x_label)
+                        config_labels[config_index] = f"{x_label}: {param_value}"
+            if final_loss is not None:
+                if config_index not in config_final_losses:
+                    config_final_losses[config_index] = []
+                config_final_losses[config_index].append(final_loss)
+
+        boxplot_data = []
+        boxplot_labels = []
+        for config_index, losses in config_final_losses.items():
+            boxplot_data.append(losses)
+            boxplot_labels.append(config_labels[config_index])
+
+        plt.figure(figsize=(14, 8))
+        plt.boxplot(boxplot_data, vert=True, patch_artist=True, labels=boxplot_labels, 
+                boxprops=dict(facecolor='lightblue'),
+                medianprops=dict(color='darkred'))
+
+        for i, losses in enumerate(boxplot_data):
+            y = losses
+            x = np.random.normal(i + 1, 0.04, size=len(y))
+            plt.scatter(x, y, alpha=0.6, color='blue', s=20)
+
+        plt.title('Final Loss Distribution Across Grid Search Configurations', fontsize=16)
+        plt.xlabel("Hyperparameter Tested", fontsize=14)
+        plt.ylabel('Final Loss', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.tight_layout()
+        plt.savefig(file_name + '_boxplot.png', dpi=300)
+        print("Boxplot saved as " + file_name + "_boxplot.png\n")
+
+
+    def generate_final_loss_summary(self, file_name='grid_search_final_loss_summary'):
+        """
+        Generates a summary table of final losses for each hyperparameter configuration across multiple runs and saves it to a text file.
+        """
+
+        json_file = file_name if file_name.endswith('.json') else file_name + '.json'
+
+        try:
+            with open(json_file, 'r') as f:
+                results = json.load(f)
+        except FileNotFoundError:
+            print(f"Error: File not found at {json_file}. Please run grid search logging first.")
+            return
+        except json.JSONDecodeError:
+            print(f"Error: Unable to decode JSON file {json_file}. File may be corrupted.")
+            return
+
+        if not results:
+            print("No results found in the JSON file.")
+            return
+
+        config_final_losses = {}
+        config_training_times = {}
+        config_labels = {}
+        for run_result in results:
+            config_index = run_result['config_index']
+            final_loss = run_result['metrics'].get('final_loss')
+            training_time = run_result['metrics'].get('training_time_seconds', 0.0)
+            if config_index not in config_labels:
+                hps = run_result["hyperparameters"]
+                if run_result["hyperparameters"]["delta_abs"] is None:
+                    run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
+                # Updated label with new parameters
+                config_labels[config_index] = (
+                    f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
+                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']}, "
+                    f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
+                )
+            if final_loss is not None:
+                if config_index not in config_final_losses:
+                    config_final_losses[config_index] = []
+                    config_training_times[config_index] = []
+                config_final_losses[config_index].append(final_loss)
+                config_training_times[config_index].append(training_time)
+
+        summary_file = file_name + '_summary.txt'
+        with open(summary_file, 'w') as f:
+            f.write("=" * 140 + "\n")
+            f.write("Final Loss Summary Across Grid Search Configurations\n")
+            f.write("=" * 140 + "\n\n\n\n")
+            
+            f.write("=" * 140 + "\n")
+            f.write("Configuration Index to Hyperparameter Settings Mapping:\n")
+            f.write("=" * 140 + "\n\n")
+            for config_index, label in config_labels.items():
+                f.write(f"{config_index}: {label}\n")
+                f.write("-" * 140 + "\n")
+
+            f.write("=" * 140 + "\n\n\n\n")
+
+            f.write("=" * 140 + "\n\n")
+            f.write(f"{'Config':<10}{'Mean Loss':<15}{'Median Loss':<15}{'Std Dev':<15}{'Variance':<15}{'Min Loss':<15}{'Max Loss':<15}{'Mean Time (s)':<15}\n")
+            f.write("-" * 140 + "\n")
+            for config_index, losses in config_final_losses.items():
+                training_times = config_training_times[config_index]
+                mean_loss = np.mean(losses)
+                median_loss = np.median(losses)
+                std_loss = np.std(losses)
+                variance_loss = np.var(losses)
+                min_loss = np.min(losses)
+                max_loss = np.max(losses)
+                mean_time = np.mean(training_times) if training_times else 0.0
+                f.write(f"{config_index:<10}{mean_loss:<15.6f}{median_loss:<15.6f}{std_loss:<15.6f}{variance_loss:<15.6f}{min_loss:<15.6f}{max_loss:<15.6f}{mean_time:<15.2f}\n")
+            f.write("-" * 140 + "\n")

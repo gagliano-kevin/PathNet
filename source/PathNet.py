@@ -8,6 +8,8 @@ import time
 import json
 import pandas as pd
 
+from source.general_utils import SystemMemoryGuard
+
 class QuantizedMLP:
     """ 
     A class representing a quantized MLP model.
@@ -102,7 +104,7 @@ class SearchNode:
         return self.f_val < other.f_val
     
 
-def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None):
+def get_neighbors_old_version(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None):
 
     if quantization_factor is None:
         quantization_factor = search_node.quantized_mlp.quantization_factor
@@ -118,17 +120,15 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
             #check if delta_abs is provided, otherwise use default 1/quantization_factor
             if delta_abs is None:
                 delta_abs = 1 / quantization_factor
+            # check if delta_abs is compatible with quantization factor (delta_abs must be always a multiple of 1/quantization_factor)
+            else:
+                if (delta_abs * quantization_factor) % 1 != 0:
+                    raise ValueError(f"delta_abs={delta_abs} is not compatible with quantization_factor={quantization_factor}. The product delta_abs * quantization_factor must be an integer.")
+                
             for delta in [+delta_abs, -delta_abs]:
                 parent_tensor = list(parent_model.parameters())[tensor_index].data
 
                 # check if any overflow would occur
-                """
-                if (torch.any(parent_tensor == parent_mlp.parameter_range[0]) and delta < 0) or \
-                     (torch.any(parent_tensor == parent_mlp.parameter_range[1]) and delta > 0):
-                    continue
-                """
-                
-                # should be the right way to check for overflow, but need to be tested 
                 if (torch.any(parent_tensor < parent_mlp.parameter_range[0] + delta_abs) and delta < 0) or \
                      (torch.any(parent_tensor > parent_mlp.parameter_range[1] - delta_abs) and delta > 0):
                     continue
@@ -244,6 +244,116 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
     return neighbors
 
 
+"""
+A revised version of the get_neighbors function that dynamically adjusts the kernel size and strides if the kernel is larger than the tensor itself.
+"""
+def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,2], bias_kernel=[2], x_stride=1, y_stride=1, delta_abs=None):
+
+    if quantization_factor is None:
+        quantization_factor = search_node.quantized_mlp.quantization_factor
+
+    neighbors = []
+    parent_mlp = search_node.quantized_mlp
+    parent_model = parent_mlp.model
+    parent_parameter_list = list(parent_model.parameters())
+
+    with torch.no_grad():
+        #let's iterate over all parameters
+        for tensor_index in range(len(parent_parameter_list)):
+            #check if delta_abs is provided, otherwise use default 1/quantization_factor
+            if delta_abs is None:
+                delta_abs = 1 / quantization_factor
+            # check if delta_abs is compatible with quantization factor (delta_abs must be always a multiple of 1/quantization_factor)
+            else:
+                if (delta_abs * quantization_factor) % 1 != 0:
+                    raise ValueError(f"delta_abs={delta_abs} is not compatible with quantization_factor={quantization_factor}. The product delta_abs * quantization_factor must be an integer.")
+                
+            for delta in [+delta_abs, -delta_abs]:
+                parent_tensor = list(parent_model.parameters())[tensor_index].data
+
+                # check if any overflow would occur
+                if (torch.any(parent_tensor < parent_mlp.parameter_range[0] + delta_abs) and delta < 0) or \
+                     (torch.any(parent_tensor > parent_mlp.parameter_range[1] - delta_abs) and delta > 0):
+                    continue
+                
+                #check if tensor is 2D (weights)
+                if len(parent_tensor.shape) == 2:
+                    new_weight_kernel = weight_kernel
+                    new_x_stride = x_stride
+                    new_y_stride = y_stride
+
+                    # if the kernel is larger than the tensor itself in at least one dimension, we modify the kernel and strides accordingly
+                    if (parent_tensor.shape[0] < weight_kernel[0] or parent_tensor.shape[1] < weight_kernel[1]):
+                        # adjust kernel and strides
+                        new_weight_kernel = [min(parent_tensor.shape[0], weight_kernel[0]), min(parent_tensor.shape[1], weight_kernel[1])]
+                        min_dim = np.argmin(new_weight_kernel)
+                        new_weight_kernel[min_dim] = max(1, new_weight_kernel[min_dim] // 2)  # halve (integer division) the smaller dimension of the kernel, ensure at least size 1
+                        new_x_stride = new_weight_kernel[1]
+                        new_y_stride = new_weight_kernel[0]
+
+                    # sliding window over the tensor
+                    for i in range(0, parent_tensor.shape[0] - new_weight_kernel[0] + 1, new_y_stride):
+                        for j in range(0, parent_tensor.shape[1] - new_weight_kernel[1] + 1, new_x_stride):
+                            neighbor_mlp = deepcopy(parent_mlp)
+                            neighbor_model = neighbor_mlp.model
+                            target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                            window = target_tensor[i:i+new_weight_kernel[0], j:j+new_weight_kernel[1]]
+                            #adding a small delta to each element in the window 
+                            window += delta
+
+                            # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                            if quantization_factor is not None:
+                                neighbor_mlp.quantization_factor = quantization_factor
+                                neighbor_mlp.quantize()
+                            else:
+                                # Otherwise, only quantize the modified tensor
+                                # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
+                                neighbor_mlp.quantize_tensor(tensor_index)
+                            
+                            if neighbor_mlp.overflow:
+                                continue
+                            
+                            loss = neighbor_mlp.evaluate(X, Y)
+                            neighbors.append((neighbor_mlp, loss))
+
+                # check if tensor is 1D (biases)
+                elif len(parent_tensor.shape) == 1:
+                    new_bias_kernel = bias_kernel
+                    new_y_stride = y_stride
+                    # if the kernel is larger than the tensor itself, we modify the kernel and stride accordingly
+                    if parent_tensor.shape[0] < bias_kernel[0]:
+                        new_bias_kernel = [min(parent_tensor.shape[0], bias_kernel[0])]
+                        new_bias_kernel[0] = max(1, new_bias_kernel[0] // 2)  # halve (integer division) the kernel size, ensure at least size 1
+                        new_y_stride = new_bias_kernel[0]
+                    # sliding window over the tensor
+                    for i in range(0, parent_tensor.shape[0] - new_bias_kernel[0] + 1, new_y_stride):
+                        neighbor_mlp = deepcopy(parent_mlp)
+                        neighbor_model = neighbor_mlp.model
+                        target_tensor = list(neighbor_model.parameters())[tensor_index].data
+                        window = target_tensor[i:i+new_bias_kernel[0]]
+                        #adding a small delta to each element in the window for demonstration
+                        window += delta
+
+                        # If a different quantization factor is provided, update the attribute and apply quantization to the entire model
+                        if quantization_factor is not None:
+                            neighbor_mlp.quantization_factor = quantization_factor
+                            neighbor_mlp.quantize()
+                        else:
+                            # Otherwise, only quantize the modified tensor
+                            # (this may be redundant if the summed delta is equal to 1/quantization_factor, but mandatory if delta assumes other values)
+                            neighbor_mlp.quantize_tensor(tensor_index)
+                        
+                        if neighbor_mlp.overflow:
+                            continue
+                        
+                        loss = neighbor_mlp.evaluate(X, Y)
+                        neighbors.append((neighbor_mlp, loss))
+
+                else:
+                    #raise an error in the neighborhood generation process if tensor is neither 1D nor 2D
+                    raise ValueError(f"Unsupported tensor shape at index {tensor_index}: {parent_tensor.shape}. Only 1D and 2D tensors are supported.")
+                
+    return neighbors
 
 
 
@@ -251,18 +361,68 @@ class Trainer:
     """
     A class to train a quantized MLP model using an A* search algorithm.
     """
-    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, weight_kernel = [2,2], bias_kernel = [2], x_stride=1, y_stride=1, delta_abs=None, max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
+    def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, 
+                 #----------------------------------------------------------------------------------
+                 weight_kernel = [2,2], bias_kernel = [2], x_stride=1, y_stride=1, delta_abs=None, 
+                 #----------------------------------------------------------------------------------
+                 early_stopping=False, e_s_patience=250,
+                 #----------------------------------------------------------------------------------
+                 dynamic_quantization=False, d_q_patience=100, 
+                 quantization_factor_multiplier=10, max_quantization_factor=1e4,
+                 #-----------------------------------------------------------------------------------
+                 dynamic_kernel_reshaping=False, d_k_r_patience=100, 
+                 x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
+                 min_weight_kernel=[1,1], min_bias_kernel=[1],
+                 x_stride_decr=1, y_stride_decr=1, min_x_stride=1, min_y_stride=1,
+                 #----------------------------------------------------------------------------------
+                 loss_improvement_threshold=1e-5,
+                 #----------------------------------------------------------------------------------
+                 max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
+        
+        # Memory guard for stopping gracefully training when 90% of system memory usage is reached
+        self.memory_guard = SystemMemoryGuard()
+
         self.model = model          # nn.sequential model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
         self.parameter_range = parameter_range
         self.debug_mlp = debug_mlp
 
+        # Neighborhood Generation Parameters
         self.weight_kernel = weight_kernel
         self.bias_kernel = bias_kernel
         self.x_stride = x_stride
         self.y_stride = y_stride
         self.delta_abs = delta_abs
+
+        # Early Stopping Parameters
+        self.early_stopping = early_stopping
+        self.e_s_patience = e_s_patience
+        self.e_s_wait = 0           # counter for early stopping patience
+
+        # Dynamic Quantization Parameters
+        self.dynamic_quantization = dynamic_quantization
+        self.d_q_patience = d_q_patience
+        self.quantization_factor_multiplier = quantization_factor_multiplier    
+        self.max_quantization_factor = max_quantization_factor
+        self.d_q_wait = 0           # counter for dynamic quantization patience
+
+        # Dynamic Kernel Reshaping Parameters
+        self.dynamic_kernel_reshaping = dynamic_kernel_reshaping
+        self.d_k_r_patience = d_k_r_patience
+        self.x_weight_kernel_decr = x_weight_kernel_decr
+        self.y_weight_kernel_decr = y_weight_kernel_decr
+        self.y_bias_kernel_decr = y_bias_kernel_decr
+        self.min_weight_kernel = min_weight_kernel
+        self.min_bias_kernel = min_bias_kernel
+        self.x_stride_decr = x_stride_decr
+        self.y_stride_decr = y_stride_decr
+        self.min_x_stride = min_x_stride
+        self.min_y_stride = min_y_stride
+        self.d_k_r_wait = 0         # counter for dynamic kernel reshaping patience
+
+        # Loss Improvement Threshold for Early Stopping and Dynamic Adjustments (kernel reshaping, quantization)
+        self.loss_improvement_threshold = loss_improvement_threshold
 
         self.max_iterations = max_iterations
         self.log_freq = log_freq
@@ -279,6 +439,72 @@ class Trainer:
         self.save_trained_model = save_trained_model
         self.model_name = model_name
         self.training_time = None
+
+        # Container for storing iteration number in which dynamic adjustments were made
+        self.dynamic_adjustments_log = {
+            "dynamic_quantization_iterations": [],
+            "dynamic_kernel_reshaping_iterations": []
+        }
+
+    
+    def dynamic_reshape_kernels_and_strides(self):
+        """
+        Dynamically reshapes the weight and bias kernels as well as the strides based on the defined decrements and minimum sizes.
+        """
+        # Reshape weight kernel
+        if self.weight_kernel[0] > self.min_weight_kernel[0]:
+            self.weight_kernel[0] = max(self.weight_kernel[0] - self.y_weight_kernel_decr, self.min_weight_kernel[0])
+        if self.weight_kernel[1] > self.min_weight_kernel[1]:
+            self.weight_kernel[1] = max(self.weight_kernel[1] - self.x_weight_kernel_decr, self.min_weight_kernel[1])
+        
+        # Reshape bias kernel
+        if self.bias_kernel[0] > self.min_bias_kernel[0]:
+            self.bias_kernel[0] = max(self.bias_kernel[0] - self.y_bias_kernel_decr, self.min_bias_kernel[0])
+        
+        # Adjust strides
+        if self.x_stride > self.min_x_stride:
+            self.x_stride = max(self.x_stride - self.x_stride_decr, self.min_x_stride)
+        if self.y_stride > self.min_y_stride:
+            self.y_stride = max(self.y_stride - self.y_stride_decr, self.min_y_stride)
+
+    
+    def reset_dynamic_counters(self):
+        """
+        Resets the patience counters for early stopping, dynamic quantization, and dynamic kernel reshaping.
+        """
+        if self.early_stopping: self.e_s_wait = 0
+        if self.dynamic_quantization: self.d_q_wait = 0
+        if self.dynamic_kernel_reshaping: self.d_k_r_wait = 0
+
+
+    def increment_dynamic_counters(self, iteration):        
+        """
+        Increments the patience counters for early stopping, dynamic quantization, and dynamic kernel reshaping.
+        The method also checks if the patience thresholds are reached to trigger dynamic adjustments.
+        """
+        if self.early_stopping: self.e_s_wait += 1
+
+        if self.dynamic_quantization: 
+            self.d_q_wait += 1
+            # Check if it's time to adjust quantization factor
+            if self.d_q_wait >= self.d_q_patience:
+                new_qf = min(self.quantization_factor * self.quantization_factor_multiplier, self.max_quantization_factor)
+                if new_qf > self.quantization_factor:
+                    self.dynamic_adjustments_log["dynamic_quantization_iterations"].append(iteration)
+                    print(f"Dynamic Quantization applied: prev_qf={self.quantization_factor}, new_qf={new_qf}")
+                    self.quantization_factor = new_qf
+                self.d_q_wait = 0  # reset the counter after adjustment
+
+        if self.dynamic_kernel_reshaping: 
+            self.d_k_r_wait += 1
+            # Check if it's time to reshape kernels and strides
+            if self.d_k_r_wait >= self.d_k_r_patience:
+                self.dynamic_reshape_kernels_and_strides()
+                self.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"].append(iteration)
+                print(f"Dynamic Kernel Reshaping applied:\n prev_weight_kernel={self.weight_kernel}, prev_bias_kernel={self.bias_kernel}, prev_x_stride={self.x_stride}, prev_y_stride={self.y_stride}")
+                print(f"new_weight_kernel={self.weight_kernel}, new_bias_kernel={self.bias_kernel}, new_x_stride={self.x_stride}, new_y_stride={self.y_stride}")
+                self.d_k_r_wait = 0  # reset the counter after reshaping
+
 
     def train(self, X, Y):
         """
@@ -319,6 +545,24 @@ class Trainer:
             self.loss_history.append(current_node.h_val)
             self.f_history.append(current_node.f_val)
             self.g_history.append(current_node.g_val)
+
+
+            #==================================================================================================
+            # EARLY STOPPING AND DYNAMIC ADJUSTMENTS CHECK
+            if self.best_node.h_val - current_node.h_val > self.loss_improvement_threshold:
+                self.reset_dynamic_counters()
+            else:
+                self.increment_dynamic_counters(iteration)
+
+            if self.early_stopping and self.e_s_wait >= self.e_s_patience:
+                print(f"Early stopping triggered after {self.e_s_patience} iterations without improvement.")
+                break
+
+            if self.memory_guard.memory_exceeded():
+                print("Memory usage exceeded threshold. Terminating training to prevent system instability.")
+                break
+            #==================================================================================================
+
 
             if current_node.h_val < self.best_node.h_val:
                 self.best_node = current_node
@@ -447,15 +691,33 @@ class Trainer:
 
                 
 
-class GridSearchTrainer:
+"""
+    New Dynamic Grid Search Trainer with additional hyperparameters for dynamic features, such as early stopping, dynamic quantization, and dynamic kernel reshaping.
+"""
+class DynamicGridSearchTrainer:
     """
     A class to perform grid search over multiple hyperparameter combinations for training quantized MLPs.
     """
-    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, weight_kernels, bias_kernels, x_strides, y_strides, max_iterations, log_freq, delta_abs=[None], debug_mlps=True, measure_time=True):
+    def __init__(self, models, loss_funcs, quantization_factors, parameter_ranges, 
+                 weight_kernels, bias_kernels, x_strides, y_strides, 
+                 max_iterations, log_freq, delta_abs=[None], 
+                 # ------------------ New Hyperparameters ------------------
+                 early_stopping=[False], e_s_patience=[250],
+                 dynamic_quantization=[False], d_q_patience=[100], 
+                 quantization_factor_multiplier=[10], max_quantization_factor=[1e4],
+                 dynamic_kernel_reshaping=[False], d_k_r_patience=[100], 
+                 x_weight_kernel_decr=[1], y_weight_kernel_decr=[1], y_bias_kernel_decr=[1], 
+                 min_weight_kernel=[[1,1]], min_bias_kernel=[[1]],
+                 x_stride_decr=[1], y_stride_decr=[1], min_x_stride=[1], min_y_stride=[1],
+                 loss_improvement_threshold=[1e-5],
+                 # -----------------------------------------------------------
+                 debug_mlps=True, measure_time=True):
        
         self.trainers_params = []
         self.grid_search_data = []
 
+        # Nested loops to generate all combinations of hyperparameters
+        # Note: This depth is necessary to cover all combinations explicitly.
         for i in range(len(models)):
             for lf in loss_funcs:
                 for qf in quantization_factors:
@@ -467,21 +729,33 @@ class GridSearchTrainer:
                                         for da in delta_abs:
                                             for mi in max_iterations:
                                                 for lfq in log_freq:
-                                                    self.trainers_params.append((
-                                                        models[i],
-                                                        lf,
-                                                        qf,
-                                                        pr,
-                                                        debug_mlps,
-                                                        wk,
-                                                        bk,
-                                                        xst,
-                                                        yst,
-                                                        da,
-                                                        mi,
-                                                        lfq,
-                                                        measure_time
-                                                    ))
+                                                    # dynamic features
+                                                    for es in early_stopping:
+                                                        for esp in e_s_patience:
+                                                            for dq in dynamic_quantization:
+                                                                for dqp in d_q_patience:
+                                                                    for qfm in quantization_factor_multiplier:
+                                                                        for mqf in max_quantization_factor:
+                                                                            for dkr in dynamic_kernel_reshaping:
+                                                                                for dkrp in d_k_r_patience:
+                                                                                    for xwkd in x_weight_kernel_decr:
+                                                                                        for ywkd in y_weight_kernel_decr:
+                                                                                            for ybkd in y_bias_kernel_decr:
+                                                                                                for mwk in min_weight_kernel:
+                                                                                                    for mbk in min_bias_kernel:
+                                                                                                        for xsd in x_stride_decr:
+                                                                                                            for ysd in y_stride_decr:
+                                                                                                                for mxs in min_x_stride:
+                                                                                                                    for mys in min_y_stride:
+                                                                                                                        for lit in loss_improvement_threshold:
+                                                                                                                            self.trainers_params.append((
+                                                                                                                                models[i], lf, qf, pr, debug_mlps, wk, bk, xst, yst, da, mi, lfq, measure_time,
+                                                                                                                                # New params for dynamic features
+                                                                                                                                es, esp,
+                                                                                                                                dq, dqp, qfm, mqf,
+                                                                                                                                dkr, dkrp, xwkd, ywkd, ybkd, mwk, mbk, xsd, ysd, mxs, mys,
+                                                                                                                                lit
+                                                                                                                            ))
 
 
     def run_grid_search(self, X, Y, runs_per_config=1, enable_training_history_logging=True, log_filename='grid_search_results', save_models=False):
@@ -491,10 +765,10 @@ class GridSearchTrainer:
         Parameters:
             X (torch.Tensor): Input data for training.
             Y (torch.Tensor): Target labels for training.
+            runs_per_config (int): Number of times to run each configuration (for stability stats).
+            enable_training_history_logging (bool): Whether to save full loss history in JSON.
             log_filename (str): Filename for the JSON log file.
-        
-        Returns:
-            list: The list of results dictionaries.
+            save_models (bool): Whether to save the .pth model file for every run.
         """
 
         with open(log_filename + '.txt', 'w') as log_file:
@@ -507,7 +781,12 @@ class GridSearchTrainer:
         print("=" * 50)
         
         for config_index, param_config in enumerate(self.trainers_params):
-            (model_class, loss_fn, qf, pr, debug_mlp, wk, bk, xst, yst, da, mi, lfq, measure_time) = param_config
+            # Unpack all parameters
+            (model_class, loss_fn, qf, pr, debug_mlp, wk, bk, xst, yst, da, mi, lfq, measure_time,
+             es, esp, 
+             dq, dqp, qfm, mqf,
+             dkr, dkrp, xwkd, ywkd, ybkd, mwk, mbk, xsd, ysd, mxs, mys,
+             lit) = param_config
             
             hyperparams_dict = {
                 "model_type": str(model_class),
@@ -522,7 +801,26 @@ class GridSearchTrainer:
                 "max_iterations": mi,
                 "log_freq": lfq,
                 "debug_mlp": debug_mlp,
-                "measure_time": measure_time
+                "measure_time": measure_time,
+                # New params for dynamic features
+                "early_stopping": es,
+                "early_stopping_patience": esp,
+                "dynamic_quantization": dq,
+                "dynamic_quantization_patience": dqp,
+                "quantization_factor_multiplier": qfm,
+                "max_quantization_factor": mqf,
+                "dynamic_kernel_reshaping": dkr,
+                "dynamic_kernel_reshaping_patience": dkrp,
+                "x_weight_kernel_decr": xwkd,
+                "y_weight_kernel_decr": ywkd,
+                "y_bias_kernel_decr": ybkd,
+                "min_weight_kernel": mwk,
+                "min_bias_kernel": mbk,
+                "x_stride_decr": xsd,
+                "y_stride_decr": ysd,
+                "min_x_stride": mxs,
+                "min_y_stride": mys,
+                "loss_improvement_threshold": lit
             }
 
             for run in range(runs_per_config):
@@ -546,15 +844,37 @@ class GridSearchTrainer:
                     delta_abs=da,
                     max_iterations=mi,
                     log_freq=lfq,
-                    measure_time=measure_time
+                    measure_time=measure_time,
+                    # New params to Trainer
+                    early_stopping=es,
+                    e_s_patience=esp,
+                    dynamic_quantization=dq,
+                    d_q_patience=dqp,
+                    quantization_factor_multiplier=qfm,
+                    max_quantization_factor=mqf,
+                    dynamic_kernel_reshaping=dkr,
+                    d_k_r_patience=dkrp,
+                    x_weight_kernel_decr=xwkd,
+                    y_weight_kernel_decr=ywkd,
+                    y_bias_kernel_decr=ybkd,
+                    min_weight_kernel=mwk,
+                    min_bias_kernel=mbk,
+                    x_stride_decr=xsd,
+                    y_stride_decr=ysd,
+                    min_x_stride=mxs,
+                    min_y_stride=mys,
+                    loss_improvement_threshold=lit
                 )
                 
                 run_label = f"Config {config_index+1}/{len(self.trainers_params)} (Run {run+1}/{runs_per_config})"
                 print(f"\n--- {run_label} ---")
-                print(f"HPs: QF={qf}, PR={pr}, WK={wk}, BK={bk}, XS={xst},YS={yst}, DA={da}, MI={mi}, LFQ={lfq}\n")
+                print(f"HPs: QF={qf}, PR={pr}, WK={wk}, BK={bk}, ES={es}, DQ={dq}, DKR={dkr}, Lit={lit}\n")
 
                 with open(log_filename + '.txt', 'a') as log_file:
-                    log_file.write(f"(Run {run}) - Training with parameters: Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, Weight Kernel={trainer.weight_kernel}, Bias Kernel={trainer.bias_kernel}, X Stride={trainer.x_stride}, Y Stride={trainer.y_stride}, Delta Abs={trainer.delta_abs}, Max Iterations={trainer.max_iterations}, Log Freq={trainer.log_freq}\n\n")
+                    log_file.write(f"(Run {run}) - Training with parameters: \n"
+                                   f"Quantization Factor={trainer.quantization_factor}, Parameter Range={trainer.parameter_range}, "
+                                   f"Weight Kernel={trainer.weight_kernel}, Bias Kernel={trainer.bias_kernel}, "
+                                   f"ES={es}, DQ={dq}, DKR={dkr}, LossThreshold={lit}\n\n")
 
                 trainer.train(X, Y)
 
@@ -568,7 +888,9 @@ class GridSearchTrainer:
                     "metrics": {
                         "final_loss": final_loss,
                         "training_time_seconds": training_time
-                    }
+                    },
+                    # Log when dynamic adjustments happened
+                    "dynamic_adjustments_log": trainer.dynamic_adjustments_log 
                 }
                 
                 if enable_training_history_logging:
@@ -605,19 +927,13 @@ class GridSearchTrainer:
                 hps = res['hyperparameters']
                 log_file.write(f"{i+1}. Loss: {res['metrics']['final_loss']:.6f}\n")
                 log_file.write(f"Model: {hps['model_type']}\n")
-                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}\n\n")
-        
-    
-    
+                log_file.write(f"QF: {hps['quantization_factor']}, PR: {hps['parameter_range']}, "
+                               f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}\n\n")
 
+    
     def plot_grid_search_trend(self, log_filename='grid_search_results', metric='loss_history'):
         """
         Reads the JSON log file and plots the loss trend (loss vs. iteration) for each run.
-        
-        Parameters:
-            log_filename (str): The filename prefix for the JSON results file.
-            metric (str): The key in the run_result dictionary containing the list of losses 
-                          (e.g., 'loss_history', 'f_history' or 'g_history').
         """
 
         json_file = log_filename if log_filename.endswith('.json') else log_filename + '.json'
@@ -651,14 +967,14 @@ class GridSearchTrainer:
                         'history_value': history_list          
                     })
                     
-                    # Labels for the plot legend
+                    # Labels for the plot legend, updated with new parameters
                     hps = run_result["hyperparameters"]
                     label = (
-                        f"Config Index {run_result['config_index']} - Run N° {run_result['run_number']} "
-                        f"[PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']}, DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                        f"Config {run_result['config_index']} - Run {run_result['run_number']} "
+                        f"[QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, "
+                        f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
                     )
                     
-                    # X = iteration, Y = history_value
                     plt.plot(history_df['iteration'], history_df['history_value'], label=label, alpha=0.8, linewidth=1.5)
                     plotted_runs += 1
 
@@ -676,31 +992,24 @@ class GridSearchTrainer:
             'f_history': 'Total Cost (f)',
             'g_history': 'Cost (g)'
         }
-        metric_fullname = metric2name.get(metric)
+        metric_fullname = metric2name.get(metric, metric)
         
-        # Plot customization
         plt.title(f'{metric_fullname} Trend Across Grid Search Runs', fontsize=16)
         plt.xlabel('Iteration (Number of Steps)', fontsize=14)
         plt.ylabel(f'{metric_fullname} Value', fontsize=14)
         plt.grid(True, linestyle='--', alpha=0.6)
         
-        # Legend outside the plot
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameter Configurations") 
-        plt.tight_layout(rect=[0, 0, 1.00, 1]) # needed to avoid cutting off the legend
+        plt.tight_layout(rect=[0, 0, 1.00, 1]) 
         plt.savefig(log_filename + '_loss_trend.png', dpi=300)
 
         print("Plot saved as " + log_filename + "_loss_trend.png\n")
         print("-" * 50)
 
 
-    # Method to plot the average loss with 1 std shading for each configuration across runs, using numpy for mean and std calculations
     def plot_avg_loss(self, file_name='grid_search_avg_loss', parameter_name=None):
         """
         Plots the average loss with standard deviation shading for each hyperparameter configuration across multiple runs.
-
-        Parameters:
-            file_name (str): The filename prefix for saving the plot.
-            parameter_name (str): The name of the hyperparameter being varied (for labeling purposes).
         """
 
         json_file = file_name if file_name.endswith('.json') else file_name + '.json'
@@ -719,25 +1028,23 @@ class GridSearchTrainer:
             print("No results found in the JSON file.")
             return
 
-        # Organize losses by configuration index
         config_losses = {}
         config_labels = {}
         for run_result in results:
             config_index = run_result['config_index']
             loss_history = run_result.get('loss_history', [])
             if config_index not in config_labels:
-                # checking if the delta_abs parameter is None to print it properly in the label
                 if run_result["hyperparameters"]["delta_abs"] is None:
                     run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
                 hps = run_result["hyperparameters"]
+                
                 if parameter_name is None:
+                    # Updated default label
                     config_labels[config_index] = (
-                        f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
-                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']},"
-                        f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                        f"Config {config_index} [QF: {hps['quantization_factor']}, WK: {hps['weight_kernel']}, "
+                        f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
                 )
                 else:
-                    #check if parameter_name is a list or a single string
                     if isinstance(parameter_name, list):
                         labels = []
                         for pn in parameter_name:
@@ -745,7 +1052,6 @@ class GridSearchTrainer:
                             labels.append(f"{pn}: {param_value}")
                         config_labels[config_index] = ", ".join(labels)
                     else:
-                        # if a specific parameter_name is provided, only show that parameter in the label
                         param_value = run_result["hyperparameters"].get(parameter_name)
                         config_labels[config_index] = f"{parameter_name}: {param_value}"
             if loss_history:
@@ -756,42 +1062,35 @@ class GridSearchTrainer:
         plt.figure(figsize=(14, 8))
 
         for config_index, loss_lists in config_losses.items():
-            # Convert to numpy array for easier mean/std calculation
-            loss_array = np.array(loss_lists)
+            # Pad lists to the same length with the last value (or NaN) to calculate stats if lengths differ
+            max_len = max(len(l) for l in loss_lists)
+            padded_losses = []
+            for l in loss_lists:
+                padded = l + [l[-1]] * (max_len - len(l)) # pad with last value
+                padded_losses.append(padded)
             
-            # Calculate mean and std deviation across runs
+            loss_array = np.array(padded_losses)
+            
             mean_loss = np.mean(loss_array, axis=0)
             std_loss = np.std(loss_array, axis=0)
-
             iterations = range(1, len(mean_loss) + 1)
 
-            # Plot mean loss
             plt.plot(iterations, mean_loss, label=config_labels[config_index], linewidth=2)
-
-            # Plot std deviation shading
             plt.fill_between(iterations, mean_loss - std_loss, mean_loss + std_loss, alpha=0.2)
 
-        # Plot customization
         plt.title('Average Loss with Standard Deviation Across Grid Search Configurations', fontsize=16)
         plt.xlabel('Iteration (Number of Steps)', fontsize=14)
         plt.ylabel('Loss Value', fontsize=14)
         plt.grid(True, linestyle='--', alpha=0.6)
-
-        # Legend outside the plot
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8, title="Hyperparameters Tested") 
-        plt.tight_layout(rect=[0, 0, 1.00, 1]) # needed to avoid cutting off the legend
+        plt.tight_layout(rect=[0, 0, 1.00, 1])
         plt.savefig(file_name + '_avg_loss.png', dpi=300)
         print("Plot saved as " + file_name + "_avg_loss.png\n")
 
 
-    # Method to plot boxplot of final losses for each configuration across runs 
     def plot_final_loss_boxplot(self, file_name='grid_search_final_loss_boxplot', x_label=None):
         """
         Plots a boxplot of the final losses for each hyperparameter configuration across multiple runs.
-
-        Parameters:
-            file_name (str): The filename prefix for saving the plot.
-            y_label (str): The label for the y-axis. If None, defaults to 'Final Loss'.
         """
 
         json_file = file_name if file_name.endswith('.json') else file_name + '.json'
@@ -810,25 +1109,22 @@ class GridSearchTrainer:
             print("No results found in the JSON file.")
             return
 
-        # Organize final losses by configuration index
         config_final_losses = {}
         config_labels = {}
         for run_result in results:
             config_index = run_result['config_index']
             final_loss = run_result['metrics'].get('final_loss')
             if config_index not in config_labels:
-                # checking if the delta_abs parameter is None to print it properly in the label
                 if run_result["hyperparameters"]["delta_abs"] is None:
                     run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
                 if x_label is None:
                     hps = run_result["hyperparameters"]
+                    # Updated default label
                     config_labels[config_index] = (
-                        f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
-                        f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']},"
-                        f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                        f"Config {config_index} [QF: {hps['quantization_factor']}, ES: {hps['early_stopping']}, "
+                        f"DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
                     )
                 else:
-                    #checking if the x_labels is a list or a single string
                     if isinstance(x_label, list):
                         labels = []
                         for xl in x_label:
@@ -836,7 +1132,6 @@ class GridSearchTrainer:
                             labels.append(f"{xl}: {param_value}")
                         config_labels[config_index] = ", ".join(labels)
                     else:
-                        # if a specific x_label is provided, only show that parameter in the label
                         param_value = run_result["hyperparameters"].get(x_label)
                         config_labels[config_index] = f"{x_label}: {param_value}"
             if final_loss is not None:
@@ -844,7 +1139,6 @@ class GridSearchTrainer:
                     config_final_losses[config_index] = []
                 config_final_losses[config_index].append(final_loss)
 
-        # Prepare data for boxplot
         boxplot_data = []
         boxplot_labels = []
         for config_index, losses in config_final_losses.items():
@@ -852,17 +1146,13 @@ class GridSearchTrainer:
             boxplot_labels.append(config_labels[config_index])
 
         plt.figure(figsize=(14, 8))
-        #plt.boxplot(boxplot_data, labels=boxplot_labels, showfliers=True)
-            # Boxplot showing median, IQR, and range
         plt.boxplot(boxplot_data, vert=True, patch_artist=True, labels=boxplot_labels, 
                 boxprops=dict(facecolor='lightblue'),
                 medianprops=dict(color='darkred'))
-        #plt.xticks(rotation=45, ha='right')
 
-        # adding jittered scatter points for each final loss
         for i, losses in enumerate(boxplot_data):
             y = losses
-            x = np.random.normal(i + 1, 0.04, size=len(y))  # Adding some jitter to the x-axis
+            x = np.random.normal(i + 1, 0.04, size=len(y))
             plt.scatter(x, y, alpha=0.6, color='blue', s=20)
 
         plt.title('Final Loss Distribution Across Grid Search Configurations', fontsize=16)
@@ -874,13 +1164,9 @@ class GridSearchTrainer:
         print("Boxplot saved as " + file_name + "_boxplot.png\n")
 
 
-    # Method to generate a statistical summary of final losses for each configuration across runs and save it to a text file
     def generate_final_loss_summary(self, file_name='grid_search_final_loss_summary'):
         """
         Generates a summary table of final losses for each hyperparameter configuration across multiple runs and saves it to a text file.
-
-        Parameters:
-            file_name (str): The filename prefix for saving the summary text file.
         """
 
         json_file = file_name if file_name.endswith('.json') else file_name + '.json'
@@ -899,7 +1185,6 @@ class GridSearchTrainer:
             print("No results found in the JSON file.")
             return
 
-        # Organize final losses and training times by configuration index
         config_final_losses = {}
         config_training_times = {}
         config_labels = {}
@@ -911,10 +1196,11 @@ class GridSearchTrainer:
                 hps = run_result["hyperparameters"]
                 if run_result["hyperparameters"]["delta_abs"] is None:
                     run_result["hyperparameters"]["delta_abs"] = f"1/{run_result['hyperparameters']['quantization_factor']}"
+                # Updated label with new parameters
                 config_labels[config_index] = (
                     f"Config {config_index} [PR: {hps['parameter_range']}, QF: {hps['quantization_factor']}, "
-                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']},"
-                    f"DA: {hps['delta_abs']}, MI: {hps['max_iterations']}]"
+                    f"WK: {hps['weight_kernel']}, BK: {hps['bias_kernel']}, XS: {hps['x_stride']}, YS: {hps['y_stride']}, "
+                    f"ES: {hps['early_stopping']}, DQ: {hps['dynamic_quantization']}, DKR: {hps['dynamic_kernel_reshaping']}]"
                 )
             if final_loss is not None:
                 if config_index not in config_final_losses:
@@ -923,25 +1209,24 @@ class GridSearchTrainer:
                 config_final_losses[config_index].append(final_loss)
                 config_training_times[config_index].append(training_time)
 
-        # Write summary to text file
         summary_file = file_name + '_summary.txt'
         with open(summary_file, 'w') as f:
-            f.write("=" * 120 + "\n")
+            f.write("=" * 140 + "\n")
             f.write("Final Loss Summary Across Grid Search Configurations\n")
-            f.write("=" * 120 + "\n\n\n\n")
-            # writing a table mapping each config index to its hyperparameter settings
-            f.write("=" * 120 + "\n")
+            f.write("=" * 140 + "\n\n\n\n")
+            
+            f.write("=" * 140 + "\n")
             f.write("Configuration Index to Hyperparameter Settings Mapping:\n")
-            f.write("=" * 120 + "\n\n")
+            f.write("=" * 140 + "\n\n")
             for config_index, label in config_labels.items():
                 f.write(f"{config_index}: {label}\n")
-                f.write("-" * 120 + "\n")
+                f.write("-" * 140 + "\n")
 
-            f.write("=" * 120 + "\n\n\n\n")
+            f.write("=" * 140 + "\n\n\n\n")
 
-            f.write("=" * 120 + "\n\n")
+            f.write("=" * 140 + "\n\n")
             f.write(f"{'Config':<10}{'Mean Loss':<15}{'Median Loss':<15}{'Std Dev':<15}{'Variance':<15}{'Min Loss':<15}{'Max Loss':<15}{'Mean Time (s)':<15}\n")
-            f.write("-" * 120 + "\n")
+            f.write("-" * 140 + "\n")
             for config_index, losses in config_final_losses.items():
                 training_times = config_training_times[config_index]
                 mean_loss = np.mean(losses)
@@ -952,4 +1237,4 @@ class GridSearchTrainer:
                 max_loss = np.max(losses)
                 mean_time = np.mean(training_times) if training_times else 0.0
                 f.write(f"{config_index:<10}{mean_loss:<15.6f}{median_loss:<15.6f}{std_loss:<15.6f}{variance_loss:<15.6f}{min_loss:<15.6f}{max_loss:<15.6f}{mean_time:<15.2f}\n")
-            f.write("-" * 120 + "\n")
+            f.write("-" * 140 + "\n")

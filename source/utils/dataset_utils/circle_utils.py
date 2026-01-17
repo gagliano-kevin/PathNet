@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 
 
+
 def plot_circles_dataset(X, y, noise_level=0.1, factor_level=0.5, n_samples=1000):
     """
     Generate and plot a synthetic circles dataset.
@@ -30,6 +31,7 @@ def plot_circles_dataset(X, y, noise_level=0.1, factor_level=0.5, n_samples=1000
     plt.grid(True, linestyle='--', alpha=0.6)
     #plt.show() 
     plt.savefig("circles_dataset.png") 
+
 
 
 def get_circle_data_tensors(n_samples=1000, noise_level=0.1, factor_level=0.5, random_seed=42):

@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
+
+
 def prepare_data_tensors(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
     
@@ -37,10 +39,12 @@ def prepare_data_tensors(X, y):
     return X_train, y_train, X_test, y_test
 
 
+
 def get_wine_data():
     data = fetch_openml(name="wine-quality-red", version=1, as_frame=True)
     X, y = data.data, data.target
     return prepare_data_tensors(X, y)
+
 
 
 def create_dataloader(X, y, batch_size=None):

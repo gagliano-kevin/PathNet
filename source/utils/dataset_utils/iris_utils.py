@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+
 def get_splitted_iris_data_tensors():
     iris = load_iris()
     X, y = iris.data, iris.target
@@ -27,6 +28,8 @@ def get_splitted_iris_data_tensors():
 
     return X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor
 
+
+
 def get_iris_data_tensors():
     iris = load_iris()
     X_train, y_train = iris.data, iris.target
@@ -39,6 +42,7 @@ def get_iris_data_tensors():
     y_train_tensor = torch.tensor(y_train, dtype=torch.long)
  
     return X_train_tensor, y_train_tensor
+
 
 
 def print_iris_data_info():
@@ -75,6 +79,7 @@ def get_iris_dataloaders(batch_size=16, full_batch=False):
     test_loader = DataLoader(test_dataset, batch_size=test_batch_size, shuffle=False)
 
     return train_loader, test_loader
+
 
 
 def get_train_iris_dataloader(batch_size=16, full_batch=False):

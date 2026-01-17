@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
 
 
+
 class SinDataset(Dataset):
+    
     def __init__(self, num_samples, min_angle, max_angle, noise_level=0.1):
         self.x_data = torch.linspace(min_angle, max_angle, num_samples).float().unsqueeze(1)
         
@@ -23,6 +25,7 @@ class SinDataset(Dataset):
         return self.x_data[idx], self.sin_y_data[idx]
     
 
+
 def generate_sinusoidal_tensor(num_samples, min_angle, max_angle, noise_level):
     """Generates X and Y tensors for the noisy sine function."""
     # X tensor (angles)
@@ -34,6 +37,7 @@ def generate_sinusoidal_tensor(num_samples, min_angle, max_angle, noise_level):
     Y = Y_true + noise
     
     return X, Y
+
 
 
 def plot_sine_data(X: torch.Tensor, Y: torch.Tensor, filename="sine_data.png"):
@@ -48,6 +52,7 @@ def plot_sine_data(X: torch.Tensor, Y: torch.Tensor, filename="sine_data.png"):
     plt.savefig(filename)
 
     
+
 def plot_sine_predictions(test_x_np: np.ndarray, 
                           predicted_sin_np: np.ndarray, 
                           true_sin_np: np.ndarray, 

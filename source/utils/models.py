@@ -4,6 +4,7 @@ import torch.nn as nn
 
 
 class WineMLP(nn.Module):
+
     def __init__(self, input_size=11, hidden_size_1=32, hidden_size_2=32, output_size=6):
         super(WineMLP, self).__init__()
         self.net = nn.Sequential(
@@ -20,6 +21,7 @@ class WineMLP(nn.Module):
 
 
 class HousingMLP(torch.nn.Module):
+
     def __init__(self, input_size=8, hidden_size_1=32, hidden_size_2=32, output_size=1):
         super(HousingMLP, self).__init__()
         self.net = nn.Sequential(
@@ -36,6 +38,7 @@ class HousingMLP(torch.nn.Module):
 
 
 class IrisMLP(nn.Module):
+
     def __init__(self, input_size, hidden_size_1, hidden_size_2, hidden_size_3, num_classes):
         super().__init__()
         # 4 features -> Hidden Layer 1
@@ -60,6 +63,7 @@ class IrisMLP(nn.Module):
 
 
 class SinusoidalMLP(nn.Module):
+    
     def __init__(self, input_size=1, hidden_size_1=32, hidden_size_2=32, hidden_size_3=32, output_size=1):
         super(SinusoidalMLP, self).__init__()
         self.net = nn.Sequential(

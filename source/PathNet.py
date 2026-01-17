@@ -38,7 +38,9 @@ class QuantizedMLP:
 
 
     def quantize_tensor(self, tensor_idx):
-        """Quantizes and clips a single parameter tensor in-place."""
+        """
+        Quantizes and clips a single parameter tensor in-place.
+        """
         with torch.no_grad():
             tensor_to_quantize = list(self.model.parameters())[tensor_idx]
             if torch.any(tensor_to_quantize.data < self.parameter_range[0]) or torch.any(tensor_to_quantize.data > self.parameter_range[1]):
@@ -353,9 +355,6 @@ class Trainer:
     def save_model(self, filename='best_model.pth'):
         """
         Saves the best model's state dictionary to a specified file.
-
-        Parameters:
-            filename (str): The name of the file to save the model.
         """
         if self.best_node is not None:
             torch.save(self.best_node.quantized_mlp.model.state_dict(), filename)
@@ -367,18 +366,6 @@ class Trainer:
     def load_model(self, model_architecture, loss_fn, quantization_factor=10, parameter_range=(-5, 5), enable_quantization=True, debug=False, filename='best_model.pth'):
         """
         Loads a model's state dictionary from a specified file and returns a QuantizedMLP instance
-        
-        Parameters:
-            model_architecture (nn.Module): The architecture of the model to load.
-            loss_fn (callable): The loss function to use.
-            quantization_factor (int): The quantization factor to use.
-            parameter_range (tuple): The parameter range for quantization.
-            enable_quantization (bool): Whether to enable quantization.
-            debug (bool): Whether to enable debug mode.
-            filename (str): The name of the file to load the model from.
-            
-            Returns:
-            QuantizedMLP: The loaded quantized MLP model.
         """
         state_dict = torch.load(filename, weights_only=True)
         model_architecture.load_state_dict(state_dict)

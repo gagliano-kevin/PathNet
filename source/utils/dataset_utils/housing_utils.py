@@ -5,6 +5,8 @@ from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+
+
 def prepare_data_tensors(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.9, random_state=42)
     
@@ -21,10 +23,12 @@ def prepare_data_tensors(X, y):
     return X_train, y_train, X_test, y_test
 
 
+
 def get_california_housing_data():
     data = fetch_california_housing()
     X, y = data.data, data.target
     return prepare_data_tensors(X, y)
+
 
 
 def create_dataloader(X, y, batch_size=None):

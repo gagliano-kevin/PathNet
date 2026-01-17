@@ -2,6 +2,7 @@ import psutil
 
 
 class SystemMemoryGuard:
+    
     def __init__(self, threshold_percentage=90.0):
         self.threshold = threshold_percentage
 

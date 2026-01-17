@@ -6,16 +6,6 @@ import os
 
 
 
-def pad_losses(losses_list, target_len):
-    """Pads all loss histories in the list up to the target_len with NaN."""
-    padded_array = np.full((len(losses_list), target_len), np.nan)
-    for i, l in enumerate(losses_list):
-        padded_array[i, :len(l)] = l
-    return padded_array
-
-
-
-# function to handle multiple training runs with varying lengths
 def pad_to_max(list_of_lists, total_len):
     return np.array([
         l + [np.nan] * (total_len - len(l)) 
@@ -62,241 +52,180 @@ def load_metrics(filename):
 
 
 
-def grad_astar_plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
-    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation.
-        Method specifically for Gradient Descent vs A-Star comparison."""
-    
-    # epochs is now correctly determined by the global maximum length
-    epochs = np.arange(len(astar_mean)) + 1
-    
-    plt.figure(figsize=(10, 6))
+def plot_mean_loss_with_std(labels, mean_losses, std_losses, runs, filename="mean_loss_comparison.png", dataset_name="dataset"):
+    """
+    Plots the mean loss with shaded standard deviation.
+    Legend includes the sigma description but is placed outside to avoid overlap.
+    """
+    plt.figure(figsize=(12, 6)) 
+    colors = plt.cm.tab10(np.linspace(0, 1, len(labels))) 
 
-    # Plot A-Star 
-    plt.plot(epochs, astar_mean, label='A-Star (Mean Loss)', color='blue')
-    plt.fill_between(epochs, astar_mean - astar_std, astar_mean + astar_std, 
-                     alpha=0.2, color='blue', label='A-Star ($\pm 1 \sigma$)')
-
-    # Plot Gradient Descent 
-    plt.plot(epochs, grad_mean, label='Gradient Descent (Mean Loss)', color='red')
-    plt.fill_between(epochs, grad_mean - grad_std, grad_mean + grad_std, 
-                     alpha=0.2, color='red', label='Gradient Descent ($\pm 1 \sigma$)')
-
-    plt.title(f'Mean Training Loss Comparison on {dataset_name} over {runs} Runs')
-    plt.xlabel('Epochs / Iterations')
-    plt.ylabel('Mean Loss')
-    plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-
-def astar_plot_mean_loss_with_std(labels, static_astar_mean, static_astar_std, dynamic_astar_mean, dynamic_astar_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
-    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation.
-        Method specifically for Static A-Star vs Dynamic A-Star comparison."""
-    
-    # get the maximum length for epochs
-    epochs = np.arange(max(len(static_astar_mean), len(dynamic_astar_mean))) + 1
-    
-    plt.figure(figsize=(10, 6))
-
-    # Plot Static A-Star
-    plt.plot(epochs, static_astar_mean, label=f'{labels[0]} (Mean Loss)', color='blue')
-    plt.fill_between(epochs, static_astar_mean - static_astar_std, static_astar_mean + static_astar_std, 
-                     alpha=0.2, color='blue', label=f'{labels[0]} ($\pm 1 \sigma$)')
-
-    # Plot Dynamic A-Star
-    plt.plot(epochs, dynamic_astar_mean, label=f'{labels[1]}  (Mean Loss)', color='red')
-    plt.fill_between(epochs, dynamic_astar_mean - dynamic_astar_std, dynamic_astar_mean + dynamic_astar_std, 
-                     alpha=0.2, color='red', label=f'{labels[1]} ($\pm 1 \sigma$)')
-
-    plt.title(f'Mean Training Loss Comparison on {dataset_name} over {runs} Runs')
-    plt.xlabel('Epochs / Iterations')
-    plt.ylabel('Mean Loss')
-    plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-
-def grad_astar_plot_final_loss_distribution(astar_final_losses, grad_final_losses, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
-    """Plots a Box-and-Whisker plot of the final performance metric.
-        Method specifically for Gradient Descent vs A-Star comparison."""
-    
-    data = [astar_final_losses, grad_final_losses]
-    labels = ['A-Star', 'Gradient Descent']
-    
-    plt.figure(figsize=(8, 6))
-    
-    # Boxplot showing median, IQR, and range
-    plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
-                boxprops=dict(facecolor='lightblue'),
-                medianprops=dict(color='darkred'))
-    
-    # Add individual points (jitter) to show all run results
-    for i, losses in enumerate(data):
-        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
-        plt.scatter(x, losses, color='black', alpha=0.6, s=10)
-
-    plt.title(f'Distribution of Final Loss on {dataset_name} over {runs} Runs')
-    plt.ylabel('Final Loss')
-    plt.xticks(ticks=[1, 2], labels=labels)
-    plt.grid(axis='y', linestyle='--', alpha=0.6)
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-
-def astar_plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
-    """Plots a Box-and-Whisker plot of the final performance metric.
-        Method specifically for Static A-Star vs Dynamic A-Star comparison."""
-    
-    data = [static_astar_final_losses, dynamic_astar_final_losses]
-    
-    plt.figure(figsize=(8, 6))
-    
-    # Boxplot showing median, IQR, and range
-    plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
-                boxprops=dict(facecolor='lightblue'),
-                medianprops=dict(color='darkred'))
-    
-    # Add individual points (jitter) to show all run results
-    for i, losses in enumerate(data):
-        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
-        plt.scatter(x, losses, color='black', alpha=0.6, s=10)
-
-    plt.title(f'Distribution of Final Loss on {dataset_name} over {runs} Runs')
-    plt.ylabel('Final Loss')
-    plt.xticks(ticks=[1, 2], labels=labels)
-    plt.grid(axis='y', linestyle='--', alpha=0.6)
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-
-def generate_statistical_summary(static_dict, dynamic_dict, filename):
-    # FINAL LOSS STATS (for Summary Table and Box Plot)
-    RUNS = len(static_dict["final_losses"])
-    static_astar_final_losses = np.array(static_dict["final_losses"])
-    static_astar_training_times = np.array(static_dict["training_times"])
-    dynamic_astar_final_losses = np.array(dynamic_dict["final_losses"])
-    dynamic_astar_training_times = np.array(dynamic_dict["training_times"])
-
-    # STATIC A-Star Statistics
-    static_astar_avg_loss = np.mean(static_astar_final_losses)
-    static_astar_std_dev = np.std(static_astar_final_losses)
-    static_astar_variance = np.var(static_astar_final_losses)
-    static_astar_median = np.median(static_astar_final_losses)
-    static_astar_min = np.min(static_astar_final_losses)
-    static_astar_max = np.max(static_astar_final_losses)
-    static_astar_avg_training_time = np.mean(static_astar_training_times)
-
-    # DYNAMIC A-Star Statistics
-    dynamic_astar_avg_loss = np.mean(dynamic_astar_final_losses)
-    dynamic_astar_std_dev = np.std(dynamic_astar_final_losses)
-    dynamic_astar_variance = np.var(dynamic_astar_final_losses)
-    dynamic_astar_median = np.median(dynamic_astar_final_losses)
-    dynamic_astar_min = np.min(dynamic_astar_final_losses)
-    dynamic_astar_max = np.max(dynamic_astar_final_losses)
-    dynamic_astar_avg_training_time = np.mean(dynamic_astar_training_times)
-
-
-    print("\n=========================================================================================")
-    print(f"| STATISTICAL SUMMARY over {RUNS} Runs |")
-    print("=========================================================================================")
-    print("| Metric      | STATIC A-Star  | DYNAMIC A-Star |")
-    print("|-------------|----------------|----------------------------|")
-    print(f"| Average Loss| {static_astar_avg_loss:.6f}     | {dynamic_astar_avg_loss:.6f}              |")
-    print(f"| Median Loss | {static_astar_median:.6f}     | {dynamic_astar_median:.6f}              |")
-    print(f"| Std Dev     | {static_astar_std_dev:.6f}     | {dynamic_astar_std_dev:.6f}              |")
-    print(f"| Variance    | {static_astar_variance:.6f}     | {dynamic_astar_variance:.6f}              |")
-    print(f"| Min Loss    | {static_astar_min:.6f}     | {dynamic_astar_min:.6f}              |")
-    print(f"| Max Loss    | {static_astar_max:.6f}     | {dynamic_astar_max:.6f}              |")
-    print(f"| AVG Training Time | {static_astar_avg_training_time:.6f} | {dynamic_astar_avg_training_time:.6f}         |")
-    print("=========================================================================================")
-
-    # check if dynamic_quantization_iterations and dynamic_kernel_reshaping_iterations exist in dynamic_dict
-    if "dynamic_quantization_iterations" in dynamic_dict and "dynamic_kernel_reshaping_iterations" in dynamic_dict:
-        # Print for each RUN the number of dynamic adjustments and the iteration when they occurred
-        print("\nDynamic Adjustments per Run:")
-        for run in range(RUNS):
-            print(f" Run {run + 1}:")
-            print(f"  - Dynamic Quantization Iterations: {dynamic_dict['dynamic_quantization_iterations'][run]}")
-            print(f"  - Dynamic Kernel Reshaping Iterations: {dynamic_dict['dynamic_kernel_reshaping_iterations'][run]}")
-
-    with open(f"{filename}.txt", "w") as f:
-        f.write("=========================================================================================\n")
-        f.write(f"| STATISTICAL SUMMARY over {RUNS} Runs |\n")
-        f.write("=========================================================================================\n")
-        f.write("| Metric      | STATIC A-Star  | DYNAMIC A-Star |\n")
-        f.write("|-------------|----------------|----------------------------|\n")
-        f.write(f"| Average Loss| {static_astar_avg_loss:.6f}     | {dynamic_astar_avg_loss:.6f}              |\n")
-        f.write(f"| Median Loss | {static_astar_median:.6f}     | {dynamic_astar_median:.6f}              |\n")
-        f.write(f"| Std Dev     | {static_astar_std_dev:.6f}     | {dynamic_astar_std_dev:.6f}              |\n")
-        f.write(f"| Variance    | {static_astar_variance:.6f}     | {dynamic_astar_variance:.6f}              |\n")
-        f.write(f"| Min Loss    | {static_astar_min:.6f}     | {dynamic_astar_min:.6f}              |\n")
-        f.write(f"| Max Loss    | {static_astar_max:.6f}     | {dynamic_astar_max:.6f}              |\n")
-        f.write(f"| AVG Training Time | {static_astar_avg_training_time:.6f} | {dynamic_astar_avg_training_time:.6f}         |\n")
-        f.write("=========================================================================================\n")
-
-        if "dynamic_quantization_iterations" in dynamic_dict and "dynamic_kernel_reshaping_iterations" in dynamic_dict:
-            # Print for each RUN the number of dynamic adjustments and the iteration when they occurred
-            f.write("\nDynamic Adjustments per Run:\n")
-            for run in range(RUNS):
-                f.write(f" Run {run + 1}:\n")
-                f.write(f"  - Dynamic Quantization Iterations: {dynamic_dict['dynamic_quantization_iterations'][run]}\n")
-                f.write(f"  - Dynamic Kernel Reshaping Iterations: {dynamic_dict['dynamic_kernel_reshaping_iterations'][run]}\n")
-
-    print(f"\nSaved statistical summary to '{filename}.txt'\n")
-
-
-
-def generate_plots(static_dict, dynamic_dict, filename):
-
-    RUNS = len(static_dict["final_losses"])
-
-    static_astar_losses_array = static_dict["losses"]
-    dynamic_astar_losses_array = dynamic_dict["losses"]
-
-    # Find the overall maximum length across both datasets
-    max_len = max(
-        max((len(l) for l in static_astar_losses_array), default=0),
-        max((len(l) for l in dynamic_astar_losses_array), default=0)
-    )
-
-    # padded numpy arrays
-    static_astar_padded = pad_to_max(static_astar_losses_array, max_len)
-    dynamic_astar_padded = pad_to_max(dynamic_astar_losses_array, max_len)
-
-    # mean and std dev calculations with warnings ignored for NaN slices
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=RuntimeWarning)
+    for i, (label, mean, std) in enumerate(zip(labels, mean_losses, std_losses)):
+        curr_epochs = np.arange(len(mean)) + 1
         
-        static_astar_mean_loss = np.nanmean(static_astar_padded, axis=0)
-        static_astar_std_loss = np.nanstd(static_astar_padded, axis=0)
+        # Combined label for the legend
+        combined_label = f'{label} (Mean $\pm 1 \sigma$)'
+        
+        # Plot the mean line with the descriptive label
+        plt.plot(curr_epochs, mean, label=combined_label, color=colors[i], linewidth=2)
+        
+        # Plot the shading WITHOUT a label so it doesn't create a second legend entry
+        plt.fill_between(curr_epochs, mean - std, mean + std, 
+                         alpha=0.15, color=colors[i])
 
-        dynamic_astar_mean_loss = np.nanmean(dynamic_astar_padded, axis=0)
-        dynamic_astar_std_loss = np.nanstd(dynamic_astar_padded, axis=0)
+    plt.title(f'Mean Training Loss Comparison on {dataset_name} over {runs} Runs')
+    plt.xlabel('Epochs / Iterations')
+    plt.ylabel('Mean Loss')
+    plt.grid(True, linestyle='--', alpha=0.6)
 
-    labels = ["STATIC A-Star", "DYNAMIC A-Star"]
+    # Position the legend outside to the right
+    # bbox_to_anchor=(1.02, 1) places it slightly to the right of the axes
+    plt.legend(loc='upper left', bbox_to_anchor=(1.02, 1), borderaxespad=0.)
 
-    static_astar_final_losses = np.array(static_dict["final_losses"])
-    dynamic_astar_final_losses = np.array(dynamic_dict["final_losses"])
+    plt.tight_layout()
+    # bbox_inches='tight' is critical here to ensure the external legend is saved
+    plt.savefig(filename, bbox_inches='tight')
+    plt.close()
+    print(f"Saved plot: {filename}")
 
-    # mean loss with standard deviation shading
-    astar_plot_mean_loss_with_std(labels, static_astar_mean_loss, static_astar_std_loss, dynamic_astar_mean_loss, dynamic_astar_std_loss, RUNS, f"{filename}_mean_loss.png", "California Housing")
 
-    # box and whisker of final losses
-    astar_plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, RUNS, f"{filename}_final_loss.png", "California Housing")
-
+def plot_final_loss_distribution(labels, final_losses_list, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
+    """final_losses_list: list of np.arrays containing final losses for each run"""
+    plt.figure(figsize=(8, 6))
     
+    # Boxplot
+    bplot = plt.boxplot(final_losses_list, vert=True, patch_artist=True, labels=labels, 
+                        medianprops=dict(color='darkred'))
+    
+    # Aesthetic coloring
+    colors = plt.cm.Pastel1(np.linspace(0, 1, len(labels)))
+    for patch, color in zip(bplot['boxes'], colors):
+        patch.set_facecolor(color)
+    
+    # Individual Jitter Points
+    for i, losses in enumerate(final_losses_list):
+        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
+        plt.scatter(x, losses, color='black', alpha=0.5, s=12)
 
+    plt.title(f'Distribution of Final Loss on {dataset_name} over {runs} Runs')
+    plt.ylabel('Final Loss')
+    plt.grid(axis='y', linestyle='--', alpha=0.4)
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+
+
+
+def generate_statistical_summary(data_dicts, labels, filename):
+    RUNS = len(data_dicts[0]["final_losses"])
+    standard_keys = ["losses", "final_losses", "training_times"]
+    
+    # 1. Determine dynamic column width for the main table
+    max_label_len = max([len(l) for l in labels] + [15])
+    col_width = max_label_len + 2 
+    
+    # 2. Header Construction
+    header = "| Metric".ljust(20)
+    separator = "-" * 19
+    for label in labels:
+        header += f"| {label}".ljust(col_width + 1)
+        separator += "+" + ("-" * col_width)
+    header += "|"
+
+    metrics = ["Average Loss", "Median Loss", "Std Dev", "Min Loss", "Max Loss", "AVG Time"]
+    
+    lines = []
+    total_table_width = len(header)
+    lines.append("=" * total_table_width)
+    lines.append(f" STATISTICAL SUMMARY over {RUNS} Runs ".center(total_table_width, "="))
+    lines.append(header)
+    lines.append(f"|{separator}|")
+
+    # 3. Calculate core stats
+    stats_collection = []
+    for d in data_dicts:
+        final = np.array(d["final_losses"])
+        times = np.array(d["training_times"])
+        stats_collection.append([
+            np.mean(final), np.median(final), np.std(final), 
+            np.min(final), np.max(final), np.mean(times)
+        ])
+
+    for i, metric in enumerate(metrics):
+        row = f"| {metric}".ljust(20)
+        for s in stats_collection:
+            row += f"| {s[i]:.6f}".ljust(col_width + 1)
+        lines.append(row + "|")
+    lines.append("=" * total_table_width)
+
+    # 4. Handle Dynamic/Extra Keys (Generic Implementation)
+    extra_info_lines = []
+    for d, label in zip(data_dicts, labels):
+        # Identify keys that are not part of the standard metrics
+        extra_keys = [k for k in d.keys() if k not in standard_keys]
+        
+        if extra_keys:
+            extra_info_lines.append(f"\nExtra Details for {label}:")
+            for run in range(RUNS):
+                extra_info_lines.append(f" Run {run + 1}:")
+                for k in extra_keys:
+                    # Replace underscores with spaces for cleaner output
+                    key_display = k.replace("_", " ").title()
+                    val = d[k][run]
+                    extra_info_lines.append(f"  - {key_display}: {val}")
+
+    # Combine main table and extra info
+    summary_text = "\n".join(lines + extra_info_lines)
+    
+    # Print and Save
+    print(summary_text)
+    with open(f"{filename}.txt", "w") as f:
+        f.write(summary_text)
+        
+    print(f"\nSaved statistical summary to '{filename}.txt'")
+
+
+
+def generate_plots(data_dicts, labels, filename, dataset_name="California Housing"):
+    """
+    data_dicts: List of dictionaries (e.g. [static_dict, dynamic_dict, custom_dict])
+    labels: List of strings (e.g. ["Static", "Dynamic", "Optimized"])
+    """
+    RUNS = len(data_dicts[0]["final_losses"])
+    
+    # Calculate Max Length for padding
+    all_loss_sequences = [d["losses"] for d in data_dicts]
+    max_len = 0
+    for seq_list in all_loss_sequences:
+        for seq in seq_list:
+            max_len = max(max_len, len(seq))
+
+    # Calculate Mean and Std for all
+    mean_list, std_list, final_list = [], [], []
+    
+    for d in data_dicts:
+        padded = pad_to_max(d["losses"], max_len)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeWarning)
+            mean_list.append(np.nanmean(padded, axis=0))
+            std_list.append(np.nanstd(padded, axis=0))
+        final_list.append(np.array(d["final_losses"]))
+
+    # Call plotting functions
+    plot_mean_loss_with_std(labels, mean_list, std_list, RUNS, f"{filename}_mean_loss.png", dataset_name)
+    plot_final_loss_distribution(labels, final_list, RUNS, f"{filename}_final_loss.png", dataset_name)
+
+
+"""
+Helpers for formatting numbers in scientific notation for plot labels and summaries.
+"""
+def format_sci(value):
+    """
+    Converts a number to scientific notation (e.g., 100.0 -> 1e2).
+    - .0e: scientific notation with 0 decimal points
+    - replace('+', ''): removes the plus sign
+    - replace('e0', 'e'): handles '1e+02' -> '1e2' (removes leading zero in exponent)
+    - replace('.0', ''): safety to ensure no decimal point remains
+    """
+    s = f"{value:.0e}".replace("+", "").replace(".0", "")
+    return s.replace("e0", "e") if "e0" in s else s

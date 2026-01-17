@@ -1,26 +1,35 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
+import numpy as np
+
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
 
 
 def prepare_data_tensors(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.9, random_state=42)
+    # Split into Train and "Remainder" (Test + Val)
+    X_train, X_rem, y_train, y_rem = train_test_split(X, y, train_size=0.1, random_state=42)
     
+    # Split Remainder into Validation and Test (50/50 of the remaining 20%)
+    X_val, X_test, y_val, y_test = train_test_split(X_rem, y_rem, test_size=0.5, random_state=42)
+    
+    # Scaling
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
+    X_val = scaler.transform(X_val)
     X_test = scaler.transform(X_test)
     
-    X_train = torch.tensor(X_train, dtype=torch.float32)
-    X_test = torch.tensor(X_test, dtype=torch.float32)
+    to_tensor = lambda x: torch.tensor(x, dtype=torch.float32)
     
-    y_train = torch.tensor(y_train, dtype=torch.float32).view(-1, 1)
-    y_test = torch.tensor(y_test, dtype=torch.float32).view(-1, 1)
- 
-    return X_train, y_train, X_test, y_test
+    return (
+        to_tensor(X_train), to_tensor(y_train).view(-1, 1),
+        to_tensor(X_val), to_tensor(y_val).view(-1, 1),
+        to_tensor(X_test), to_tensor(y_test).view(-1, 1)
+    )
 
 
 
@@ -37,3 +46,33 @@ def create_dataloader(X, y, batch_size=None):
     dataset = TensorDataset(X, y)
     return DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
+
+
+"""
+    Function to evaluate regression model performance using common metrics.
+    The method is tailored for standard pytorch models and dataloaders.
+    For A-star PathNet models, a custom evaluation method may be needed.
+"""
+def evaluate_regression(model, dataloader):
+    model.eval() # Set model to evaluation mode
+    all_preds = []
+    all_targets = []
+    
+    with torch.no_grad():
+        for X_batch, y_batch in dataloader:
+            preds = model(X_batch)
+            all_preds.append(preds)
+            all_targets.append(y_batch)
+            
+    # Concatenate and convert back to numpy for sklearn metrics
+    y_pred = torch.cat(all_preds).numpy()
+    y_true = torch.cat(all_targets).numpy()
+    
+    metrics = {
+        "MSE": mean_squared_error(y_true, y_pred),
+        "RMSE": np.sqrt(mean_squared_error(y_true, y_pred)),
+        "MAE": mean_absolute_error(y_true, y_pred),
+        "R2": r2_score(y_true, y_pred)
+    }
+    
+    return metrics

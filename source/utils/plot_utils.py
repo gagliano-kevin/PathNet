@@ -15,8 +15,56 @@ def pad_losses(losses_list, target_len):
 
 
 
-def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
-    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
+# function to handle multiple training runs with varying lengths
+def pad_to_max(list_of_lists, total_len):
+    return np.array([
+        l + [np.nan] * (total_len - len(l)) 
+        for l in list_of_lists
+    ])
+
+
+
+def save_metrics(metrics_dict, filename):
+    """
+    Saves a dictionary of metrics to a JSON file.
+    :param filename: String path to the file (e.g., 'results.json')
+    :param metrics_dict: The dictionary containing your data
+    """
+    filename = filename + ".json"
+    try:
+        with open(filename, 'w') as f:
+            json.dump(metrics_dict, f, indent=4)
+        print(f"Successfully saved metrics to {filename}")
+    except Exception as e:
+        print(f"Error saving file: {e}")
+
+
+
+def load_metrics(filename):
+    """
+    Loads metrics from a JSON file.
+    :param filename: String path to the file
+    :return: Dictionary containing the loaded data or None if failed
+    """
+    filename = filename + ".json"
+    if not os.path.exists(filename):
+        print(f"File {filename} not found.")
+        return None
+        
+    try:
+        with open(filename, 'r') as f:
+            data = json.load(f)
+        print(f"Successfully loaded metrics from {filename}")
+        return data
+    except Exception as e:
+        print(f"Error loading file: {e}")
+        return None
+
+
+
+def grad_astar_plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
+    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation.
+        Method specifically for Gradient Descent vs A-Star comparison."""
     
     # epochs is now correctly determined by the global maximum length
     epochs = np.arange(len(astar_mean)) + 1
@@ -45,46 +93,9 @@ def plot_mean_loss_with_std(astar_mean, astar_std, grad_mean, grad_std, runs, fi
 
 
 
-def plot_final_loss_distribution(astar_final_losses, grad_final_losses, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
-    """Plots a Box-and-Whisker plot of the final performance metric."""
-    
-    data = [astar_final_losses, grad_final_losses]
-    labels = ['A-Star', 'Gradient Descent']
-    
-    plt.figure(figsize=(8, 6))
-    
-    # Boxplot showing median, IQR, and range
-    plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
-                boxprops=dict(facecolor='lightblue'),
-                medianprops=dict(color='darkred'))
-    
-    # Add individual points (jitter) to show all run results
-    for i, losses in enumerate(data):
-        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
-        plt.scatter(x, losses, color='black', alpha=0.6, s=10)
-
-    plt.title(f'Distribution of Final Loss on {dataset_name} over {runs} Runs')
-    plt.ylabel('Final Loss')
-    plt.xticks(ticks=[1, 2], labels=labels)
-    plt.grid(axis='y', linestyle='--', alpha=0.6)
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
-    print(f"Saved plot: {filename}")
-
-
-
-# function to handle multiple training runs with varying lengths
-def pad_to_max(list_of_lists, total_len):
-    return np.array([
-        l + [np.nan] * (total_len - len(l)) 
-        for l in list_of_lists
-    ])
-
-
-
-def plot_mean_loss_with_std(labels, static_astar_mean, static_astar_std, dynamic_astar_mean, dynamic_astar_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
-    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation."""
+def astar_plot_mean_loss_with_std(labels, static_astar_mean, static_astar_std, dynamic_astar_mean, dynamic_astar_std, runs, filename="mean_loss_comparison_with_std.png", dataset_name="dataset"):
+    """Plots the mean loss over epochs/iterations with a shaded region for standard deviation.
+        Method specifically for Static A-Star vs Dynamic A-Star comparison."""
     
     # get the maximum length for epochs
     epochs = np.arange(max(len(static_astar_mean), len(dynamic_astar_mean))) + 1
@@ -113,8 +124,39 @@ def plot_mean_loss_with_std(labels, static_astar_mean, static_astar_std, dynamic
 
 
 
-def plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
-    """Plots a Box-and-Whisker plot of the final performance metric."""
+def grad_astar_plot_final_loss_distribution(astar_final_losses, grad_final_losses, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
+    """Plots a Box-and-Whisker plot of the final performance metric.
+        Method specifically for Gradient Descent vs A-Star comparison."""
+    
+    data = [astar_final_losses, grad_final_losses]
+    labels = ['A-Star', 'Gradient Descent']
+    
+    plt.figure(figsize=(8, 6))
+    
+    # Boxplot showing median, IQR, and range
+    plt.boxplot(data, vert=True, patch_artist=True, labels=labels, 
+                boxprops=dict(facecolor='lightblue'),
+                medianprops=dict(color='darkred'))
+    
+    # Add individual points (jitter) to show all run results
+    for i, losses in enumerate(data):
+        x = np.random.normal(i + 1, 0.04, size=len(losses)) 
+        plt.scatter(x, losses, color='black', alpha=0.6, s=10)
+
+    plt.title(f'Distribution of Final Loss on {dataset_name} over {runs} Runs')
+    plt.ylabel('Final Loss')
+    plt.xticks(ticks=[1, 2], labels=labels)
+    plt.grid(axis='y', linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    print(f"Saved plot: {filename}")
+
+
+
+def astar_plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
+    """Plots a Box-and-Whisker plot of the final performance metric.
+        Method specifically for Static A-Star vs Dynamic A-Star comparison."""
     
     data = [static_astar_final_losses, dynamic_astar_final_losses]
     
@@ -251,47 +293,10 @@ def generate_plots(static_dict, dynamic_dict, filename):
     dynamic_astar_final_losses = np.array(dynamic_dict["final_losses"])
 
     # mean loss with standard deviation shading
-    plot_mean_loss_with_std(labels, static_astar_mean_loss, static_astar_std_loss, dynamic_astar_mean_loss, dynamic_astar_std_loss, RUNS, f"{filename}_mean_loss.png", "California Housing")
+    astar_plot_mean_loss_with_std(labels, static_astar_mean_loss, static_astar_std_loss, dynamic_astar_mean_loss, dynamic_astar_std_loss, RUNS, f"{filename}_mean_loss.png", "California Housing")
 
     # box and whisker of final losses
-    plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, RUNS, f"{filename}_final_loss.png", "California Housing")
+    astar_plot_final_loss_distribution(labels, static_astar_final_losses, dynamic_astar_final_losses, RUNS, f"{filename}_final_loss.png", "California Housing")
 
-
-
-def save_metrics(metrics_dict, filename):
-    """
-    Saves a dictionary of metrics to a JSON file.
-    :param filename: String path to the file (e.g., 'results.json')
-    :param metrics_dict: The dictionary containing your data
-    """
-    filename = filename + ".json"
-    try:
-        with open(filename, 'w') as f:
-            json.dump(metrics_dict, f, indent=4)
-        print(f"Successfully saved metrics to {filename}")
-    except Exception as e:
-        print(f"Error saving file: {e}")
-
-
-
-def load_metrics(filename):
-    """
-    Loads metrics from a JSON file.
-    :param filename: String path to the file
-    :return: Dictionary containing the loaded data or None if failed
-    """
-    filename = filename + ".json"
-    if not os.path.exists(filename):
-        print(f"File {filename} not found.")
-        return None
-        
-    try:
-        with open(filename, 'r') as f:
-            data = json.load(f)
-        print(f"Successfully loaded metrics from {filename}")
-        return data
-    except Exception as e:
-        print(f"Error loading file: {e}")
-        return None
     
 

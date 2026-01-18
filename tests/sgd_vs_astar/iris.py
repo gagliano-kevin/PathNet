@@ -1,6 +1,6 @@
 #==============================================================================================================================================================
 #==============================================================================================================================================================
-#---------------------------------------------------------- python -m tests.sgd_vs_astar.wine -----------------------------------------------------------------
+#---------------------------------------------------------- python -m tests.sgd_vs_astar.iris -----------------------------------------------------------------
 #==============================================================================================================================================================
 #==============================================================================================================================================================
 
@@ -9,14 +9,14 @@ import torch.nn as nn
 import time
 
 from source.PathNet import Trainer
-from source.utils.dataset_utils.wine_utils import get_wine_data, create_dataloader
+from source.utils.dataset_utils.iris_utils import get_splitted_iris_data_tensors, get_iris_dataloaders
 from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_classification_statistics
 from source.utils.evaluation_utils import evaluate_sgd_classification, evaluate_pathnet_classification
 from source.utils.models import IrisMLP
 
 ITERATIONS = 10
 RUNS = 1
-TEST_NAME = "Wine - SGD vs A-star"
+TEST_NAME = "Iris - SGD vs A-star"
 SAVE_TRAINED_MODEL = False
 
 # Initial Kernel and Stride Settings
@@ -41,11 +41,11 @@ Y_STRIDE_DECR = 1
 DELTA_ABS = None
 
 # Neural Network Settings
-INPUT_SIZE = 11
+INPUT_SIZE = 4
 HIDDEN_SIZE_1 = 64
 HIDDEN_SIZE_2 = 32
 HIDDEN_SIZE_3 = 16
-OUTPUT_SIZE = 6
+OUTPUT_SIZE = 3
 
 EARLY_STOPPING = False
 E_S_PATIENCE = 200
@@ -74,7 +74,7 @@ grad_metrics = {
         "evaluation_scores": []
     }
                        
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_wine_data()
+X_train, Y_train, X_val, Y_val, X_test, Y_test = get_splitted_iris_data_tensors()
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
 print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
 print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
@@ -140,13 +140,13 @@ BATCH_SIZE = None    # Full batch
 LEARNING_RATE = 0.001
 EPOCHS = ITERATIONS
 
-train_dataloader = create_dataloader(X_train, Y_train, batch_size=BATCH_SIZE)
+train_dataloader = get_iris_dataloaders(batch_size=BATCH_SIZE)[0]
 
 for run in range(RUNS):
     
-    wine_model = IrisMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, num_classes=OUTPUT_SIZE)
+    iris_model = IrisMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, num_classes=OUTPUT_SIZE)
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(wine_model.parameters(), lr=LEARNING_RATE)
+    optimizer = torch.optim.Adam(iris_model.parameters(), lr=LEARNING_RATE)
 
     loss_history = []
 
@@ -158,7 +158,7 @@ for run in range(RUNS):
         total_loss = 0
         for x_batch, y_batch in train_dataloader:        
             optimizer.zero_grad()
-            predictions = wine_model(x_batch)
+            predictions = iris_model(x_batch)
             loss = criterion(predictions, y_batch)              
             loss.backward()
             optimizer.step()
@@ -172,20 +172,21 @@ for run in range(RUNS):
     end_time = time.perf_counter()
     training_time = end_time - start_time
 
-    test_dataloader = create_dataloader(X_test, Y_test, batch_size=BATCH_SIZE)
+    test_dataloader = get_iris_dataloaders(batch_size=BATCH_SIZE)[2]
 
     grad_metrics["losses"].append(loss_history)
     grad_metrics["training_times"].append(training_time)
     grad_metrics["final_losses"].append(loss_history[-1])
-    grad_metrics["evaluation_scores"].append(evaluate_sgd_classification(wine_model, test_dataloader))
+    grad_metrics["evaluation_scores"].append(evaluate_sgd_classification(iris_model, test_dataloader))
 
 
-    #----------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 metrics_list = [astar_metrics, grad_metrics]
 labels_list = ["A-star", "SGD"]
-DATASET_NAME = "California Housing"
+DATASET_NAME = "Iris"
 
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 

@@ -1,12 +1,11 @@
 import torch
-import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
 
 
 
-class SinDataset(Dataset):
+class SineDataset(Dataset):
     
     def __init__(self, num_samples, min_angle, max_angle, noise_level=0.1):
         self.x_data = torch.linspace(min_angle, max_angle, num_samples).float().unsqueeze(1)
@@ -53,18 +52,32 @@ def plot_sine_data(X: torch.Tensor, Y: torch.Tensor, filename="sine_data.png"):
 
     
 
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+
 def plot_sine_predictions(test_x_np: np.ndarray, 
                           predicted_sin_np: np.ndarray, 
                           true_sin_np: np.ndarray, 
-                          filename = "sine_plot.png"):
+                          directory: str = "plots",
+                          filename: str = "sine_plot.png"):
     """
-    Plots the predicted sine values against the true sine values.
+    Plots the predicted sine values against the true sine values and saves
+    the plot in the specified directory.
 
     Args:
         test_x_np (np.ndarray): The input angles (x-axis data).
         predicted_sin_np (np.ndarray): The network's predicted sin(x) values.
         true_sin_np (np.ndarray): The actual sin(x) values.
+        directory (str): The name of the directory to save the plots.
+        filename (str): The name of the output file.
     """
+    
+    # 1. Create the directory if it doesn't exist
+    os.makedirs(directory, exist_ok=True)
+    
+    # 2. Construct the full save path
+    save_path = os.path.join(directory, filename)
     
     plt.figure(figsize=(7, 5))
     
@@ -77,5 +90,11 @@ def plot_sine_predictions(test_x_np: np.ndarray,
     plt.ylabel('$\\sin(x)$')
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
-    plt.savefig(filename)
-    print(f"Sine function plot saved in file: {filename}")
+    
+    # 3. Save to the new path
+    plt.savefig(save_path)
+    plt.close() # Good practice to close the figure after saving
+    
+    print(f"Sine function plot saved in: {save_path}")
+
+    

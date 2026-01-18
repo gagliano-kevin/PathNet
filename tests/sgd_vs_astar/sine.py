@@ -1,23 +1,33 @@
 #==============================================================================================================================================================
 #==============================================================================================================================================================
-#---------------------------------------------------------- python -m tests.sgd_vs_astar.wine -----------------------------------------------------------------
+#-------------------------------------------------- python -m tests.sgd_vs_astar.sine ----------------------------------------------------------
 #==============================================================================================================================================================
 #==============================================================================================================================================================
 
 import torch
+from torch.utils.data import DataLoader
 import torch.nn as nn
+import numpy as np
 import time
 
 from source.PathNet import Trainer
-from source.utils.dataset_utils.wine_utils import get_wine_data, create_dataloader
-from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_classification_statistics
-from source.utils.evaluation_utils import evaluate_sgd_classification, evaluate_pathnet_classification
-from source.utils.models import IrisMLP
+from source.utils.dataset_utils.sine_utils import generate_sinusoidal_tensor, plot_sine_predictions, SineDataset
+from source.utils.evaluation_utils import evaluate_pathnet_regression, evaluate_sgd_regression
+from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
+from source.utils.models import SinusoidalMLP
 
 ITERATIONS = 10
 RUNS = 1
-TEST_NAME = "Wine - SGD vs A-star"
+TEST_NAME = "Noisy Sine Function - SGD vs A-star"
 SAVE_TRAINED_MODEL = False
+
+TRAINING_SAMPLES = 1000
+VALIDATION_SAMPLES = 1000
+TEST_SAMPLES = 1000
+
+MIN_ANGLE = 0
+MAX_ANGLE = 2 * np.pi
+NOISE_LEVEL = 0.1
 
 # Initial Kernel and Stride Settings
 MAX_WEIGHT_KERNEL = [6,6]
@@ -41,11 +51,11 @@ Y_STRIDE_DECR = 1
 DELTA_ABS = None
 
 # Neural Network Settings
-INPUT_SIZE = 11
+INPUT_SIZE = 1
 HIDDEN_SIZE_1 = 64
 HIDDEN_SIZE_2 = 32
 HIDDEN_SIZE_3 = 16
-OUTPUT_SIZE = 6
+OUTPUT_SIZE = 1
 
 EARLY_STOPPING = False
 E_S_PATIENCE = 200
@@ -74,7 +84,10 @@ grad_metrics = {
         "evaluation_scores": []
     }
                        
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_wine_data()
+X_train, Y_train = generate_sinusoidal_tensor(num_samples=TRAINING_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
+X_val, Y_val = generate_sinusoidal_tensor(num_samples=VALIDATION_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
+X_test, Y_test = generate_sinusoidal_tensor(num_samples=TEST_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
+
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
 print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
 print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
@@ -99,7 +112,7 @@ for run in range(RUNS):
 
 
     trainer = Trainer(model=model,
-                            loss_fn=nn.CrossEntropyLoss(),
+                            loss_fn=nn.MSELoss(),
                             quantization_factor=MIN_QUANTIZATION_FACTOR,
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
@@ -128,7 +141,13 @@ for run in range(RUNS):
     astar_metrics["final_losses"].append(trainer.best_node.h_val)
     astar_metrics["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     astar_metrics["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    astar_metrics["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+    astar_metrics["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+
+    plot_sine_predictions(test_x_np=X_test.numpy(), 
+                          predicted_sin_np=trainer.best_node.quantized_mlp.model(X_test).detach().numpy(), 
+                          true_sin_np=Y_test.numpy(),
+                          directory=TEST_NAME,
+                          filename=f"astar_sine_predictions_run_{run + 1}.png")
 
 
 
@@ -136,17 +155,18 @@ for run in range(RUNS):
 #------------------------------------------------------------------- GRADIENT BASE TRAINING ---------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-BATCH_SIZE = None    # Full batch
+BATCH_SIZE = TRAINING_SAMPLES   # Full Batch
 LEARNING_RATE = 0.001
 EPOCHS = ITERATIONS
 
-train_dataloader = create_dataloader(X_train, Y_train, batch_size=BATCH_SIZE)
+dataset = SineDataset(num_samples=TRAINING_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
+train_dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 for run in range(RUNS):
     
-    wine_model = IrisMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, num_classes=OUTPUT_SIZE)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(wine_model.parameters(), lr=LEARNING_RATE)
+    sine_model = SinusoidalMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, output_size=OUTPUT_SIZE)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(sine_model.parameters(), lr=LEARNING_RATE)
 
     loss_history = []
 
@@ -158,7 +178,7 @@ for run in range(RUNS):
         total_loss = 0
         for x_batch, y_batch in train_dataloader:        
             optimizer.zero_grad()
-            predictions = wine_model(x_batch)
+            predictions = sine_model(x_batch)
             loss = criterion(predictions, y_batch)              
             loss.backward()
             optimizer.step()
@@ -172,26 +192,34 @@ for run in range(RUNS):
     end_time = time.perf_counter()
     training_time = end_time - start_time
 
-    test_dataloader = create_dataloader(X_test, Y_test, batch_size=BATCH_SIZE)
+    test_dataset = SineDataset(num_samples=TEST_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
+    test_dataloader = DataLoader(test_dataset, batch_size=TEST_SAMPLES, shuffle=True)
 
     grad_metrics["losses"].append(loss_history)
     grad_metrics["training_times"].append(training_time)
     grad_metrics["final_losses"].append(loss_history[-1])
-    grad_metrics["evaluation_scores"].append(evaluate_sgd_classification(wine_model, test_dataloader))
+    grad_metrics["evaluation_scores"].append(evaluate_sgd_regression(sine_model, test_dataloader))
+
+    plot_sine_predictions(test_x_np=test_dataset.x_data.numpy(), 
+                    predicted_sin_np=sine_model(test_dataset.x_data).detach().numpy(), 
+                    true_sin_np=test_dataset.sin_y_data.numpy(),
+                    directory=TEST_NAME,
+                    filename=f"grad_sine_predictions_run_{run + 1}.png")
 
 
-    #----------------------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 metrics_list = [astar_metrics, grad_metrics]
 labels_list = ["A-star", "SGD"]
-DATASET_NAME = "California Housing"
+DATASET_NAME = "Noisy Sine Function"
 
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
-plot_classification_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 

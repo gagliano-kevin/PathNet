@@ -17,9 +17,9 @@ import torch.nn as nn
 import math
 
 from source.PathNet import Trainer
-from source.utils.dataset_utils.housing_utils import get_california_housing_data, evaluate_pathnet_regression
-
-from source.utils.plot_utils import generate_plots, format_sci,  save_metrics, generate_regression_statistical_summary, plot_regression_statistics
+from source.utils.dataset_utils.housing_utils import get_california_housing_data
+from source.utils.evaluation_utils import evaluate_pathnet_regression
+from source.utils.plot_utils import generate_plots, format_sci,  save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
 
 ITERATIONS = 10
 RUNS = 1
@@ -187,7 +187,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
@@ -343,7 +343,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
@@ -505,7 +505,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 

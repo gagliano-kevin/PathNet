@@ -244,7 +244,7 @@ def format_sci(value):
 
 
 
-def generate_regression_statistical_summary(data_dicts, labels, filename):
+def generate_evaluation_statistical_summary(data_dicts, labels, filename):
     RUNS = len(data_dicts[0]["final_losses"])
     standard_keys = ["losses", "final_losses", "training_times", "evaluation_scores"]
     
@@ -408,4 +408,74 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
     plt.legend()
     plt.grid(True, which="both", ls="-", alpha=0.5)
     plt.savefig(os.path.join(filename, f"{filename}_convergence.png"))
+    plt.close()
+
+
+
+def plot_classification_statistics(data_dicts, labels, filename, dataset_name="Dataset"):
+    """
+    Generates a visual summary of classification performance:
+    1. Boxplots for Accuracy, Precision, Recall, F1.
+    2. Linear/Log Loss convergence plot.
+    """
+    os.makedirs(filename, exist_ok=True)
+    sns.set_theme(style="whitegrid")
+    
+    # Boxplots for Classification Metrics
+    eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
+    num_metrics = len(eval_keys)
+    
+    fig, axes = plt.subplots(1, num_metrics, figsize=(5 * num_metrics, 6))
+    if num_metrics == 1: axes = [axes]
+
+    for i, metric in enumerate(eval_keys):
+        plot_data = []
+        plot_labels = []
+        
+        for d, label in zip(data_dicts, labels):
+            scores = [run[metric] for run in d["evaluation_scores"]]
+            plot_data.extend(scores)
+            plot_labels.extend([label] * len(scores))
+        
+        sns.boxplot(
+            x=plot_labels, 
+            y=plot_data, 
+            ax=axes[i], 
+            hue=plot_labels,    
+            palette="magma", # Changed palette to distinguish from regression
+            legend=False
+        )
+
+        axes[i].set_title(f"Distribution of {metric}")
+        axes[i].set_ylabel("Score (0 to 1)")
+        
+        # Classification metrics are percentages; fix the y-axis for better comparison
+        axes[i].set_ylim(-0.05, 1.05) 
+        axes[i].tick_params(axis='x', rotation=45)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(filename, f"{filename}_classification_metrics.png"))
+    plt.close()
+
+    # Training Loss Convergence (Classification)
+    plt.figure(figsize=(10, 6))
+    for d, label in zip(data_dicts, labels):
+        losses = np.array(d["losses"])
+        mean_loss = np.mean(losses, axis=0)
+        std_loss = np.std(losses, axis=0)
+        iters = np.arange(len(mean_loss))
+        
+        line, = plt.plot(iters, mean_loss, label=label, lw=2)
+        plt.fill_between(iters, mean_loss - std_loss, mean_loss + std_loss, 
+                         color=line.get_color(), alpha=0.15)
+
+    # Note: Cross-entropy loss usually looks better on a linear scale, 
+    # but we keep log as an option if your initial loss is very high.
+    # plt.yscale('log') 
+    plt.title(f"Classification Loss Convergence: {dataset_name}")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss (Cross-Entropy)")
+    plt.legend()
+    plt.grid(True, which="major", ls="-", alpha=0.5)
+    plt.savefig(os.path.join(filename, f"{filename}_loss_convergence.png"))
     plt.close()

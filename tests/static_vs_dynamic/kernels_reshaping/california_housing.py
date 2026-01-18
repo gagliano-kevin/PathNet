@@ -16,9 +16,9 @@
 import torch.nn as nn
 
 from source.PathNet import Trainer
-from source.utils.dataset_utils.housing_utils import get_california_housing_data, evaluate_pathnet_regression
-
-from source.utils.plot_utils import generate_plots,  save_metrics, generate_regression_statistical_summary, plot_regression_statistics
+from source.utils.dataset_utils.housing_utils import get_california_housing_data
+from source.utils.evaluation_utils import evaluate_pathnet_regression
+from source.utils.plot_utils import generate_plots,  save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
 
 ITERATIONS = 10
 RUNS = 1
@@ -195,7 +195,7 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
@@ -365,7 +365,7 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
@@ -538,7 +538,7 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 

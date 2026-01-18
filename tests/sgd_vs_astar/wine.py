@@ -1,6 +1,6 @@
 #==============================================================================================================================================================
 #==============================================================================================================================================================
-#-------------------------------------------------- python -m tests.sgd_vs_astar.california_housing ----------------------------------------------------------
+#---------------------------------------------------------- python -m tests.sgd_vs_astar.wine -----------------------------------------------------------------
 #==============================================================================================================================================================
 #==============================================================================================================================================================
 
@@ -9,14 +9,17 @@ import torch.nn as nn
 import time
 
 from source.PathNet import Trainer
-from source.utils.dataset_utils.housing_utils import get_california_housing_data, create_dataloader
-from source.utils.evaluation_utils import evaluate_pathnet_regression, evaluate_sgd_regression
-from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
-from source.utils.models import HousingMLP
+from source.utils.dataset_utils.wine_utils import get_wine_data, create_dataloader
+
+from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_classification_statistics
+
+from source.utils.evaluation_utils import evaluate_sgd_classification, evaluate_pathnet_classification
+
+from source.utils.models import IrisMLP
 
 ITERATIONS = 10
 RUNS = 1
-TEST_NAME = "California Housing - SGD vs A-star"
+TEST_NAME = "Wine - SGD vs A-star"
 SAVE_TRAINED_MODEL = False
 
 # Initial Kernel and Stride Settings
@@ -41,11 +44,11 @@ Y_STRIDE_DECR = 1
 DELTA_ABS = None
 
 # Neural Network Settings
-INPUT_SIZE = 8
+INPUT_SIZE = 11
 HIDDEN_SIZE_1 = 64
 HIDDEN_SIZE_2 = 32
 HIDDEN_SIZE_3 = 16
-OUTPUT_SIZE = 1
+OUTPUT_SIZE = 6
 
 EARLY_STOPPING = False
 E_S_PATIENCE = 200
@@ -74,7 +77,7 @@ grad_metrics = {
         "evaluation_scores": []
     }
                        
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
+X_train, Y_train, X_val, Y_val, X_test, Y_test = get_wine_data()
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
 print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
 print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
@@ -99,7 +102,7 @@ for run in range(RUNS):
 
 
     trainer = Trainer(model=model,
-                            loss_fn=nn.MSELoss(),
+                            loss_fn=nn.CrossEntropyLoss(),
                             quantization_factor=MIN_QUANTIZATION_FACTOR,
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
@@ -128,7 +131,7 @@ for run in range(RUNS):
     astar_metrics["final_losses"].append(trainer.best_node.h_val)
     astar_metrics["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     astar_metrics["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    astar_metrics["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    astar_metrics["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
 
 
 
@@ -144,8 +147,8 @@ train_dataloader = create_dataloader(X_train, Y_train, batch_size=BATCH_SIZE)
 
 for run in range(RUNS):
     
-    housing_model = HousingMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, output_size=OUTPUT_SIZE)
-    criterion = nn.MSELoss()
+    housing_model = IrisMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, num_classes=OUTPUT_SIZE)
+    criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(housing_model.parameters(), lr=LEARNING_RATE)
 
     loss_history = []
@@ -177,7 +180,7 @@ for run in range(RUNS):
     grad_metrics["losses"].append(loss_history)
     grad_metrics["training_times"].append(training_time)
     grad_metrics["final_losses"].append(loss_history[-1])
-    grad_metrics["evaluation_scores"].append(evaluate_sgd_regression(housing_model, test_dataloader))
+    grad_metrics["evaluation_scores"].append(evaluate_sgd_classification(housing_model, test_dataloader))
 
 
     #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -191,7 +194,7 @@ generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
-plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+plot_classification_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 

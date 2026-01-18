@@ -43,13 +43,9 @@ class IrisMLP(nn.Module):
 
     def __init__(self, input_size, hidden_size_1, hidden_size_2, hidden_size_3, num_classes):
         super().__init__()
-        # 4 features -> Hidden Layer 1
         self.fc1 = nn.Linear(input_size, hidden_size_1) 
-        # Hidden Layer 1 -> Hidden Layer 2
         self.fc2 = nn.Linear(hidden_size_1, hidden_size_2)
-        # Hidden Layer 2 -> Hidden Layer 3
         self.fc3 = nn.Linear(hidden_size_2, hidden_size_3)
-        # Hidden Layer 3 -> 3 classes
         self.fc4 = nn.Linear(hidden_size_3, num_classes)
         
     def forward(self, x):

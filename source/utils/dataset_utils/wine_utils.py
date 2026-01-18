@@ -9,34 +9,48 @@ import numpy as np
 
 
 def prepare_data_tensors(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
+    # 1. First split: Separate Test set (e.g., 20% of total data)
+    X_temp, X_test, y_temp, y_test = train_test_split(
+        X, y, test_size=0.20, random_state=42
+    )
     
+    # 2. Second split: Split remaining data into Train and Val (e.g., 25% of temp is 20% of total)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_temp, y_temp, test_size=0.25, random_state=42
+    )
+    
+    # 3. Scaling
     scaler = StandardScaler()
+    # ONLY fit on the training data to avoid data leakage
     X_train = scaler.fit_transform(X_train)
+    X_val = scaler.transform(X_val)
     X_test = scaler.transform(X_test)
     
+    # 4. Convert to Tensors
     X_train = torch.tensor(X_train, dtype=torch.float32)
+    X_val = torch.tensor(X_val, dtype=torch.float32)
     X_test = torch.tensor(X_test, dtype=torch.float32)
     
-    # Fix the "str" error: Convert y to numpy integers first
-    # This handles Pandas Series, Categorical data, and String lists
-    if hasattr(y_train, 'values'):
-        y_train_np = y_train.astype(int).values
-        y_test_np = y_test.astype(int).values
-    else:
-        y_train_np = np.array(y_train).astype(int)
-        y_test_np = np.array(y_test).astype(int)
+    # Helper to clean target data
+    def to_long_tensor(target):
+        if hasattr(target, 'values'):
+            target_np = target.astype(int).values
+        else:
+            target_np = np.array(target).astype(int)
+        return torch.tensor(target_np, dtype=torch.long)
 
-    y_train = torch.tensor(y_train_np, dtype=torch.long)
-    y_test = torch.tensor(y_test_np, dtype=torch.long)
+    y_train = to_long_tensor(y_train)
+    y_val = to_long_tensor(y_val)
+    y_test = to_long_tensor(y_test)
 
-    # Shift labels to start at 0
+    # 5. Label Shifting (Start at 0)
     min_label = y_train.min()
     if min_label > 0:
         y_train = y_train - min_label
+        y_val = y_val - min_label
         y_test = y_test - min_label
         
-    return X_train, y_train, X_test, y_test
+    return X_train, y_train, X_val, y_val, X_test, y_test
 
 
 

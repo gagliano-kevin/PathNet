@@ -19,7 +19,7 @@ import math
 from source.PathNet import Trainer
 from source.utils.dataset_utils.housing_utils import get_california_housing_data, evaluate_pathnet_regression
 
-from source.utils.plot_utils import generate_plots, generate_statistical_summary, format_sci,  save_metrics, load_metrics, generate_regression_statistical_summary, plot_regression_statistics
+from source.utils.plot_utils import generate_plots, format_sci,  save_metrics, generate_regression_statistical_summary, plot_regression_statistics
 
 ITERATIONS = 10
 RUNS = 1
@@ -29,6 +29,8 @@ DATASET_NAME = "California Housing"
 EARLY_STOPPING = False
 E_S_PATIENCE = 200
 LOSS_IMPROVEMENT_THRESHOLD = 1e-3
+PARAMETER_RANGE = (-10, 10)
+
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -44,8 +46,6 @@ HIDDEN_SIZE_1 = 32
 HIDDEN_SIZE_2 = 16
 OUTPUT_SIZE = 1
 
-PARAMETER_RANGE = (-10, 10)
-
 # Initial Kernel and Stride Settings
 WEIGHT_KERNEL = [3,3]
 BIAS_KERNEL = [3]
@@ -54,21 +54,10 @@ Y_STRIDE = 3
 DELTA_ABS = None
 
 # Dynamic Quantization Settings
-DYNAMIC_QUANTIZATION = True
 D_Q_PATIENCE = 100
 QUANTIZATION_FACTOR_MULTIPLIER = 10
 MIN_QUANTIZATION_FACTOR = 10
 MAX_QUANTIZATION_FACTOR = 1e4
-
-DYNAMIC_KERNEL_RESHAPING = False
-
-DYNAMIC_ASTAR_METRICS = {
-    "losses": [],
-    "training_times": [],
-    "final_losses": [],
-    "dynamic_quantization_iterations": [],
-    "dynamic_kernel_reshaping_iterations": []
-}
 
 start_exp = int(math.log10(MIN_QUANTIZATION_FACTOR))
 end_exp = int(math.log10(MAX_QUANTIZATION_FACTOR))
@@ -119,24 +108,24 @@ for run in range(RUNS):
 
 
     trainer = Trainer(model=model,
-                             loss_fn=nn.MSELoss(),
-                             quantization_factor=MIN_QUANTIZATION_FACTOR,
-                             parameter_range=PARAMETER_RANGE,
-                             debug_mlp=False,
-                             #----------------------------------------------------------------------------------
-                             weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
-                             #----------------------------------------------------------------------------------
-                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                             #----------------------------------------------------------------------------------
-                             dynamic_quantization=DYNAMIC_QUANTIZATION, d_q_patience=D_Q_PATIENCE, 
-                             quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
-                             #-----------------------------------------------------------------------------------
-                             dynamic_kernel_reshaping=False,
-                             #----------------------------------------------------------------------------------
-                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                             #----------------------------------------------------------------------------------
-                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
-                             )
+                            loss_fn=nn.MSELoss(),
+                            quantization_factor=MIN_QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=True, d_q_patience=D_Q_PATIENCE, 
+                            quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
+                            )
 
     trainer.train(X_train, Y_train)
 
@@ -167,23 +156,23 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 
 
         trainer = Trainer(model=model,
-                                 loss_fn=nn.MSELoss(),
-                                 quantization_factor=quantization_factor,
-                                 parameter_range=PARAMETER_RANGE,
-                                 debug_mlp=False,
-                                 #----------------------------------------------------------------------------------
-                                 weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
-                                 #----------------------------------------------------------------------------------
-                                 early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                                 #----------------------------------------------------------------------------------
-                                 dynamic_quantization=False,
-                                 #-----------------------------------------------------------------------------------
-                                 dynamic_kernel_reshaping=False,
-                                 #----------------------------------------------------------------------------------
-                                 loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                                 #----------------------------------------------------------------------------------
-                                 max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_static_astar_qf_{format_sci(quantization_factor)}_run_{run + 1}'
-                                 )
+                                loss_fn=nn.MSELoss(),
+                                quantization_factor=quantization_factor,
+                                parameter_range=PARAMETER_RANGE,
+                                debug_mlp=False,
+                                #----------------------------------------------------------------------------------
+                                weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                                #----------------------------------------------------------------------------------
+                                early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                                #----------------------------------------------------------------------------------
+                                dynamic_quantization=False,
+                                #-----------------------------------------------------------------------------------
+                                dynamic_kernel_reshaping=False,
+                                #----------------------------------------------------------------------------------
+                                loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                                #----------------------------------------------------------------------------------
+                                max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_static_astar_qf_{format_sci(quantization_factor)}_run_{run + 1}'
+                                )
 
         trainer.train(X_train, Y_train)
 
@@ -273,24 +262,24 @@ for run in range(RUNS):
             )
 
     trainer = Trainer(model=model,
-                             loss_fn=nn.MSELoss(),
-                             quantization_factor=MIN_QUANTIZATION_FACTOR,
-                             parameter_range=PARAMETER_RANGE,
-                             debug_mlp=False,
-                             #----------------------------------------------------------------------------------
-                             weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
-                             #----------------------------------------------------------------------------------
-                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                             #----------------------------------------------------------------------------------
-                             dynamic_quantization=DYNAMIC_QUANTIZATION, d_q_patience=D_Q_PATIENCE, 
-                             quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
-                             #-----------------------------------------------------------------------------------
-                             dynamic_kernel_reshaping=False,
-                             #----------------------------------------------------------------------------------
-                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                             #----------------------------------------------------------------------------------
-                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
-                             )
+                            loss_fn=nn.MSELoss(),
+                            quantization_factor=MIN_QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=True, d_q_patience=D_Q_PATIENCE, 
+                            quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
+                            )
 
     trainer.train(X_train, Y_train)
 
@@ -323,23 +312,23 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 
 
         trainer = Trainer(model=model,
-                                 loss_fn=nn.MSELoss(),
-                                 quantization_factor=quantization_factor,
-                                 parameter_range=PARAMETER_RANGE,
-                                 debug_mlp=False,
-                                 #----------------------------------------------------------------------------------
-                                 weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
-                                 #----------------------------------------------------------------------------------
-                                 early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                                 #----------------------------------------------------------------------------------
-                                 dynamic_quantization=False,
-                                 #-----------------------------------------------------------------------------------
-                                 dynamic_kernel_reshaping=False,
-                                 #----------------------------------------------------------------------------------
-                                 loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                                 #----------------------------------------------------------------------------------
-                                 max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_static_astar_qf_{format_sci(quantization_factor)}_run_{run + 1}'
-                                 )
+                                loss_fn=nn.MSELoss(),
+                                quantization_factor=quantization_factor,
+                                parameter_range=PARAMETER_RANGE,
+                                debug_mlp=False,
+                                #----------------------------------------------------------------------------------
+                                weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                                #----------------------------------------------------------------------------------
+                                early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                                #----------------------------------------------------------------------------------
+                                dynamic_quantization=False,
+                                #-----------------------------------------------------------------------------------
+                                dynamic_kernel_reshaping=False,
+                                #----------------------------------------------------------------------------------
+                                loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                                #----------------------------------------------------------------------------------
+                                max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_static_astar_qf_{format_sci(quantization_factor)}_run_{run + 1}'
+                                )
 
         trainer.train(X_train, Y_train)
 
@@ -432,24 +421,24 @@ for run in range(RUNS):
 
 
     trainer = Trainer(model=model,
-                             loss_fn=nn.MSELoss(),
-                             quantization_factor=MIN_QUANTIZATION_FACTOR,
-                             parameter_range=PARAMETER_RANGE,
-                             debug_mlp=False,
-                             #----------------------------------------------------------------------------------
-                             weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
-                             #----------------------------------------------------------------------------------
-                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                             #----------------------------------------------------------------------------------
-                             dynamic_quantization=DYNAMIC_QUANTIZATION, d_q_patience=D_Q_PATIENCE, 
-                             quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
-                             #-----------------------------------------------------------------------------------
-                             dynamic_kernel_reshaping=False,
-                             #----------------------------------------------------------------------------------
-                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                             #----------------------------------------------------------------------------------
-                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
-                             )
+                            loss_fn=nn.MSELoss(),
+                            quantization_factor=MIN_QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=True, d_q_patience=D_Q_PATIENCE, 
+                            quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_dynamic_astar_run_{run + 1}'
+                            )
 
     trainer.train(X_train, Y_train)
 
@@ -485,23 +474,23 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 
 
         trainer = Trainer(model=model,
-                                 loss_fn=nn.MSELoss(),
-                                 quantization_factor=quantization_factor,
-                                 parameter_range=PARAMETER_RANGE,
-                                 debug_mlp=False,
-                                 #----------------------------------------------------------------------------------
-                                 weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
-                                 #----------------------------------------------------------------------------------
-                                 early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                                 #----------------------------------------------------------------------------------
-                                 dynamic_quantization=False,
-                                 #-----------------------------------------------------------------------------------
-                                 dynamic_kernel_reshaping=False,
-                                 #----------------------------------------------------------------------------------
-                                 loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                                 #----------------------------------------------------------------------------------
-                                 max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_static_astar_qf_{format_sci(quantization_factor)}_run_{run + 1}'
-                                 )
+                                loss_fn=nn.MSELoss(),
+                                quantization_factor=quantization_factor,
+                                parameter_range=PARAMETER_RANGE,
+                                debug_mlp=False,
+                                #----------------------------------------------------------------------------------
+                                weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                                #----------------------------------------------------------------------------------
+                                early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                                #----------------------------------------------------------------------------------
+                                dynamic_quantization=False,
+                                #-----------------------------------------------------------------------------------
+                                dynamic_kernel_reshaping=False,
+                                #----------------------------------------------------------------------------------
+                                loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                                #----------------------------------------------------------------------------------
+                                max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_static_astar_qf_{format_sci(quantization_factor)}_run_{run + 1}'
+                                )
 
         trainer.train(X_train, Y_train)
 

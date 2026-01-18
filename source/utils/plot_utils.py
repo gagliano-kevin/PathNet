@@ -18,16 +18,24 @@ def pad_to_max(list_of_lists, total_len):
 def save_metrics(metrics_dict, filename):
     """
     Saves a dictionary of metrics to a JSON file inside the specified directory.
-    :param metrics_dict: The dictionary containing your data
-    :param filename: Directory name (e.g., 'small_net_test')
+    Handles non-serializable types like float32, int64, and numpy arrays.
     """
     os.makedirs(filename, exist_ok=True)
-    
     file_path = os.path.join(filename, f"{filename}.json")
-    
+
+    #how to handle types it doesn't recognize
+    def default_encoder(obj):
+        if isinstance(obj, (np.float32, np.float64)):
+            return float(obj)
+        if isinstance(obj, (np.int32, np.int64)):
+            return int(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return str(obj) # Fallback to string
+
     try:
         with open(file_path, 'w') as f:
-            json.dump(metrics_dict, f, indent=4)
+            json.dump(metrics_dict, f, indent=4, default=default_encoder)
         print(f"Successfully saved metrics to {file_path}")
     except Exception as e:
         print(f"Error saving file: {e}")
@@ -68,13 +76,10 @@ def plot_mean_loss_with_std(labels, mean_losses, std_losses, runs, filename="mea
     for i, (label, mean, std) in enumerate(zip(labels, mean_losses, std_losses)):
         curr_epochs = np.arange(len(mean)) + 1
         
-        # Combined label for the legend
         combined_label = f'{label} (Mean $\pm 1 \sigma$)'
         
-        # Plot the mean line with the descriptive label
         plt.plot(curr_epochs, mean, label=combined_label, color=colors[i], linewidth=2)
         
-        # Plot the shading WITHOUT a label so it doesn't create a second legend entry
         plt.fill_between(curr_epochs, mean - std, mean + std, 
                          alpha=0.15, color=colors[i])
 
@@ -88,7 +93,7 @@ def plot_mean_loss_with_std(labels, mean_losses, std_losses, runs, filename="mea
     plt.legend(loc='upper left', bbox_to_anchor=(1.02, 1), borderaxespad=0.)
 
     plt.tight_layout()
-    # bbox_inches='tight' is critical here to ensure the external legend is saved
+    # external legend
     plt.savefig(filename, bbox_inches='tight')
     plt.close()
     print(f"Saved plot: {filename}")
@@ -98,16 +103,13 @@ def plot_final_loss_distribution(labels, final_losses_list, runs, filename="fina
     """final_losses_list: list of np.arrays containing final losses for each run"""
     plt.figure(figsize=(8, 6))
     
-    # Boxplot
     bplot = plt.boxplot(final_losses_list, vert=True, patch_artist=True, labels=labels, 
                         medianprops=dict(color='darkred'))
     
-    # Aesthetic coloring
     colors = plt.cm.Pastel1(np.linspace(0, 1, len(labels)))
     for patch, color in zip(bplot['boxes'], colors):
         patch.set_facecolor(color)
     
-    # Individual Jitter Points
     for i, losses in enumerate(final_losses_list):
         x = np.random.normal(i + 1, 0.04, size=len(losses)) 
         plt.scatter(x, losses, color='black', alpha=0.5, s=12)
@@ -125,11 +127,11 @@ def generate_statistical_summary(data_dicts, labels, filename):
     RUNS = len(data_dicts[0]["final_losses"])
     standard_keys = ["losses", "final_losses", "training_times"]
     
-    # 1. Determine dynamic column width for the main table
+    # dynamic column width for the main table
     max_label_len = max([len(l) for l in labels] + [15])
     col_width = max_label_len + 2 
     
-    # 2. Header Construction
+    # header
     header = "| Metric".ljust(20)
     separator = "-" * 19
     for label in labels:
@@ -146,7 +148,7 @@ def generate_statistical_summary(data_dicts, labels, filename):
     lines.append(header)
     lines.append(f"|{separator}|")
 
-    # 3. Calculate core stats
+    # core stats
     stats_collection = []
     for d in data_dicts:
         final = np.array(d["final_losses"])
@@ -163,10 +165,9 @@ def generate_statistical_summary(data_dicts, labels, filename):
         lines.append(row + "|")
     lines.append("=" * total_table_width)
 
-    # 4. Handle Dynamic/Extra Keys (Generic Implementation)
+    # handle extra keys
     extra_info_lines = []
     for d, label in zip(data_dicts, labels):
-        # Identify keys that are not part of the standard metrics
         extra_keys = [k for k in d.keys() if k not in standard_keys]
         
         if extra_keys:
@@ -174,12 +175,10 @@ def generate_statistical_summary(data_dicts, labels, filename):
             for run in range(RUNS):
                 extra_info_lines.append(f" Run {run + 1}:")
                 for k in extra_keys:
-                    # Replace underscores with spaces for cleaner output
                     key_display = k.replace("_", " ").title()
                     val = d[k][run]
                     extra_info_lines.append(f"  - {key_display}: {val}")
 
-    # Combine main table and extra info
     summary_text = "\n".join(lines + extra_info_lines)
 
     os.makedirs(filename, exist_ok=True)
@@ -202,14 +201,13 @@ def generate_plots(data_dicts, labels, filename, dataset_name="California Housin
     """
     RUNS = len(data_dicts[0]["final_losses"])
     
-    # Calculate Max Length for padding
+    # calculate max length for padding
     all_loss_sequences = [d["losses"] for d in data_dicts]
     max_len = 0
     for seq_list in all_loss_sequences:
         for seq in seq_list:
             max_len = max(max_len, len(seq))
 
-    # Calculate Mean and Std for all
     mean_list, std_list, final_list = [], [], []
     
     for d in data_dicts:
@@ -227,6 +225,8 @@ def generate_plots(data_dicts, labels, filename, dataset_name="California Housin
 
     plot_mean_loss_with_std(labels, mean_list, std_list, RUNS, mean_loss_path, dataset_name)
     plot_final_loss_distribution(labels, final_list, RUNS, final_loss_path, dataset_name)
+
+
 
 """
 Helpers for formatting numbers in scientific notation for plot labels and summaries.
@@ -248,11 +248,9 @@ def generate_regression_statistical_summary(data_dicts, labels, filename):
     RUNS = len(data_dicts[0]["final_losses"])
     standard_keys = ["losses", "final_losses", "training_times", "evaluation_scores"]
     
-    # 1. Column width configuration
     max_label_len = max([len(l) for l in labels] + [15])
     col_width = max_label_len + 2 
     
-    # 2. Header Construction
     header = "| Metric".ljust(25)
     separator = "-" * 24
     for label in labels:
@@ -260,12 +258,10 @@ def generate_regression_statistical_summary(data_dicts, labels, filename):
         separator += "+" + ("-" * col_width)
     header += "|"
 
-    # 3. Define Metric Groups
     eval_keys = []
     if "evaluation_scores" in data_dicts[0] and len(data_dicts[0]["evaluation_scores"]) > 0:
         eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
 
-    # Build display order
     display_metrics = [
         "Avg Final Loss", "Median Final Loss", "Std Final Loss", 
         "Var Final Loss", "Min Final Loss", "Max Final Loss", 
@@ -281,22 +277,18 @@ def generate_regression_statistical_summary(data_dicts, labels, filename):
     lines.append(header)
     lines.append(f"|{separator}|")
 
-    # 4. Data Extraction and Stat Calculation
     stats_map = [] 
     for d in data_dicts:
         label_stats = {}
         final = np.array(d["final_losses"])
         times = np.array(d["training_times"])
         
-        # Final Loss Stats
         label_stats["Avg Final Loss"] = np.mean(final)
         label_stats["Median Final Loss"] = np.median(final)
         label_stats["Std Final Loss"] = np.std(final)
         label_stats["Var Final Loss"] = np.var(final)
         label_stats["Min Final Loss"] = np.min(final)
         label_stats["Max Final Loss"] = np.max(final)
-        
-        # Time
         label_stats["Avg Time"] = np.mean(times)
         
         # Evaluation Score Stats
@@ -310,7 +302,7 @@ def generate_regression_statistical_summary(data_dicts, labels, filename):
         
         stats_map.append(label_stats)
 
-    # 5. Build Table Rows with Group Separation
+    # Build Table Rows with Group Separation
     for i, metric_name in enumerate(display_metrics):
         row = f"| {metric_name}".ljust(25)
         for s in stats_map:
@@ -331,7 +323,7 @@ def generate_regression_statistical_summary(data_dicts, labels, filename):
 
     lines.append("=" * total_table_width)
 
-    # 6. Extra Details (Dynamic adjustments like Quantization changes)
+    # Extra Details (Dynamic adjustments like Quantization changes)
     extra_info_lines = []
     for d, label in zip(data_dicts, labels):
         extra_keys = [k for k in d.keys() if k not in standard_keys]
@@ -353,6 +345,7 @@ def generate_regression_statistical_summary(data_dicts, labels, filename):
     print(f"\nSaved statistical summary to '{save_path}'")
 
 
+
 def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Dataset"):
     """
     Generates a comprehensive visual summary of regression performance.
@@ -363,7 +356,7 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
     os.makedirs(filename, exist_ok=True)
     sns.set_theme(style="whitegrid")
     
-    # 1. Boxplots for Evaluation Metrics (MSE, RMSE, R2, MAE)
+    # Boxplots for Evaluation Metrics (MSE, RMSE, R2, MAE)
     eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
     num_metrics = len(eval_keys)
     
@@ -379,7 +372,15 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
             plot_data.extend(scores)
             plot_labels.extend([label] * len(scores))
         
-        sns.boxplot(x=plot_labels, y=plot_data, ax=axes[i], palette="viridis")
+        sns.boxplot(
+            x=plot_labels, 
+            y=plot_data, 
+            ax=axes[i], 
+            hue=plot_labels,    
+            palette="viridis", 
+            legend=False
+        )
+
         axes[i].set_title(f"Distribution of {metric}")
         axes[i].set_ylabel("Score Value")
         axes[i].tick_params(axis='x', rotation=45)
@@ -388,10 +389,9 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
     plt.savefig(os.path.join(filename, f"{filename}_metrics_distribution.png"))
     plt.close()
 
-    # 2. Mean Loss Convergence Plot (with Standard Deviation Shadow)
+    # Mean Loss Convergence Plot (with Standard Deviation Shadow)
     plt.figure(figsize=(10, 6))
     for d, label in zip(data_dicts, labels):
-        # Convert list of lists to 2D array [Runs, Iterations]
         losses = np.array(d["losses"])
         mean_loss = np.mean(losses, axis=0)
         std_loss = np.std(losses, axis=0)
@@ -401,7 +401,7 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
         plt.fill_between(iters, mean_loss - std_loss, mean_loss + std_loss, 
                          color=line.get_color(), alpha=0.2)
 
-    plt.yscale('log') # Regression losses usually span orders of magnitude
+    plt.yscale('log')
     plt.title(f"Training Convergence on {dataset_name}")
     plt.xlabel("Iterations")
     plt.ylabel("Loss (Log Scale)")

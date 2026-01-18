@@ -16,15 +16,18 @@ def pad_to_max(list_of_lists, total_len):
 
 def save_metrics(metrics_dict, filename):
     """
-    Saves a dictionary of metrics to a JSON file.
-    :param filename: String path to the file (e.g., 'results.json')
+    Saves a dictionary of metrics to a JSON file inside the specified directory.
     :param metrics_dict: The dictionary containing your data
+    :param filename: Directory name (e.g., 'small_net_test')
     """
-    filename = filename + ".json"
+    os.makedirs(filename, exist_ok=True)
+    
+    file_path = os.path.join(filename, f"{filename}.json")
+    
     try:
-        with open(filename, 'w') as f:
+        with open(file_path, 'w') as f:
             json.dump(metrics_dict, f, indent=4)
-        print(f"Successfully saved metrics to {filename}")
+        print(f"Successfully saved metrics to {file_path}")
     except Exception as e:
         print(f"Error saving file: {e}")
 
@@ -32,19 +35,20 @@ def save_metrics(metrics_dict, filename):
 
 def load_metrics(filename):
     """
-    Loads metrics from a JSON file.
-    :param filename: String path to the file
+    Loads metrics from a JSON file inside the specified directory.
+    :param filename: Directory name
     :return: Dictionary containing the loaded data or None if failed
     """
-    filename = filename + ".json"
-    if not os.path.exists(filename):
-        print(f"File {filename} not found.")
+    file_path = os.path.join(filename, f"{filename}.json")
+    
+    if not os.path.exists(file_path):
+        print(f"File {file_path} not found.")
         return None
         
     try:
-        with open(filename, 'r') as f:
+        with open(file_path, 'r') as f:
             data = json.load(f)
-        print(f"Successfully loaded metrics from {filename}")
+        print(f"Successfully loaded metrics from {file_path}")
         return data
     except Exception as e:
         print(f"Error loading file: {e}")
@@ -176,13 +180,17 @@ def generate_statistical_summary(data_dicts, labels, filename):
 
     # Combine main table and extra info
     summary_text = "\n".join(lines + extra_info_lines)
-    
-    # Print and Save
+
+    os.makedirs(filename, exist_ok=True)
+
     print(summary_text)
-    with open(f"{filename}.txt", "w") as f:
+
+    save_path = os.path.join(filename, f"{filename}_stats_summary.txt")
+
+    with open(save_path, "w") as f:
         f.write(summary_text)
         
-    print(f"\nSaved statistical summary to '{filename}.txt'")
+    print(f"\nSaved statistical summary to '{save_path}'")
 
 
 
@@ -211,10 +219,13 @@ def generate_plots(data_dicts, labels, filename, dataset_name="California Housin
             std_list.append(np.nanstd(padded, axis=0))
         final_list.append(np.array(d["final_losses"]))
 
-    # Call plotting functions
-    plot_mean_loss_with_std(labels, mean_list, std_list, RUNS, f"{filename}_mean_loss.png", dataset_name)
-    plot_final_loss_distribution(labels, final_list, RUNS, f"{filename}_final_loss.png", dataset_name)
+    os.makedirs(filename, exist_ok=True)
 
+    mean_loss_path = os.path.join(filename, f"{filename}_mean_loss.png")
+    final_loss_path = os.path.join(filename, f"{filename}_final_loss.png")
+
+    plot_mean_loss_with_std(labels, mean_list, std_list, RUNS, mean_loss_path, dataset_name)
+    plot_final_loss_distribution(labels, final_list, RUNS, final_loss_path, dataset_name)
 
 """
 Helpers for formatting numbers in scientific notation for plot labels and summaries.

@@ -9,15 +9,11 @@ import numpy as np
 
 
 def prepare_data_tensors(X, y):
-    # 1. First split: Separate Test set (e.g., 20% of total data)
-    X_temp, X_test, y_temp, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42
-    )
+    # Split into Train and "Remainder" (Test + Val)
+    X_train, X_rem, y_train, y_rem = train_test_split(X, y, train_size=0.8, random_state=42)
     
-    # 2. Second split: Split remaining data into Train and Val (e.g., 25% of temp is 20% of total)
-    X_train, X_val, y_train, y_val = train_test_split(
-        X_temp, y_temp, test_size=0.25, random_state=42
-    )
+    # Split Remainder into Validation and Test (50/50 of the remaining 20%)
+    X_val, X_test, y_val, y_test = train_test_split(X_rem, y_rem, test_size=0.5, random_state=42)
     
     # 3. Scaling
     scaler = StandardScaler()

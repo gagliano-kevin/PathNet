@@ -3,6 +3,7 @@ import numpy as np
 import warnings
 import json
 import os
+import seaborn as sns
 
 
 
@@ -240,3 +241,171 @@ def format_sci(value):
     """
     s = f"{value:.0e}".replace("+", "").replace(".0", "")
     return s.replace("e0", "e") if "e0" in s else s
+
+
+
+def generate_regression_statistical_summary(data_dicts, labels, filename):
+    RUNS = len(data_dicts[0]["final_losses"])
+    standard_keys = ["losses", "final_losses", "training_times", "evaluation_scores"]
+    
+    # 1. Column width configuration
+    max_label_len = max([len(l) for l in labels] + [15])
+    col_width = max_label_len + 2 
+    
+    # 2. Header Construction
+    header = "| Metric".ljust(25)
+    separator = "-" * 24
+    for label in labels:
+        header += f"| {label}".ljust(col_width + 1)
+        separator += "+" + ("-" * col_width)
+    header += "|"
+
+    # 3. Define Metric Groups
+    eval_keys = []
+    if "evaluation_scores" in data_dicts[0] and len(data_dicts[0]["evaluation_scores"]) > 0:
+        eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
+
+    # Build display order
+    display_metrics = [
+        "Avg Final Loss", "Median Final Loss", "Std Final Loss", 
+        "Var Final Loss", "Min Final Loss", "Max Final Loss", 
+        "Avg Time"
+    ]
+    for k in eval_keys:
+        display_metrics.extend([f"Avg {k}", f"Std {k}", f"Min {k}", f"Max {k}"])
+    
+    lines = []
+    total_table_width = len(header)
+    lines.append("=" * total_table_width)
+    lines.append(f" STATISTICAL SUMMARY over {RUNS} Runs ".center(total_table_width, "="))
+    lines.append(header)
+    lines.append(f"|{separator}|")
+
+    # 4. Data Extraction and Stat Calculation
+    stats_map = [] 
+    for d in data_dicts:
+        label_stats = {}
+        final = np.array(d["final_losses"])
+        times = np.array(d["training_times"])
+        
+        # Final Loss Stats
+        label_stats["Avg Final Loss"] = np.mean(final)
+        label_stats["Median Final Loss"] = np.median(final)
+        label_stats["Std Final Loss"] = np.std(final)
+        label_stats["Var Final Loss"] = np.var(final)
+        label_stats["Min Final Loss"] = np.min(final)
+        label_stats["Max Final Loss"] = np.max(final)
+        
+        # Time
+        label_stats["Avg Time"] = np.mean(times)
+        
+        # Evaluation Score Stats
+        if eval_keys:
+            for k in eval_keys:
+                scores = np.array([run_score[k] for run_score in d["evaluation_scores"]])
+                label_stats[f"Avg {k}"] = np.mean(scores)
+                label_stats[f"Std {k}"] = np.std(scores)
+                label_stats[f"Min {k}"] = np.min(scores)
+                label_stats[f"Max {k}"] = np.max(scores)
+        
+        stats_map.append(label_stats)
+
+    # 5. Build Table Rows with Group Separation
+    for i, metric_name in enumerate(display_metrics):
+        row = f"| {metric_name}".ljust(25)
+        for s in stats_map:
+            val = s.get(metric_name, 0.0)
+            row += f"| {val:.6f}".ljust(col_width + 1)
+        lines.append(row + "|")
+        
+        # Logic for visual separators:
+        # After "Max Final Loss" (index 5)
+        if i == 5:
+            lines.append(f"|{separator}|")
+        # After "Avg Time" (index 6)
+        elif i == 6:
+            lines.append(f"|{separator}|")
+        # Between Eval Score groups (every 4 metrics after index 6)
+        elif i > 6 and (i - 6) % 4 == 0 and i != len(display_metrics) - 1:
+            lines.append(f"|{separator}|")
+
+    lines.append("=" * total_table_width)
+
+    # 6. Extra Details (Dynamic adjustments like Quantization changes)
+    extra_info_lines = []
+    for d, label in zip(data_dicts, labels):
+        extra_keys = [k for k in d.keys() if k not in standard_keys]
+        if extra_keys:
+            extra_info_lines.append(f"\nExtra Details for {label}:")
+            for run in range(RUNS):
+                run_details = [f"{k.replace('_', ' ').title()}: {d[k][run]}" for k in extra_keys]
+                extra_info_lines.append(f" Run {run + 1}: " + " | ".join(run_details))
+
+    # Save logic
+    summary_text = "\n".join(lines + extra_info_lines)
+    os.makedirs(filename, exist_ok=True)
+    save_path = os.path.join(filename, f"{filename}_stats_summary.txt")
+    
+    with open(save_path, "w") as f:
+        f.write(summary_text)
+    
+    print(summary_text)
+    print(f"\nSaved statistical summary to '{save_path}'")
+
+
+def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Dataset"):
+    """
+    Generates a comprehensive visual summary of regression performance.
+    Specifically, it creates:
+    1. Boxplots for evaluation metrics (MSE, RMSE, R2, MAE).
+    2. Mean loss convergence plot with standard deviation shading.
+    """
+    os.makedirs(filename, exist_ok=True)
+    sns.set_theme(style="whitegrid")
+    
+    # 1. Boxplots for Evaluation Metrics (MSE, RMSE, R2, MAE)
+    eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
+    num_metrics = len(eval_keys)
+    
+    fig, axes = plt.subplots(1, num_metrics, figsize=(5 * num_metrics, 6))
+    if num_metrics == 1: axes = [axes]
+
+    for i, metric in enumerate(eval_keys):
+        plot_data = []
+        plot_labels = []
+        
+        for d, label in zip(data_dicts, labels):
+            scores = [run[metric] for run in d["evaluation_scores"]]
+            plot_data.extend(scores)
+            plot_labels.extend([label] * len(scores))
+        
+        sns.boxplot(x=plot_labels, y=plot_data, ax=axes[i], palette="viridis")
+        axes[i].set_title(f"Distribution of {metric}")
+        axes[i].set_ylabel("Score Value")
+        axes[i].tick_params(axis='x', rotation=45)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(filename, f"{filename}_metrics_distribution.png"))
+    plt.close()
+
+    # 2. Mean Loss Convergence Plot (with Standard Deviation Shadow)
+    plt.figure(figsize=(10, 6))
+    for d, label in zip(data_dicts, labels):
+        # Convert list of lists to 2D array [Runs, Iterations]
+        losses = np.array(d["losses"])
+        mean_loss = np.mean(losses, axis=0)
+        std_loss = np.std(losses, axis=0)
+        iters = np.arange(len(mean_loss))
+        
+        line, = plt.plot(iters, mean_loss, label=label, lw=2)
+        plt.fill_between(iters, mean_loss - std_loss, mean_loss + std_loss, 
+                         color=line.get_color(), alpha=0.2)
+
+    plt.yscale('log') # Regression losses usually span orders of magnitude
+    plt.title(f"Training Convergence on {dataset_name}")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss (Log Scale)")
+    plt.legend()
+    plt.grid(True, which="both", ls="-", alpha=0.5)
+    plt.savefig(os.path.join(filename, f"{filename}_convergence.png"))
+    plt.close()

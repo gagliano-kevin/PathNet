@@ -17,9 +17,9 @@ import torch.nn as nn
 import math
 
 from source.PathNet import Trainer
-from source.utils.dataset_utils.housing_utils import get_california_housing_data
+from source.utils.dataset_utils.housing_utils import get_california_housing_data, evaluate_pathnet_regression
 
-from source.utils.plot_utils import generate_plots, generate_statistical_summary, format_sci,  save_metrics, load_metrics
+from source.utils.plot_utils import generate_plots, generate_statistical_summary, format_sci,  save_metrics, load_metrics, generate_regression_statistical_summary, plot_regression_statistics
 
 ITERATIONS = 10
 RUNS = 1
@@ -79,7 +79,8 @@ metrics_list = [
         "training_times": [],
         "final_losses": [],
         "dynamic_quantization_iterations": [],
-        "dynamic_kernel_reshaping_iterations": []
+        "dynamic_kernel_reshaping_iterations": [],
+        "evaluation_scores": []
     }
 ]
 
@@ -87,7 +88,8 @@ for qf_exp in range(start_exp, end_exp + 1):
     STATIC_ASTAR_METRICS = {
         "losses": [],
         "training_times": [],
-        "final_losses": []
+        "final_losses": [],
+        "evaluation_scores": []
     }
     metrics_list.append(STATIC_ASTAR_METRICS)
 
@@ -143,6 +145,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -187,6 +190,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -194,9 +198,11 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+
+plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 
@@ -230,7 +236,8 @@ metrics_list = [
         "training_times": [],
         "final_losses": [],
         "dynamic_quantization_iterations": [],
-        "dynamic_kernel_reshaping_iterations": []
+        "dynamic_kernel_reshaping_iterations": [],
+        "evaluation_scores": []
     }
 ]
 
@@ -238,7 +245,8 @@ for qf_exp in range(start_exp, end_exp + 1):
     STATIC_ASTAR_METRICS = {
         "losses": [],
         "training_times": [],
-        "final_losses": []
+        "final_losses": [],
+        "evaluation_scores": []
     }
     metrics_list.append(STATIC_ASTAR_METRICS)
 
@@ -291,6 +299,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -337,6 +346,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -344,9 +354,11 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+
+plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 
@@ -380,7 +392,8 @@ metrics_list = [
         "training_times": [],
         "final_losses": [],
         "dynamic_quantization_iterations": [],
-        "dynamic_kernel_reshaping_iterations": []
+        "dynamic_kernel_reshaping_iterations": [],
+        "evaluation_scores": []
     }
 ]
 
@@ -388,7 +401,8 @@ for qf_exp in range(start_exp, end_exp + 1):
     STATIC_ASTAR_METRICS = {
         "losses": [],
         "training_times": [],
-        "final_losses": []
+        "final_losses": [],
+        "evaluation_scores": []
     }
     metrics_list.append(STATIC_ASTAR_METRICS)
 
@@ -444,6 +458,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -493,6 +508,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -500,9 +516,11 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-generate_statistical_summary(metrics_list,labels_list, TEST_NAME)
+generate_regression_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+
+plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 

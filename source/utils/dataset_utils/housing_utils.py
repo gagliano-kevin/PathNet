@@ -53,7 +53,7 @@ def create_dataloader(X, y, batch_size=None):
     The method is tailored for standard pytorch models and dataloaders.
     For A-star PathNet models, a custom evaluation method may be needed.
 """
-def evaluate_regression(model, dataloader):
+def evaluate_sgd_regression(model, dataloader):
     model.eval() # Set model to evaluation mode
     all_preds = []
     all_targets = []
@@ -76,3 +76,22 @@ def evaluate_regression(model, dataloader):
     }
     
     return metrics
+
+
+def evaluate_pathnet_regression(trainer, data):
+    model = trainer.best_node.quantized_mlp.model
+    model.eval()
+    X, y = data
+    with torch.no_grad():
+        preds = model(X).numpy()
+        y_true = y.numpy()
+    
+    metrics = {
+        "MSE": mean_squared_error(y_true, preds),
+        "RMSE": np.sqrt(mean_squared_error(y_true, preds)),
+        "MAE": mean_absolute_error(y_true, preds),
+        "R2": r2_score(y_true, preds)
+    }
+
+    return metrics
+    

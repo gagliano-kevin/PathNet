@@ -111,35 +111,36 @@ class Trainer:
     A class to train a quantized MLP model using an A* search algorithm.
     """
     def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, 
-                 #----------------------------------------------------------------------------------
-                 weight_kernel = [2,2], bias_kernel = [2], x_stride=1, y_stride=1, delta_abs=None, 
-                 #----------------------------------------------------------------------------------
+                 # Neighborhood Generation Parameters
+                 weight_kernel=None, bias_kernel=None, x_stride=1, y_stride=1, delta_abs=None, 
+                 # Early Stopping
                  early_stopping=False, e_s_patience=250,
-                 #----------------------------------------------------------------------------------
+                 # Dynamic Quantization
                  dynamic_quantization=False, d_q_patience=100, 
                  quantization_factor_multiplier=10, max_quantization_factor=1e4,
-                 #-----------------------------------------------------------------------------------
+                 # Dynamic Kernel Reshaping
                  dynamic_kernel_reshaping=False, d_k_r_patience=100, 
                  x_weight_kernel_decr=1, y_weight_kernel_decr=1, y_bias_kernel_decr=1, 
-                 min_weight_kernel=[1,1], min_bias_kernel=[1],
+                 min_weight_kernel=None, min_bias_kernel=None,
                  x_stride_decr=1, y_stride_decr=1, min_x_stride=1, min_y_stride=1,
-                 #----------------------------------------------------------------------------------
+                 # Thresholds
                  loss_improvement_threshold=1e-5,
-                 #----------------------------------------------------------------------------------
+                 # General
                  max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
         
-        # Memory guard for stopping gracefully training when 90% of system memory usage is reached
+        # Memory guard for stopping gracefully
         self.memory_guard = SystemMemoryGuard()
 
-        self.model = model          # nn.sequential model
+        self.model = model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
         self.parameter_range = parameter_range
         self.debug_mlp = debug_mlp
 
-        # Neighborhood Generation Parameters
-        self.weight_kernel = weight_kernel
-        self.bias_kernel = bias_kernel
+        # Neighborhood Generation Parameters (Safely copied)
+        # We use list() to ensure we have a unique copy in memory
+        self.weight_kernel = list(weight_kernel) if weight_kernel is not None else [2, 2]
+        self.bias_kernel = list(bias_kernel) if bias_kernel is not None else [2]
         self.x_stride = x_stride
         self.y_stride = y_stride
         self.delta_abs = delta_abs
@@ -147,54 +148,47 @@ class Trainer:
         # Early Stopping Parameters
         self.early_stopping = early_stopping
         self.e_s_patience = e_s_patience
-        self.e_s_wait = 0           # counter for early stopping patience
+        self.e_s_wait = 0
 
         # Dynamic Quantization Parameters
         self.dynamic_quantization = dynamic_quantization
         self.d_q_patience = d_q_patience
         self.quantization_factor_multiplier = quantization_factor_multiplier    
         self.max_quantization_factor = max_quantization_factor
-        self.d_q_wait = 0           # counter for dynamic quantization patience
+        self.d_q_wait = 0
 
-        # Dynamic Kernel Reshaping Parameters
+        # Dynamic Kernel Reshaping Parameters (Safely copied)
         self.dynamic_kernel_reshaping = dynamic_kernel_reshaping
         self.d_k_r_patience = d_k_r_patience
         self.x_weight_kernel_decr = x_weight_kernel_decr
         self.y_weight_kernel_decr = y_weight_kernel_decr
         self.y_bias_kernel_decr = y_bias_kernel_decr
-        self.min_weight_kernel = min_weight_kernel
-        self.min_bias_kernel = min_bias_kernel
+        self.min_weight_kernel = list(min_weight_kernel) if min_weight_kernel is not None else [1, 1]
+        self.min_bias_kernel = list(min_bias_kernel) if min_bias_kernel is not None else [1]
         self.x_stride_decr = x_stride_decr
         self.y_stride_decr = y_stride_decr
         self.min_x_stride = min_x_stride
         self.min_y_stride = min_y_stride
-        self.d_k_r_wait = 0         # counter for dynamic kernel reshaping patience
+        self.d_k_r_wait = 0
 
-        # Loss Improvement Threshold for Early Stopping and Dynamic Adjustments (kernel reshaping, quantization)
         self.loss_improvement_threshold = loss_improvement_threshold
-
         self.max_iterations = max_iterations
         self.log_freq = log_freq
-
         self.open_set = []
-        self.g_costs = {}       # It represents the best g-cost found so far for each MLP state
+        self.g_costs = {}
         self.best_node = None
-
         self.loss_history = []
         self.f_history = []
         self.g_history = []
-
         self.measure_time = measure_time
         self.save_trained_model = save_trained_model
         self.model_name = model_name
         self.training_time = None
-
-        # Container for storing iteration number in which dynamic adjustments were made
+        
         self.dynamic_adjustments_log = {
             "dynamic_quantization_iterations": [],
             "dynamic_kernel_reshaping_iterations": []
         }
-
 
     def dynamic_reshape_kernels_and_strides(self):
         """

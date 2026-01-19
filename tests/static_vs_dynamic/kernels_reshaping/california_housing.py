@@ -20,8 +20,8 @@ from source.utils.dataset_utils.housing_utils import get_california_housing_data
 from source.utils.evaluation_utils import evaluate_pathnet_regression
 from source.utils.plot_utils import generate_plots,  save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
 
-ITERATIONS = 10
-RUNS = 1
+ITERATIONS = 2000
+RUNS = 5
 SAVE_TRAINED_MODEL = False
 MODEL_NAME_PREFIX = "housing_model"
 DATASET_NAME = "California Housing"

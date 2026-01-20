@@ -8,11 +8,12 @@ import seaborn as sns
 
 
 def pad_to_max(list_of_lists, total_len):
-    return np.array([
-        l + [np.nan] * (total_len - len(l)) 
-        for l in list_of_lists
-    ])
-
+    # Initialize an array full of NaNs
+    arr = np.full((len(list_of_lists), total_len), np.nan)
+    # Fill each row with the actual data
+    for i, l in enumerate(list_of_lists):
+        arr[i, :len(l)] = l
+    return arr
 
 
 def save_metrics(metrics_dict, filename):
@@ -62,6 +63,14 @@ def load_metrics(filename):
     except Exception as e:
         print(f"Error loading file: {e}")
         return None
+
+
+def json_to_plot_format(data):
+    """
+    Conversion of the single dictionary format (output of load_metrics)
+    to list of dictionaries for plotting functions. 
+    """
+    return [metric_dict for metric_dict in data.values()]
 
 
 
@@ -345,14 +354,9 @@ def generate_evaluation_statistical_summary(data_dicts, labels, filename):
     print(f"\nSaved statistical summary to '{save_path}'")
 
 
-
+"""
 def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Dataset"):
-    """
-    Generates a comprehensive visual summary of regression performance.
-    Specifically, it creates:
-    1. Boxplots for evaluation metrics (MSE, RMSE, R2, MAE).
-    2. Mean loss convergence plot with standard deviation shading.
-    """
+
     os.makedirs(filename, exist_ok=True)
     sns.set_theme(style="whitegrid")
     
@@ -413,11 +417,7 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
 
 
 def plot_classification_statistics(data_dicts, labels, filename, dataset_name="Dataset"):
-    """
-    Generates a visual summary of classification performance:
-    1. Boxplots for Accuracy, Precision, Recall, F1.
-    2. Linear/Log Loss convergence plot.
-    """
+
     os.makedirs(filename, exist_ok=True)
     sns.set_theme(style="whitegrid")
     
@@ -472,6 +472,114 @@ def plot_classification_statistics(data_dicts, labels, filename, dataset_name="D
     # Note: Cross-entropy loss usually looks better on a linear scale, 
     # but we keep log as an option if your initial loss is very high.
     # plt.yscale('log') 
+    plt.title(f"Classification Loss Convergence: {dataset_name}")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss (Cross-Entropy)")
+    plt.legend()
+    plt.grid(True, which="major", ls="-", alpha=0.5)
+    plt.savefig(os.path.join(filename, f"{filename}_loss_convergence.png"))
+    plt.close()
+"""
+
+
+
+def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Dataset"):
+    os.makedirs(filename, exist_ok=True)
+    sns.set_theme(style="whitegrid")
+    
+    # --- 1. Boxplots for Evaluation Metrics ---
+    eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
+    num_metrics = len(eval_keys)
+    
+    fig, axes = plt.subplots(1, num_metrics, figsize=(5 * num_metrics, 6))
+    if num_metrics == 1: axes = [axes]
+
+    for i, metric in enumerate(eval_keys):
+        plot_data, plot_labels = [], []
+        for d, label in zip(data_dicts, labels):
+            scores = [run[metric] for run in d["evaluation_scores"]]
+            plot_data.extend(scores)
+            plot_labels.extend([label] * len(scores))
+        
+        sns.boxplot(x=plot_labels, y=plot_data, ax=axes[i], hue=plot_labels, palette="viridis", legend=False)
+        axes[i].set_title(f"Distribution of {metric}")
+        axes[i].set_ylabel("Score Value")
+        axes[i].tick_params(axis='x', rotation=45)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(filename, f"{filename}_metrics_distribution.png"))
+    plt.close()
+
+    # --- 2. Mean Loss Convergence Plot ---
+    plt.figure(figsize=(10, 6))
+    for d, label in zip(data_dicts, labels):
+        # FIX: Calculate max length and pad
+        max_len = max(len(run) for run in d["losses"])
+        losses = pad_to_max(d["losses"], max_len)
+        
+        # FIX: Use NaN-aware statistics
+        mean_loss = np.nanmean(losses, axis=0)
+        std_loss = np.nanstd(losses, axis=0)
+        iters = np.arange(len(mean_loss))
+        
+        line, = plt.plot(iters, mean_loss, label=label, lw=2)
+        plt.fill_between(iters, mean_loss - std_loss, mean_loss + std_loss, 
+                         color=line.get_color(), alpha=0.2)
+
+    plt.yscale('log')
+    plt.title(f"Training Convergence on {dataset_name}")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss (Log Scale)")
+    plt.legend()
+    plt.grid(True, which="both", ls="-", alpha=0.5)
+    plt.savefig(os.path.join(filename, f"{filename}_convergence.png"))
+    plt.close()
+
+
+def plot_classification_statistics(data_dicts, labels, filename, dataset_name="Dataset"):
+    os.makedirs(filename, exist_ok=True)
+    sns.set_theme(style="whitegrid")
+    
+    # --- 1. Boxplots for Classification Metrics ---
+    eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
+    num_metrics = len(eval_keys)
+    
+    fig, axes = plt.subplots(1, num_metrics, figsize=(5 * num_metrics, 6))
+    if num_metrics == 1: axes = [axes]
+
+    for i, metric in enumerate(eval_keys):
+        plot_data, plot_labels = [], []
+        for d, label in zip(data_dicts, labels):
+            scores = [run[metric] for run in d["evaluation_scores"]]
+            plot_data.extend(scores)
+            plot_labels.extend([label] * len(scores))
+        
+        sns.boxplot(x=plot_labels, y=plot_data, ax=axes[i], hue=plot_labels, palette="magma", legend=False)
+        axes[i].set_title(f"Distribution of {metric}")
+        axes[i].set_ylabel("Score (0 to 1)")
+        axes[i].set_ylim(-0.05, 1.05) 
+        axes[i].tick_params(axis='x', rotation=45)
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(filename, f"{filename}_classification_metrics.png"))
+    plt.close()
+
+    # --- 2. Training Loss Convergence (Classification) ---
+    plt.figure(figsize=(10, 6))
+    for d, label in zip(data_dicts, labels):
+        # FIX: Calculate max length and pad
+        max_len = max(len(run) for run in d["losses"])
+        losses = pad_to_max(d["losses"], max_len)
+        
+        # FIX: Use NaN-aware statistics
+        mean_loss = np.nanmean(losses, axis=0)
+        std_loss = np.nanstd(losses, axis=0)
+        iters = np.arange(len(mean_loss))
+        
+        line, = plt.plot(iters, mean_loss, label=label, lw=2)
+        plt.fill_between(iters, mean_loss - std_loss, mean_loss + std_loss, 
+                         color=line.get_color(), alpha=0.15)
+
     plt.title(f"Classification Loss Convergence: {dataset_name}")
     plt.xlabel("Iterations")
     plt.ylabel("Loss (Cross-Entropy)")

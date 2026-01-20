@@ -149,7 +149,7 @@ for run in range(RUNS):
 
 for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1)):
     for run in range(RUNS):
-        print(f"\n--- TEST NAME: {TEST_NAME} \t STATIC ASTAR Training Run {run + 1} \t Kernel Size: {int(kernel_size)} ---\n")
+        print(f"\n--- TEST NAME: {TEST_NAME} \t STATIC ASTAR Training Run {run + 1} \t Kernel Size: [{int(kernel_size)} x {int(kernel_size)}] ---\n")
 
         model = nn.Sequential(
                 nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -166,16 +166,13 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
                             #----------------------------------------------------------------------------------
-                            weight_kernel = MAX_WEIGHT_KERNEL, bias_kernel = MAX_BIAS_KERNEL, x_stride=MAX_X_STRIDE, y_stride=MAX_Y_STRIDE, delta_abs=DELTA_ABS,
+                            weight_kernel = [kernel_size, kernel_size], bias_kernel = [kernel_size], x_stride=kernel_size, y_stride=kernel_size, delta_abs=DELTA_ABS,
                             #----------------------------------------------------------------------------------
                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
                             #----------------------------------------------------------------------------------
                             dynamic_quantization=False,
                             #-----------------------------------------------------------------------------------
-                            dynamic_kernel_reshaping=True, d_k_r_patience=D_K_R_PATIENCE, 
-                            x_weight_kernel_decr=X_WEIGHT_KERNEL_DECR, y_weight_kernel_decr=Y_WEIGHT_KERNEL_DECR, y_bias_kernel_decr=Y_BIAS_KERNEL_DECR, 
-                            min_weight_kernel=MIN_WEIGHT_KERNEL, min_bias_kernel=MIN_BIAS_KERNEL,
-                            x_stride_decr=X_STRIDE_DECR, y_stride_decr=Y_STRIDE_DECR, min_x_stride=MIN_X_STRIDE, min_y_stride=MIN_Y_STRIDE,
+                            dynamic_kernel_reshaping=False,
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
@@ -194,16 +191,15 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
 
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
-
-all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
-
-save_metrics(all_results, TEST_NAME)
 
 
 
@@ -318,7 +314,7 @@ for run in range(RUNS):
 
 for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1)):
     for run in range(RUNS):
-        print(f"\n--- TEST NAME: {TEST_NAME} \t STATIC ASTAR Training Run {run + 1} \t Kernel Size: {int(kernel_size)} ---\n")
+        print(f"\n--- TEST NAME: {TEST_NAME} \t STATIC ASTAR Training Run {run + 1} \t Kernel Size: [{int(kernel_size)} x {int(kernel_size)}] ---\n")
 
         model = nn.Sequential(
                 nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -336,16 +332,13 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
                             #----------------------------------------------------------------------------------
-                            weight_kernel = MAX_WEIGHT_KERNEL, bias_kernel = MAX_BIAS_KERNEL, x_stride=MAX_X_STRIDE, y_stride=MAX_Y_STRIDE, delta_abs=DELTA_ABS,
+                            weight_kernel = [kernel_size, kernel_size], bias_kernel = [kernel_size], x_stride=kernel_size, y_stride=kernel_size, delta_abs=DELTA_ABS,
                             #----------------------------------------------------------------------------------
                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
                             #----------------------------------------------------------------------------------
                             dynamic_quantization=False,
                             #-----------------------------------------------------------------------------------
-                            dynamic_kernel_reshaping=True, d_k_r_patience=D_K_R_PATIENCE, 
-                            x_weight_kernel_decr=X_WEIGHT_KERNEL_DECR, y_weight_kernel_decr=Y_WEIGHT_KERNEL_DECR, y_bias_kernel_decr=Y_BIAS_KERNEL_DECR, 
-                            min_weight_kernel=MIN_WEIGHT_KERNEL, min_bias_kernel=MIN_BIAS_KERNEL,
-                            x_stride_decr=X_STRIDE_DECR, y_stride_decr=Y_STRIDE_DECR, min_x_stride=MIN_X_STRIDE, min_y_stride=MIN_Y_STRIDE,
+                            dynamic_kernel_reshaping=False,
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
@@ -365,15 +358,16 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
+
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
-all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
-
-save_metrics(all_results, TEST_NAME)
 
 
 # =========================================================================================================================================================
@@ -489,7 +483,7 @@ for run in range(RUNS):
 
 for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1)):
     for run in range(RUNS):
-        print(f"\n--- TEST NAME: {TEST_NAME} \t STATIC ASTAR Training Run {run + 1} \t Kernel Size: {int(kernel_size)} ---\n")
+        print(f"\n--- TEST NAME: {TEST_NAME} \t STATIC ASTAR Training Run {run + 1} \t Kernel Size: [{int(kernel_size)} x {int(kernel_size)}] ---\n")
 
         model = nn.Sequential(
                 nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -509,16 +503,13 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
                             #----------------------------------------------------------------------------------
-                            weight_kernel = MAX_WEIGHT_KERNEL, bias_kernel = MAX_BIAS_KERNEL, x_stride=MAX_X_STRIDE, y_stride=MAX_Y_STRIDE, delta_abs=DELTA_ABS,
+                            weight_kernel = [kernel_size, kernel_size], bias_kernel = [kernel_size], x_stride=kernel_size, y_stride=kernel_size, delta_abs=DELTA_ABS,
                             #----------------------------------------------------------------------------------
                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
                             #----------------------------------------------------------------------------------
                             dynamic_quantization=False,
                             #-----------------------------------------------------------------------------------
-                            dynamic_kernel_reshaping=True, d_k_r_patience=D_K_R_PATIENCE, 
-                            x_weight_kernel_decr=X_WEIGHT_KERNEL_DECR, y_weight_kernel_decr=Y_WEIGHT_KERNEL_DECR, y_bias_kernel_decr=Y_BIAS_KERNEL_DECR, 
-                            min_weight_kernel=MIN_WEIGHT_KERNEL, min_bias_kernel=MIN_BIAS_KERNEL,
-                            x_stride_decr=X_STRIDE_DECR, y_stride_decr=Y_STRIDE_DECR, min_x_stride=MIN_X_STRIDE, min_y_stride=MIN_Y_STRIDE,
+                            dynamic_kernel_reshaping=False,
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
@@ -538,12 +529,14 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
+
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
-all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 
-save_metrics(all_results, TEST_NAME)

@@ -190,27 +190,37 @@ class Trainer:
             "dynamic_kernel_reshaping_iterations": []
         }
 
+
     def dynamic_reshape_kernels_and_strides(self):
         """
         Dynamically reshapes the weight and bias kernels as well as the strides based on the defined decrements and minimum sizes.
         """
+        modification_occurred = False
+
         # Reshape weight kernel
         if self.weight_kernel[0] > self.min_weight_kernel[0]:
             self.weight_kernel[0] = max(self.weight_kernel[0] - self.y_weight_kernel_decr, self.min_weight_kernel[0])
+            modification_occurred = True
         if self.weight_kernel[1] > self.min_weight_kernel[1]:
             self.weight_kernel[1] = max(self.weight_kernel[1] - self.x_weight_kernel_decr, self.min_weight_kernel[1])
-        
+            modification_occurred = True
+
         # Reshape bias kernel
         if self.bias_kernel[0] > self.min_bias_kernel[0]:
             self.bias_kernel[0] = max(self.bias_kernel[0] - self.y_bias_kernel_decr, self.min_bias_kernel[0])
-        
+            modification_occurred = True
+
         # Adjust strides
         if self.x_stride > self.min_x_stride:
             self.x_stride = max(self.x_stride - self.x_stride_decr, self.min_x_stride)
+            modification_occurred = True
         if self.y_stride > self.min_y_stride:
             self.y_stride = max(self.y_stride - self.y_stride_decr, self.min_y_stride)
+            modification_occurred = True
 
-    
+        return modification_occurred
+
+
     def reset_dynamic_counters(self):
         """
         Resets the patience counters for early stopping, dynamic quantization, and dynamic kernel reshaping.
@@ -242,12 +252,13 @@ class Trainer:
             self.d_k_r_wait += 1
             # Check if it's time to reshape kernels and strides
             if self.d_k_r_wait >= self.d_k_r_patience:
-                self.dynamic_reshape_kernels_and_strides()
-                self.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"].append(iteration)
-                print(f"Dynamic Kernel Reshaping applied:\n prev_weight_kernel={self.weight_kernel}, prev_bias_kernel={self.bias_kernel}, prev_x_stride={self.x_stride}, prev_y_stride={self.y_stride}")
-                print(f"new_weight_kernel={self.weight_kernel}, new_bias_kernel={self.bias_kernel}, new_x_stride={self.x_stride}, new_y_stride={self.y_stride}")
+                modification_occurred = self.dynamic_reshape_kernels_and_strides()
                 self.d_k_r_wait = 0  # reset the counter after reshaping
-
+                if modification_occurred:
+                    self.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"].append(iteration)
+                    print(f"Dynamic Kernel Reshaping applied:\n prev_weight_kernel={self.weight_kernel}, prev_bias_kernel={self.bias_kernel}, prev_x_stride={self.x_stride}, prev_y_stride={self.y_stride}")
+                    print(f"new_weight_kernel={self.weight_kernel}, new_bias_kernel={self.bias_kernel}, new_x_stride={self.x_stride}, new_y_stride={self.y_stride}")
+                
 
     def train(self, X, Y):
         """

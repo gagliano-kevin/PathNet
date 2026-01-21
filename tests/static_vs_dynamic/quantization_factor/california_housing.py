@@ -21,8 +21,8 @@ from source.utils.dataset_utils.housing_utils import get_california_housing_data
 from source.utils.evaluation_utils import evaluate_pathnet_regression
 from source.utils.plot_utils import generate_plots, format_sci,  save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
 
-ITERATIONS = 10
-RUNS = 1
+ITERATIONS = 2000
+RUNS = 5
 SAVE_TRAINED_MODEL = False
 MODEL_NAME_PREFIX = "housing_model"
 DATASET_NAME = "California Housing"
@@ -38,7 +38,7 @@ PARAMETER_RANGE = (-10, 10)
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 # =========================================================================================================================================================
 
-TEST_NAME = "small_net_quantization_factor"
+TEST_NAME = "small_net_dynamic_quantization_factor"
 
 # MLP Hyperparameters
 INPUT_SIZE = 8
@@ -47,10 +47,10 @@ HIDDEN_SIZE_2 = 16
 OUTPUT_SIZE = 1
 
 # Initial Kernel and Stride Settings
-WEIGHT_KERNEL = [3,3]
-BIAS_KERNEL = [3]
-X_STRIDE = 3
-Y_STRIDE = 3
+WEIGHT_KERNEL = [2,2]
+BIAS_KERNEL = [2]
+X_STRIDE = 2
+Y_STRIDE = 2
 DELTA_ABS = None
 
 # Dynamic Quantization Settings
@@ -186,17 +186,15 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
 
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
-
-all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
-
-save_metrics(all_results, TEST_NAME)
-
 
 
 
@@ -206,7 +204,7 @@ save_metrics(all_results, TEST_NAME)
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 # =========================================================================================================================================================
 
-TEST_NAME = "medium_net_quantization_factor"
+TEST_NAME = "medium_net_dynamic_quantization_factor"
 
 # MLP Hyperparameters
 HIDDEN_SIZE_1 = 64
@@ -342,16 +340,15 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
 
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
-
-all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
-
-save_metrics(all_results, TEST_NAME)
 
 
 
@@ -361,7 +358,7 @@ save_metrics(all_results, TEST_NAME)
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 # =========================================================================================================================================================
 
-TEST_NAME = "big_net_quantization_factor"
+TEST_NAME = "big_net_dynamic_quantization_factor"
 
 # MLP Hyperparameters
 HIDDEN_SIZE_1 = 128
@@ -370,10 +367,10 @@ HIDDEN_SIZE_3 = 32
 HIDDEN_SIZE_4 = 16
 
 # Initial Kernel and Stride Settings
-WEIGHT_KERNEL = [5,5]
-BIAS_KERNEL = [5]
-X_STRIDE = 5
-Y_STRIDE = 5
+WEIGHT_KERNEL = [8,8]
+BIAS_KERNEL = [8]
+X_STRIDE = 8
+Y_STRIDE = 8
 
 metrics_list = [
     {
@@ -504,13 +501,12 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
 
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
 generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
-
-all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
-
-save_metrics(all_results, TEST_NAME)

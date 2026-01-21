@@ -65,7 +65,7 @@ X_STRIDE_DECR = 1
 Y_STRIDE_DECR = 1
 MIN_X_STRIDE = 2
 MIN_Y_STRIDE = 2
-"""
+
 metrics_list = [
     {
         "losses": [],
@@ -94,11 +94,11 @@ X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
 print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
 print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
-"""
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DYNAMIC ASTAR TRAINING ---------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-"""
+
 for run in range(RUNS):
     print(f"\n--- TEST NAME: {TEST_NAME} \t DYNAMIC ASTAR Training Run {run + 1} \t Kernel Size: [{MAX_WEIGHT_KERNEL[0]}x{MAX_WEIGHT_KERNEL[1]} - {MIN_WEIGHT_KERNEL[0]}x{MIN_WEIGHT_KERNEL[1]} ] ---\n")
 
@@ -141,12 +141,12 @@ for run in range(RUNS):
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
     metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
-"""
+
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- STATIC ASTAR TRAININGS ---------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-"""
+
 for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1)):
     for run in range(RUNS):
         print(f"\n--- TEST NAME: {TEST_NAME} \t STATIC ASTAR Training Run {run + 1} \t Kernel Size: [{int(kernel_size)} x {int(kernel_size)}] ---\n")
@@ -185,12 +185,12 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
         metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
-"""
+
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-"""
+
 
 all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 
@@ -203,7 +203,7 @@ generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 
-"""
+
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------

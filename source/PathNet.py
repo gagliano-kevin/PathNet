@@ -384,6 +384,10 @@ class Trainer:
         Trains the quantized MLP using an A* search optimized with Beam Search 
         and dictionary pruning to prevent RAM saturation.
         """
+
+        # Ensure beam_width is an integer
+        beam_width = int(beam_width)
+
         start_time = 0
         if self.measure_time:
             start_time = time.perf_counter()

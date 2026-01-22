@@ -10,7 +10,7 @@ class QuantizedMLP:
     A class representing a quantized MLP model.
     It includes methods for quantization, evaluation, and state management.
     """
-    def __init__(self, model, loss_fn, quantization_factor=10, parameter_range=(-5, 5), enable_quantization=True, debug=False):
+    def __init__(self, model, loss_fn, quantization_factor=10, parameter_range=(-10, 10), enable_quantization=True, debug=False):
         self.model = model
         self.loss_fn = loss_fn
         self.quantization_factor = quantization_factor
@@ -124,7 +124,7 @@ class Trainer:
                  min_weight_kernel=None, min_bias_kernel=None,
                  x_stride_decr=1, y_stride_decr=1, min_x_stride=1, min_y_stride=1,
                  # Thresholds
-                 loss_improvement_threshold=1e-5,
+                 loss_improvement_threshold=1e-3,
                  # General
                  max_iterations=1000, log_freq=1000, measure_time=True, save_trained_model=False, model_name='best_model'):
         
@@ -377,4 +377,100 @@ class Trainer:
         quantized_mlp = QuantizedMLP(model_architecture, loss_fn, quantization_factor, parameter_range, enable_quantization, debug)
         print(f"Model loaded from {filename}")
         return quantized_mlp
+
+
+    def beam_search_opt_train(self, X, Y, beam_width=500):
+        """
+        Trains the quantized MLP using an A* search optimized with Beam Search 
+        and dictionary pruning to prevent RAM saturation.
+        """
+        start_time = 0
+        if self.measure_time:
+            start_time = time.perf_counter()
+
+        initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
+        initial_loss = initial_mlp.evaluate(X, Y)
+
+        initial_node = SearchNode(quantized_mlp=initial_mlp, g_val=0, h_val=initial_loss)
+        initial_hash = initial_mlp.get_state_hash()
+
+        heapq.heappush(self.open_set, (initial_node.f_val, initial_node))
+        self.g_costs[initial_hash] = initial_node.g_val
+        self.best_node = initial_node
+
+        for iteration in range(self.max_iterations):
+            if not self.open_set:
+                print("Open set is empty. Terminating search.")
+                break
+
+            # 1. POP THE BEST NODE
+            current_f, current_node = heapq.heappop(self.open_set)
+            current_hash = current_node.quantized_mlp.get_state_hash()
+            
+            if current_hash not in self.g_costs or current_node.g_val > self.g_costs[current_hash]:
+                continue
+
+            self.loss_history.append(current_node.h_val)
+            self.f_history.append(current_node.f_val)
+            self.g_history.append(current_node.g_val)
+
+            # 2. EARLY STOPPING AND DYNAMIC ADJUSTMENTS
+            if self.best_node.h_val - current_node.h_val > self.loss_improvement_threshold:
+                self.reset_dynamic_counters()
+            else:
+                self.increment_dynamic_counters(iteration)
+
+            if self.early_stopping and self.e_s_wait >= self.e_s_patience:
+                print(f"Early stopping triggered after {self.e_s_patience} iterations.")
+                break
+
+            if self.memory_guard.memory_exceeded():
+                print("Memory usage exceeded threshold. Terminating training.")
+                break
+
+            if current_node.h_val < self.best_node.h_val:
+                self.best_node = current_node
+                print(f"Iteration {iteration+1}: New best loss = {self.best_node.h_val}")
+
+            if (iteration + 1) % self.log_freq == 0:
+                print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
+                
+            # 3. GENERATE NEIGHBORS
+            neighbors = get_neighbors(current_node, X, Y, self.quantization_factor, self.weight_kernel, self.bias_kernel, self.x_stride, self.y_stride, self.delta_abs)
+
+            for neighbor_mlp, neighbor_loss in neighbors:
+                if neighbor_mlp.overflow: continue
+                neighbor_state_hash = neighbor_mlp.get_state_hash()
+
+                g_step = neighbor_loss - current_node.h_val
+                g = current_node.g_val + g_step
+                
+                if neighbor_state_hash not in self.g_costs or g < self.g_costs[neighbor_state_hash]:  
+                    self.g_costs[neighbor_state_hash] = g
+                    new_node = SearchNode(neighbor_mlp, g_val=g, h_val=neighbor_loss, parent=current_node)
+                    heapq.heappush(self.open_set, (new_node.f_val, new_node))
+
+            # 4. BEAM SEARCH PRUNING (Limit Open Set)
+            if len(self.open_set) > beam_width:
+                # Keep only the N smallest f_val nodes
+                self.open_set = heapq.nsmallest(beam_width, self.open_set, key=lambda x: x[0])
+                heapq.heapify(self.open_set)
+
+            # 5. DICTIONARY PRUNING (Keep g_costs in sync with Open Set)
+            # We prune g_costs periodically to prevent it from storing thousands of discarded states
+            if iteration % 50 == 0: # Every 50 iterations to save CPU cycles
+                active_hashes = {node.quantized_mlp.get_state_hash() for _, node in self.open_set}
+                # Always keep the hash of the best node so we don't lose our reference point
+                active_hashes.add(self.best_node.quantized_mlp.get_state_hash())
+                self.g_costs = {h: self.g_costs[h] for h in active_hashes if h in self.g_costs}
+
+        # Final reporting
+        print(f"Search completed after {iteration+1} iterations.")
+        print(f"Best loss found: {self.best_node.h_val}")
+        if self.measure_time:
+            self.training_time = time.perf_counter() - start_time
+            print(f"Total training time: {self.training_time:.4f} seconds")
+
+        if self.save_trained_model:
+            self.save_model(filename=self.model_name + '.pth')
 

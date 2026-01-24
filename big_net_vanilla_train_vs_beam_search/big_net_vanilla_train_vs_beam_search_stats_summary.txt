@@ -1,0 +1,61 @@
+==============================================================================================================
+====================================== STATISTICAL SUMMARY over 5 Runs =======================================
+| Metric                 | Standard A*        | Beam Search BW=1e2 | Beam Search BW=1e3 | Beam Search BW=1e4 |
+|------------------------+--------------------+--------------------+--------------------+--------------------|
+| Avg Final Loss         | 0.515037           | 0.499614           | 0.516138           | 0.516979           |
+| Median Final Loss      | 0.524962           | 0.487223           | 0.500319           | 0.510333           |
+| Std Final Loss         | 0.014722           | 0.047437           | 0.024760           | 0.032952           |
+| Var Final Loss         | 0.000217           | 0.002250           | 0.000613           | 0.001086           |
+| Min Final Loss         | 0.495291           | 0.441663           | 0.492619           | 0.480456           |
+| Max Final Loss         | 0.529951           | 0.586375           | 0.546790           | 0.578766           |
+|------------------------+--------------------+--------------------+--------------------+--------------------|
+| Avg Time               | 691.681573         | 5369.142062        | 5681.632851        | 6267.840167        |
+|------------------------+--------------------+--------------------+--------------------+--------------------|
+| Avg MSE                | 0.529516           | 0.513727           | 0.532610           | 0.540582           |
+| Std MSE                | 0.018002           | 0.049294           | 0.021269           | 0.033087           |
+| Min MSE                | 0.497888           | 0.453992           | 0.511500           | 0.512847           |
+| Max MSE                | 0.545881           | 0.603396           | 0.564208           | 0.604103           |
+|------------------------+--------------------+--------------------+--------------------+--------------------|
+| Avg RMSE               | 0.727572           | 0.715950           | 0.729657           | 0.734910           |
+| Std RMSE               | 0.012462           | 0.033808           | 0.014510           | 0.022113           |
+| Min RMSE               | 0.705612           | 0.673790           | 0.715192           | 0.716133           |
+| Max RMSE               | 0.738838           | 0.776786           | 0.751138           | 0.777240           |
+|------------------------+--------------------+--------------------+--------------------+--------------------|
+| Avg MAE                | 0.530236           | 0.518222           | 0.532711           | 0.533327           |
+| Std MAE                | 0.009805           | 0.025147           | 0.014809           | 0.021392           |
+| Min MAE                | 0.514726           | 0.485140           | 0.518631           | 0.512968           |
+| Max MAE                | 0.542750           | 0.561505           | 0.550826           | 0.574685           |
+|------------------------+--------------------+--------------------+--------------------+--------------------|
+| Avg R2                 | 0.593732           | 0.605846           | 0.591359           | 0.585242           |
+| Std R2                 | 0.013812           | 0.037821           | 0.016319           | 0.025386           |
+| Min R2                 | 0.581176           | 0.537048           | 0.567115           | 0.536507           |
+| Max R2                 | 0.617999           | 0.651678           | 0.607555           | 0.606522           |
+==============================================================================================================
+
+Extra Details for Standard A*:
+ Run 1: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 2: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 3: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 4: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 5: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+
+Extra Details for Beam Search BW=1e2:
+ Run 1: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 2: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 3: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 4: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 5: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+
+Extra Details for Beam Search BW=1e3:
+ Run 1: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 2: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 3: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 4: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 5: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+
+Extra Details for Beam Search BW=1e4:
+ Run 1: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 2: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 3: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 4: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []
+ Run 5: Dynamic Quantization Iterations: [] | Dynamic Kernel Reshaping Iterations: []

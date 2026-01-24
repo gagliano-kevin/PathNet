@@ -259,7 +259,7 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
 
 
 
-def get_neighbors_extended(search_node, X, Y, quantization_factor=None, weight_kernels=None, bias_kernels=None, x_stride=1, y_stride=1, delta_abs=None):
+def get_neighbors_layer_wise_kernels(search_node, X, Y, quantization_factor=None, weight_kernels=None, bias_kernels=None, x_stride=1, y_stride=1, delta_abs=None):
     """
     Generates neighbor MLPs by applying perturbations using layer-specific kernels.
     

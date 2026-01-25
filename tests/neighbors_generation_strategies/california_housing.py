@@ -81,7 +81,7 @@ X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
 print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
 print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
-
+"""
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -418,7 +418,7 @@ generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
-
+"""
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -485,7 +485,7 @@ for run in range(RUNS):
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
                             #----------------------------------------------------------------------------------
-                            weight_kernels = WEIGHT_KERNEL, bias_kernels = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
                             #----------------------------------------------------------------------------------
                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
                             #----------------------------------------------------------------------------------
@@ -534,7 +534,7 @@ for run in range(RUNS):
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
                             #----------------------------------------------------------------------------------
-                            weight_kernel = WEIGHT_KERNELS, bias_kernel = BIAS_KERNELS, weight_strides=WEIGHT_STRIDES, bias_strides=BIAS_STRIDES, delta_abs=DELTA_ABS,
+                            weight_kernels = WEIGHT_KERNELS, bias_kernels = BIAS_KERNELS, weight_strides=WEIGHT_STRIDES, bias_strides=BIAS_STRIDES, delta_abs=DELTA_ABS,
                             #----------------------------------------------------------------------------------
                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
                             #----------------------------------------------------------------------------------

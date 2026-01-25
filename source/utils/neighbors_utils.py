@@ -259,15 +259,22 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
 
 
 
-def get_neighbors_layer_wise_kernels(search_node, X, Y, quantization_factor=None, weight_kernels=None, bias_kernels=None, x_stride=1, y_stride=1, delta_abs=None):
+def get_neighbors_layer_wise(search_node, X, Y, quantization_factor=None, 
+                                     weight_kernels=None, bias_kernels=None, 
+                                     weight_strides=None, bias_strides=None, 
+                                     delta_abs=None):
     """
-    Generates neighbor MLPs by applying perturbations using layer-specific kernels.
+    Generates neighbor MLPs by applying perturbations using layer-specific kernels AND layer-specific strides.
     
     Args:
-        weight_kernels (list of lists): A list containing the [h, w] kernel dimensions for each weight tensor in the model.
-                                        Example: [[2, 2], [3, 3]] for a 2-layer network.
-        bias_kernels (list of lists): A list containing the [length] kernel dimensions for each bias tensor in the model.
-                                      Example: [[2], [1]].
+        weight_kernels (list of lists): A list containing the [h, w] kernel dimensions for each weight tensor.
+                                        Example: [[2, 2], [3, 3]] (Height, Width)
+        bias_kernels (list of lists):   A list containing the [length] kernel dimensions for each bias tensor.
+                                        Example: [[2], [1]]
+        weight_strides (list of lists): A list containing the [x_stride, y_stride] for each weight tensor.
+                                        Example: [[1, 1], [2, 2]] (Horizontal step, Vertical step)
+        bias_strides (list of lists):   A list containing the [stride] for each bias tensor.
+                                        Example: [[1], [1]]
     """
     if quantization_factor is None:
         quantization_factor = search_node.quantized_mlp.quantization_factor
@@ -275,13 +282,16 @@ def get_neighbors_layer_wise_kernels(search_node, X, Y, quantization_factor=None
     # Basic validation to ensure lists are provided
     if weight_kernels is None or bias_kernels is None:
         raise ValueError("weight_kernels and bias_kernels must be provided as lists corresponding to the model layers.")
+    
+    if weight_strides is None or bias_strides is None:
+        raise ValueError("weight_strides and bias_strides must be provided as lists corresponding to the model layers.")
 
     neighbors = []
     parent_mlp = search_node.quantized_mlp
     parent_model = parent_mlp.model
     parent_parameter_list = list(parent_model.parameters())
 
-    # Counters to track which specific layer kernel to use
+    # Counters to track which specific layer configuration to use
     weight_idx = 0
     bias_idx = 0
 
@@ -306,26 +316,34 @@ def get_neighbors_layer_wise_kernels(search_node, X, Y, quantization_factor=None
                 
                 # 3. Handle 2D Tensors (Weights)
                 if len(parent_tensor.shape) == 2:
-                    # Retrieve the specific kernel for this weight layer
+                    # Retrieve the specific kernel and stride for this weight layer
                     try:
                         current_weight_kernel = weight_kernels[weight_idx]
+                        current_weight_stride = weight_strides[weight_idx]
                     except IndexError:
-                        raise IndexError(f"Not enough kernels provided in weight_kernels. Index {weight_idx} out of range.")
+                        raise IndexError(f"Not enough kernels or strides provided for weights. Index {weight_idx} out of range.")
                     
-                    new_weight_kernel = list(current_weight_kernel) # Make a copy to avoid modifying the input list
-                    new_x_stride = x_stride
-                    new_y_stride = y_stride
+                    new_weight_kernel = list(current_weight_kernel) # Copy to avoid modifying input
+                    
+                    # Extract specific strides (Now format is [x_stride, y_stride])
+                    new_x_stride = current_weight_stride[0]
+                    new_y_stride = current_weight_stride[1]
 
                     # Dynamic shrinking: modify kernel/strides if kernel is larger than tensor
+                    # Note: If the tensor is too small, we force the stride to follow the new (smaller) kernel size
                     if (parent_tensor.shape[0] < current_weight_kernel[0] or parent_tensor.shape[1] < current_weight_kernel[1]):
                         new_weight_kernel = [min(parent_tensor.shape[0], current_weight_kernel[0]), min(parent_tensor.shape[1], current_weight_kernel[1])]
                         min_dim = np.argmin(new_weight_kernel)
                         new_weight_kernel[min_dim] = max(1, new_weight_kernel[min_dim] // 2) 
+                        
+                        # Override user strides if shrinking occurred to ensure coverage
                         new_x_stride = new_weight_kernel[1]
                         new_y_stride = new_weight_kernel[0]
 
                     # Sliding window over the tensor
+                    # Outer loop: Vertical (rows), step by y_stride
                     for i in range(0, parent_tensor.shape[0] - new_weight_kernel[0] + 1, new_y_stride):
+                        # Inner loop: Horizontal (columns), step by x_stride
                         for j in range(0, parent_tensor.shape[1] - new_weight_kernel[1] + 1, new_x_stride):
                             neighbor_mlp = deepcopy(parent_mlp)
                             neighbor_model = neighbor_mlp.model
@@ -345,29 +363,32 @@ def get_neighbors_layer_wise_kernels(search_node, X, Y, quantization_factor=None
                             
                             loss = neighbor_mlp.evaluate(X, Y)
                             neighbors.append((neighbor_mlp, loss))
-                    
-                    # Increment weight index only after processing the loop (once per tensor)
-                    # We do this here inside the delta loop? No, this loop runs twice (+delta, -delta).
-                    # We must increment counters only ONCE per tensor_index iteration.
-                    # See "Update Counters" section below.
 
                 # 4. Handle 1D Tensors (Biases)
                 elif len(parent_tensor.shape) == 1:
-                    # Retrieve the specific kernel for this bias layer
+                    # Retrieve the specific kernel and stride for this bias layer
                     try:
                         current_bias_kernel = bias_kernels[bias_idx]
+                        current_bias_stride = bias_strides[bias_idx]
                     except IndexError:
-                        raise IndexError(f"Not enough kernels provided in bias_kernels. Index {bias_idx} out of range.")
+                        raise IndexError(f"Not enough kernels or strides provided for biases. Index {bias_idx} out of range.")
 
                     new_bias_kernel = list(current_bias_kernel)
-                    new_y_stride = y_stride
                     
+                    # Extract specific stride (assuming format [stride])
+                    # Biases are 1D, so we just take the first element regardless of x/y naming convention
+                    new_stride_1d = current_bias_stride[0]
+                    
+                    # Dynamic shrinking for bias
                     if parent_tensor.shape[0] < current_bias_kernel[0]:
                         new_bias_kernel = [min(parent_tensor.shape[0], current_bias_kernel[0])]
                         new_bias_kernel[0] = max(1, new_bias_kernel[0] // 2)
-                        new_y_stride = new_bias_kernel[0]
+                        
+                        # Override user stride if shrinking occurred
+                        new_stride_1d = new_bias_kernel[0]
                     
-                    for i in range(0, parent_tensor.shape[0] - new_bias_kernel[0] + 1, new_y_stride):
+                    # Sliding window over the tensor
+                    for i in range(0, parent_tensor.shape[0] - new_bias_kernel[0] + 1, new_stride_1d):
                         neighbor_mlp = deepcopy(parent_mlp)
                         neighbor_model = neighbor_mlp.model
                         target_tensor = list(neighbor_model.parameters())[tensor_index].data

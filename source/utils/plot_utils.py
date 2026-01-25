@@ -254,6 +254,11 @@ def format_sci(value):
 
 
 def generate_evaluation_statistical_summary(data_dicts, labels, filename):
+    # Safety check: ensure we have data
+    if not data_dicts or "final_losses" not in data_dicts[0]:
+        print("No data available to generate summary.")
+        return
+
     RUNS = len(data_dicts[0]["final_losses"])
     standard_keys = ["losses", "final_losses", "training_times", "evaluation_scores"]
     
@@ -289,25 +294,30 @@ def generate_evaluation_statistical_summary(data_dicts, labels, filename):
     stats_map = [] 
     for d in data_dicts:
         label_stats = {}
-        final = np.array(d["final_losses"])
-        times = np.array(d["training_times"])
+        # Ensure we work with numpy arrays for stats, default to empty if missing
+        final = np.array(d.get("final_losses", []))
+        times = np.array(d.get("training_times", []))
         
-        label_stats["Avg Final Loss"] = np.mean(final)
-        label_stats["Median Final Loss"] = np.median(final)
-        label_stats["Std Final Loss"] = np.std(final)
-        label_stats["Var Final Loss"] = np.var(final)
-        label_stats["Min Final Loss"] = np.min(final)
-        label_stats["Max Final Loss"] = np.max(final)
-        label_stats["Avg Time"] = np.mean(times)
+        if len(final) > 0:
+            label_stats["Avg Final Loss"] = np.mean(final)
+            label_stats["Median Final Loss"] = np.median(final)
+            label_stats["Std Final Loss"] = np.std(final)
+            label_stats["Var Final Loss"] = np.var(final)
+            label_stats["Min Final Loss"] = np.min(final)
+            label_stats["Max Final Loss"] = np.max(final)
+        
+        if len(times) > 0:
+            label_stats["Avg Time"] = np.mean(times)
         
         # Evaluation Score Stats
         if eval_keys:
             for k in eval_keys:
-                scores = np.array([run_score[k] for run_score in d["evaluation_scores"]])
-                label_stats[f"Avg {k}"] = np.mean(scores)
-                label_stats[f"Std {k}"] = np.std(scores)
-                label_stats[f"Min {k}"] = np.min(scores)
-                label_stats[f"Max {k}"] = np.max(scores)
+                scores = np.array([run_score[k] for run_score in d.get("evaluation_scores", []) if k in run_score])
+                if len(scores) > 0:
+                    label_stats[f"Avg {k}"] = np.mean(scores)
+                    label_stats[f"Std {k}"] = np.std(scores)
+                    label_stats[f"Min {k}"] = np.min(scores)
+                    label_stats[f"Max {k}"] = np.max(scores)
         
         stats_map.append(label_stats)
 
@@ -339,19 +349,35 @@ def generate_evaluation_statistical_summary(data_dicts, labels, filename):
         if extra_keys:
             extra_info_lines.append(f"\nExtra Details for {label}:")
             for run in range(RUNS):
-                run_details = [f"{k.replace('_', ' ').title()}: {d[k][run]}" for k in extra_keys]
+                run_details = []
+                for k in extra_keys:
+                    values_list = d[k]
+                    # SAFETY CHECK: Ensure the list exists and has an entry for this run index
+                    if isinstance(values_list, (list, tuple)) and run < len(values_list):
+                        val = values_list[run]
+                    elif not isinstance(values_list, (list, tuple)):
+                         # Handle case where value might be a single scalar instead of a list per run
+                         val = values_list
+                    else:
+                        val = "N/A"
+                    
+                    run_details.append(f"{k.replace('_', ' ').title()}: {val}")
+                
                 extra_info_lines.append(f" Run {run + 1}: " + " | ".join(run_details))
 
     # Save logic
     summary_text = "\n".join(lines + extra_info_lines)
-    os.makedirs(filename, exist_ok=True)
-    save_path = os.path.join(filename, f"{filename}_stats_summary.txt")
-    
-    with open(save_path, "w") as f:
-        f.write(summary_text)
-    
-    print(summary_text)
-    print(f"\nSaved statistical summary to '{save_path}'")
+    if filename:
+        os.makedirs(filename, exist_ok=True)
+        save_path = os.path.join(filename, f"{os.path.basename(filename)}_stats_summary.txt")
+        
+        with open(save_path, "w") as f:
+            f.write(summary_text)
+        
+        print(summary_text)
+        print(f"\nSaved statistical summary to '{save_path}'")
+    else:
+        print(summary_text)
 
 
 

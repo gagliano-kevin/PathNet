@@ -2,7 +2,7 @@ import torch
 import heapq
 import time
 from source.utils.memory_guard import SystemMemoryGuard
-from source.utils.neighbors_utils import get_neighbors, get_neighbors_layer_wise_kernels, get_neighbors_random
+from source.utils.neighbors_utils import get_neighbors, get_neighbors_layer_wise, get_neighbors_random
 
 
 class QuantizedMLP:
@@ -482,12 +482,14 @@ class Trainer:
 
 class TrainerLayerWiseKernel:
     """
-    A Trainer that uses layer-specific kernels (lists of kernels) for neighbor generation.
-    Compatible with the updated 'get_neighbors' function.
+    A Trainer that uses layer-specific kernels (lists of kernels) and layer-specific strides for neighbor generation.
+    Compatible with the updated 'get_neighbors_layer_wise_kernels' function.
     """
     def __init__(self, model, loss_fn, quantization_factor, parameter_range, debug_mlp=True, 
                  # Neighborhood Generation Parameters (Lists now)
-                 weight_kernels=None, bias_kernels=None, x_stride=1, y_stride=1, delta_abs=None, 
+                 weight_kernels=None, bias_kernels=None, 
+                 weight_strides=None, bias_strides=None, 
+                 delta_abs=None, 
                  # Early Stopping
                  early_stopping=False, e_s_patience=250,
                  # Dynamic Quantization
@@ -510,12 +512,12 @@ class TrainerLayerWiseKernel:
         self.parameter_range = parameter_range
         self.debug_mlp = debug_mlp
 
-        # --- Neighborhood Generation Parameters ---
+        # Neighborhood Generation Parameters
         # Deepcopy to ensure we don't modify the user's original list during dynamic reshaping
         self.weight_kernels = [list(k) for k in weight_kernels] if weight_kernels else [[2,2]]
         self.bias_kernels = [list(k) for k in bias_kernels] if bias_kernels else [[2]]
-        self.x_stride = x_stride
-        self.y_stride = y_stride
+        self.weight_strides = [list(s) for s in weight_strides] if weight_strides else [[1,1]]
+        self.bias_strides = [list(s) for s in bias_strides] if bias_strides else [[1]]
         self.delta_abs = delta_abs
 
         # Early Stopping
@@ -536,6 +538,7 @@ class TrainerLayerWiseKernel:
         self.x_weight_kernel_decr = x_weight_kernel_decr
         self.y_weight_kernel_decr = y_weight_kernel_decr
         self.y_bias_kernel_decr = y_bias_kernel_decr
+
         # Minimum limits are applied globally to all layers
         self.min_weight_kernel = list(min_weight_kernel) if min_weight_kernel is not None else [1, 1]
         self.min_bias_kernel = list(min_bias_kernel) if min_bias_kernel is not None else [1]
@@ -567,7 +570,7 @@ class TrainerLayerWiseKernel:
 
     def dynamic_reshape_kernels_and_strides(self):
         """
-        Iterates over the lists of kernels and shrinks them if they exceed the minimum dimensions.
+        Iterates over the lists of kernels and strides, shrinking them if they exceed the minimum dimensions.
         """
         modification_occurred = False
 
@@ -586,13 +589,21 @@ class TrainerLayerWiseKernel:
                 b_kernel[0] = max(b_kernel[0] - self.y_bias_kernel_decr, self.min_bias_kernel[0])
                 modification_occurred = True
 
-        # Adjust strides (Global)
-        if self.x_stride > self.min_x_stride:
-            self.x_stride = max(self.x_stride - self.x_stride_decr, self.min_x_stride)
-            modification_occurred = True
-        if self.y_stride > self.min_y_stride:
-            self.y_stride = max(self.y_stride - self.y_stride_decr, self.min_y_stride)
-            modification_occurred = True
+        # Iterate over every weight stride in the list (format [x_stride, y_stride])
+        for w_stride in self.weight_strides:
+            if w_stride[0] > self.min_x_stride:
+                w_stride[0] = max(w_stride[0] - self.x_stride_decr, self.min_x_stride)
+                modification_occurred = True
+            if w_stride[1] > self.min_y_stride:
+                w_stride[1] = max(w_stride[1] - self.y_stride_decr, self.min_y_stride)
+                modification_occurred = True
+                
+        # Iterate over every bias stride in the list (format [stride])
+        # Note: Bias is 1D, usually we only care about the step size, here mapped to y_stride logic
+        for b_stride in self.bias_strides:
+            if b_stride[0] > self.min_y_stride:
+                b_stride[0] = max(b_stride[0] - self.y_stride_decr, self.min_y_stride)
+                modification_occurred = True
 
         return modification_occurred
 
@@ -623,7 +634,9 @@ class TrainerLayerWiseKernel:
                 self.d_k_r_wait = 0
                 if modification_occurred:
                     self.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"].append(iteration)
-                    print(f"Dynamic Kernel Reshaping applied. New stride x: {self.x_stride}")
+                    # For logging purposes, we might just print that reshaping occurred, 
+                    # as printing full lists of lists might be verbose.
+                    print(f"Dynamic Kernel Reshaping applied to kernels and strides.")
 
 
     def train(self, X, Y):
@@ -631,7 +644,6 @@ class TrainerLayerWiseKernel:
         if self.measure_time:
             start_time = time.perf_counter()
 
-        start_time = time.perf_counter() if self.measure_time else 0
         initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
         initial_loss = initial_mlp.evaluate(X, Y)
 
@@ -680,14 +692,14 @@ class TrainerLayerWiseKernel:
             if (iteration + 1) % self.log_freq == 0:
                 print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
 
-            # CALL THE NEW get_neighbors WITH LISTS OF KERNELS
-            neighbors = get_neighbors_layer_wise_kernels(
+            # CALL THE NEW get_neighbors WITH LISTS OF KERNELS AND STRIDES
+            neighbors = get_neighbors_layer_wise(
                 current_node, X, Y, 
                 self.quantization_factor, 
                 weight_kernels=self.weight_kernels, 
                 bias_kernels=self.bias_kernels, 
-                x_stride=self.x_stride, 
-                y_stride=self.y_stride, 
+                weight_strides=self.weight_strides, 
+                bias_strides=self.bias_strides, 
                 delta_abs=self.delta_abs
             )
 
@@ -748,7 +760,6 @@ class TrainerLayerWiseKernel:
         if self.measure_time:
             start_time = time.perf_counter()
 
-        start_time = time.perf_counter() if self.measure_time else 0
         initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)
         initial_loss = initial_mlp.evaluate(X, Y)
 
@@ -797,14 +808,14 @@ class TrainerLayerWiseKernel:
             if (iteration + 1) % self.log_freq == 0:
                 print(f"Iteration {iteration+1}: Best current loss = {self.best_node.h_val}")
 
-            # CALL THE NEW get_neighbors WITH LISTS OF KERNELS
-            neighbors = get_neighbors(
+            # CALL THE NEW get_neighbors WITH LISTS OF KERNELS AND STRIDES
+            neighbors = get_neighbors_layer_wise(
                 current_node, X, Y, 
                 self.quantization_factor, 
                 weight_kernels=self.weight_kernels, 
                 bias_kernels=self.bias_kernels, 
-                x_stride=self.x_stride, 
-                y_stride=self.y_stride, 
+                weight_strides=self.weight_strides, 
+                bias_strides=self.bias_strides, 
                 delta_abs=self.delta_abs
             )
 
@@ -849,7 +860,6 @@ class TrainerLayerWiseKernel:
 
         if self.save_trained_model:
             self.save_model(filename=self.model_name + '.pth')
-        return
 
 
 
@@ -902,6 +912,9 @@ class TrainerRandomSampling:
         self.open_set = []
         self.g_costs = {}
         self.best_node = None
+        self.loss_history = []
+        self.f_history = []
+        self.g_history = []
         self.measure_time = measure_time
         self.save_trained_model = save_trained_model
         self.model_name = model_name

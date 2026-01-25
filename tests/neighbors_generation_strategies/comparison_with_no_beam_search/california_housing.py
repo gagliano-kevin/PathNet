@@ -59,7 +59,7 @@ BIAS_STRIDES = [[2], [2], [1]]            # Format: list of [stride] per layer
 
 # Parameters for Random Sampling Neighbors Generation
 PERTURBATION_RATIO = 0.01       # 1% of the parameters will be perturbed per each neighbor
-SEARCH_COVERAGE_RATIO = 0.5     # 5% of the total number of parameters in the model will be the number of neighbors generated per each state
+SEARCH_COVERAGE_RATIO = 0.05    # 5% of the total number of parameters in the model will be the number of neighbors generated per each state
 
 # Quantization Parameter
 QUANTIZATION_FACTOR = 10

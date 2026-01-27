@@ -36,7 +36,7 @@ PARAMETER_RANGE = (-10, 10)
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 # =========================================================================================================================================================
 
-TEST_NAME = "small_net_neighbors_generation_strategies_comparison"
+TEST_NAME = "small_net_neighbors_generation_strategies_comparison_no_BS"
 
 # MLP Hyperparameters
 INPUT_SIZE = 8
@@ -59,7 +59,7 @@ BIAS_STRIDES = [[2], [2], [1]]            # Format: list of [stride] per layer
 
 # Parameters for Random Sampling Neighbors Generation
 PERTURBATION_RATIO = 0.01       # 1% of the parameters will be perturbed per each neighbor
-SEARCH_COVERAGE_RATIO = 0.05    # 5% of the total number of parameters in the model will be the number of neighbors generated per each state
+SEARCH_COVERAGE_RATIO = 0.1     # 10% of the total number of parameters in the model will be the number of neighbors generated per each state
 
 # Quantization Parameter
 QUANTIZATION_FACTOR = 10
@@ -235,7 +235,7 @@ plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 # =========================================================================================================================================================
 
-TEST_NAME = "medium_net_neighbors_generation_strategies_comparison"
+TEST_NAME = "medium_net_neighbors_generation_strategies_comparison_no_BS"
 
 # MLP Hyperparameters
 HIDDEN_SIZE_1 = 64
@@ -253,6 +253,10 @@ WEIGHT_KERNELS = [[4,4], [4,4], [4,4], [1,4]]
 BIAS_KERNELS = [[4], [4], [4], [1]]
 WEIGHT_STRIDES = [[4,4], [4,4], [4,4], [4,1]]      # Format: list of [x_stride, y_stride] per layer
 BIAS_STRIDES = [[4], [4], [4], [1]]                # Format: list of [stride] per layer
+
+# Parameters for Random Sampling Neighbors Generation
+PERTURBATION_RATIO = 0.01        # 1% of the parameters will be perturbed per each neighbor
+SEARCH_COVERAGE_RATIO = 0.05     # 5% of the total number of parameters in the model will be the number of neighbors generated per each state
 
 labels_list = ["Single Kernel Neighbors Generation", "layer-Wise Kernels Neighbors Generation", "Random Neighbors Generation"]
 
@@ -425,7 +429,7 @@ plot_regression_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 # =========================================================================================================================================================
 
-TEST_NAME = "big_net_neighbors_generation_strategies_comparison"
+TEST_NAME = "big_net_neighbors_generation_strategies_comparison_no_BS"
 
 # MLP Hyperparameters
 HIDDEN_SIZE_1 = 128
@@ -434,16 +438,20 @@ HIDDEN_SIZE_3 = 32
 HIDDEN_SIZE_4 = 16
 
 # Initial Kernel and Stride Settings
-WEIGHT_KERNEL = [8,8]
-BIAS_KERNEL = [8]
-X_STRIDE = 8
-Y_STRIDE = 8
+WEIGHT_KERNEL = [6,6]
+BIAS_KERNEL = [6]
+X_STRIDE = 6
+Y_STRIDE = 6
 
 # Parameters for Layer-Wise Kernels Neighbors Generation
-WEIGHT_KERNELS = [[8,2], [8,8], [4,4], [4,4], [1,2]]
-BIAS_KERNELS = [[8], [8], [4], [2], [1]]
-WEIGHT_STRIDES = [[2,8], [8,8], [4,4], [4,4], [2,1]]      # Format: list of [x_stride, y_stride] per layer
-BIAS_STRIDES = [[8], [8], [4], [2], [1]]                  # Format: list of [stride] per layer
+WEIGHT_KERNELS = [[6,2], [6,6], [4,4], [4,4], [1,2]]
+BIAS_KERNELS = [[6], [6], [4], [2], [1]]
+WEIGHT_STRIDES = [[2,6], [6,6], [4,4], [4,4], [2,1]]      # Format: list of [x_stride, y_stride] per layer
+BIAS_STRIDES = [[6], [6], [4], [2], [1]]                  # Format: list of [stride] per layer
+
+# Parameters for Random Sampling Neighbors Generation
+PERTURBATION_RATIO = 0.1         # 10% of the parameters will be perturbed per each neighbor
+SEARCH_COVERAGE_RATIO = 0.05     # 5% of the total number of parameters in the model will be the number of neighbors generated per each state
 
 labels_list = ["Single Kernel Neighbors Generation", "layer-Wise Kernels Neighbors Generation", "Random Neighbors Generation"]
 

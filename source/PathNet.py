@@ -756,6 +756,8 @@ class TrainerLayerWiseKernel:
     
 
     def beam_search_opt_train(self, X, Y, beam_width=500):
+        # Ensure beam_width is an integer
+        beam_width = int(beam_width)
         start_time = 0
         if self.measure_time:
             start_time = time.perf_counter()
@@ -1060,6 +1062,8 @@ class TrainerRandomSampling:
     
 
     def beam_search_opt_train(self, X, Y, beam_width=500):
+        # Ensure beam_width is an integer
+        beam_width = int(beam_width)
         start_time = time.perf_counter() if self.measure_time else 0
 
         initial_mlp = QuantizedMLP(self.model, self.loss_fn, self.quantization_factor, self.parameter_range, debug=self.debug_mlp)

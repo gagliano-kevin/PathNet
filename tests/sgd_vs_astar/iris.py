@@ -8,143 +8,215 @@ import torch
 import torch.nn as nn
 import time
 
-from source.PathNet import Trainer
+from source.PathNet import Trainer, TrainerLayerWiseKernel, TrainerRandomSampling
 from source.utils.dataset_utils.iris_utils import get_splitted_iris_data_tensors, get_iris_dataloaders
 from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_classification_statistics
 from source.utils.evaluation_utils import evaluate_sgd_classification, evaluate_pathnet_classification
 from source.utils.models import IrisMLP
 
-ITERATIONS = 10
-RUNS = 1
-TEST_NAME = "Iris - SGD vs A-star"
+ITERATIONS = 2000
+RUNS = 10
+
+MODEL_NAME_PREFIX = "iris_model"
+DATASET_NAME = "Iris Flower"
+
 SAVE_TRAINED_MODEL = False
-
-# Initial Kernel and Stride Settings
-MAX_WEIGHT_KERNEL = [6,6]
-MAX_BIAS_KERNEL = [6]
-MAX_X_STRIDE = 6
-MAX_Y_STRIDE = 6
-
-# Dynamic Kernel Reshaping Settings
-MIN_WEIGHT_KERNEL = [2,2]
-MIN_BIAS_KERNEL = [2]
-MIN_X_STRIDE = 2
-MIN_Y_STRIDE = 2
-
-DYNAMIC_KERNEL_RESHAPING = True
-D_K_R_PATIENCE = 100
-X_WEIGHT_KERNEL_DECR = 1
-Y_WEIGHT_KERNEL_DECR = 1
-Y_BIAS_KERNEL_DECR = 1
-X_STRIDE_DECR = 1
-Y_STRIDE_DECR = 1
 DELTA_ABS = None
-
-# Neural Network Settings
-INPUT_SIZE = 4
-HIDDEN_SIZE_1 = 64
-HIDDEN_SIZE_2 = 32
-HIDDEN_SIZE_3 = 16
-OUTPUT_SIZE = 3
-
 EARLY_STOPPING = False
+
 E_S_PATIENCE = 200
 LOSS_IMPROVEMENT_THRESHOLD = 1e-3
 PARAMETER_RANGE = (-10, 10)
+QUANTIZATION_FACTOR = 10
+BEAM_WIDTH = 1e3
 
-# Dynamic Quantization Settings
-D_Q_PATIENCE = 100
-QUANTIZATION_FACTOR_MULTIPLIER = 10
-MIN_QUANTIZATION_FACTOR = 10
-MAX_QUANTIZATION_FACTOR = 1e4
+INPUT_SIZE = 4
+OUTPUT_SIZE = 3
 
-astar_metrics = {
-        "losses": [],
-        "training_times": [],
-        "final_losses": [],
-        "dynamic_quantization_iterations": [],
-        "dynamic_kernel_reshaping_iterations": [],
-        "evaluation_scores": []
-    }
+# SGD Settings
+BATCH_SIZE = None    # Full batch
+LEARNING_RATE = 0.001
+EPOCHS = ITERATIONS
 
-grad_metrics = {
-        "losses": [],
-        "training_times": [],
-        "final_losses": [],
-        "evaluation_scores": []
-    }
                        
 X_train, Y_train, X_val, Y_val, X_test, Y_test = get_splitted_iris_data_tensors()
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
 print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
 print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
+train_dataloader, val_dataloader, test_dataloader = get_iris_dataloaders(batch_size=BATCH_SIZE)
+
+labels_list = ["A-star Single Kernel", "A-star Layer-Wise Kernels", "A-star Random Sampling", "SGD"]
+
+# =========================================================================================================================================================
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------- SMALL NET --------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+# =========================================================================================================================================================
+
+TEST_NAME = "small_net_iris_SGD_vs_A-star"
+
+# Neural Network Settings
+HIDDEN_SIZE_1 = 32
+HIDDEN_SIZE_2 = 16
+
+# Parameter for single Kernel Neighbors Generation
+WEIGHT_KERNEL = [2,2]
+BIAS_KERNEL = [2]
+X_STRIDE = 1
+Y_STRIDE = 1
+
+# Parameters for Layer-Wise Kernels Neighbors Generation
+WEIGHT_KERNELS = [[2,2], [2,2], [1,2]]
+BIAS_KERNELS = [[2], [2], [1]]
+WEIGHT_STRIDES = [[1,1], [1,1], [1,1]]      # Format: list of [x_stride, y_stride] per layer
+BIAS_STRIDES = [[1], [1], [1]]              # Format: list of [stride] per layer
+
+# Parameters for Random Sampling Neighbors Generation
+PERTURBATION_RATIO = 0.01       # 1% of the parameters will be perturbed per each neighbor
+SEARCH_COVERAGE_RATIO = 0.1     # 10% of the total number of parameters in the model will be the number of neighbors generated per each state
+
+metrics_list = [
+    {
+        "losses": [],
+        "training_times": [],
+        "final_losses": [],
+        "evaluation_scores": []
+    } for _ in range(len(labels_list))
+]
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
-#-------------------------------------------------------------------------- ASTAR TRAINING ----------------------------------------------------------------
+#---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t DYNAMIC ASTAR Training Run {run + 1} \t Kernel Size: [{MAX_WEIGHT_KERNEL[0]}x{MAX_WEIGHT_KERNEL[1]} - {MIN_WEIGHT_KERNEL[0]}x{MIN_WEIGHT_KERNEL[1]} ] ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
             nn.ReLU(),
             nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
             nn.ReLU(),
-            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),
-            nn.ReLU(),
-            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            nn.Linear(HIDDEN_SIZE_2, OUTPUT_SIZE),
             )
 
 
     trainer = Trainer(model=model,
                             loss_fn=nn.CrossEntropyLoss(),
-                            quantization_factor=MIN_QUANTIZATION_FACTOR,
+                            quantization_factor=QUANTIZATION_FACTOR,
                             parameter_range=PARAMETER_RANGE,
                             debug_mlp=False,
                             #----------------------------------------------------------------------------------
-                            weight_kernel = MAX_WEIGHT_KERNEL, bias_kernel = MAX_BIAS_KERNEL, x_stride=MAX_X_STRIDE, y_stride=MAX_Y_STRIDE, delta_abs=DELTA_ABS,
+                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
                             #----------------------------------------------------------------------------------
                             early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
                             #----------------------------------------------------------------------------------
-                            dynamic_quantization=True, d_q_patience=D_Q_PATIENCE, 
-                            quantization_factor_multiplier=QUANTIZATION_FACTOR_MULTIPLIER, max_quantization_factor=MAX_QUANTIZATION_FACTOR,
+                            dynamic_quantization=False,
                             #-----------------------------------------------------------------------------------
-                            dynamic_kernel_reshaping=True, d_k_r_patience=D_K_R_PATIENCE, 
-                            x_weight_kernel_decr=X_WEIGHT_KERNEL_DECR, y_weight_kernel_decr=Y_WEIGHT_KERNEL_DECR, y_bias_kernel_decr=Y_BIAS_KERNEL_DECR, 
-                            min_weight_kernel=MIN_WEIGHT_KERNEL, min_bias_kernel=MIN_BIAS_KERNEL,
-                            x_stride_decr=X_STRIDE_DECR, y_stride_decr=Y_STRIDE_DECR, min_x_stride=MIN_X_STRIDE, min_y_stride=MIN_Y_STRIDE,
+                            dynamic_kernel_reshaping=False,
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=f'california_housing_astar_run_{run + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar_run_{run + 1}'
                             )
 
-    trainer.train(X_train, Y_train)
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
 
-    astar_metrics["losses"].append(trainer.loss_history)
-    astar_metrics["training_times"].append(trainer.training_time)
-    astar_metrics["final_losses"].append(trainer.best_node.h_val)
-    astar_metrics["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
-    astar_metrics["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    astar_metrics["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+    metrics_list[0]["losses"].append(trainer.loss_history)
+    metrics_list[0]["training_times"].append(trainer.training_time)
+    metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
 
 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------- LAYER-WISE KERNELS NEIGHBORS GENERATION ----------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, OUTPUT_SIZE),
+            )
+
+
+    trainer = TrainerLayerWiseKernel(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernels = WEIGHT_KERNELS, bias_kernels = BIAS_KERNELS, weight_strides=WEIGHT_STRIDES, bias_strides=BIAS_STRIDES, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[1]["losses"].append(trainer.loss_history)
+    metrics_list[1]["training_times"].append(trainer.training_time)
+    metrics_list[1]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------- RANDOM SAMPLING NEIGHBORS GENERATION -------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, OUTPUT_SIZE),
+            )
+    
+    trainer = TrainerRandomSampling(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            perturbation_ratio=PERTURBATION_RATIO, search_coverage_ratio=SEARCH_COVERAGE_RATIO,
+                            delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_random_sampling_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[2]["losses"].append(trainer.loss_history)
+    metrics_list[2]["training_times"].append(trainer.training_time)
+    metrics_list[2]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------- GRADIENT BASE TRAINING ---------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-BATCH_SIZE = None    # Full batch
-LEARNING_RATE = 0.001
-EPOCHS = ITERATIONS
-
-train_dataloader = get_iris_dataloaders(batch_size=BATCH_SIZE)[0]
-
 for run in range(RUNS):
     
-    iris_model = IrisMLP(input_size=INPUT_SIZE, hidden_size_1=HIDDEN_SIZE_1, hidden_size_2=HIDDEN_SIZE_2, hidden_size_3=HIDDEN_SIZE_3, num_classes=OUTPUT_SIZE)
+    iris_model = IrisMLP(hidden_layers=[HIDDEN_SIZE_1, HIDDEN_SIZE_2])
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(iris_model.parameters(), lr=LEARNING_RATE)
 
@@ -166,27 +238,24 @@ for run in range(RUNS):
         loss_history.append(loss.item())
 
         if (epoch + 1) % 10 == 0:
-            print(f'Housing Epoch [{epoch+1}/{EPOCHS}], Loss: {total_loss / len(train_dataloader):.6f}')
-
+            print(f'Epoch [{epoch+1}/{EPOCHS}], Loss: {total_loss / len(train_dataloader):.6f}')
 
     end_time = time.perf_counter()
     training_time = end_time - start_time
 
-    test_dataloader = get_iris_dataloaders(batch_size=BATCH_SIZE)[2]
-
-    grad_metrics["losses"].append(loss_history)
-    grad_metrics["training_times"].append(training_time)
-    grad_metrics["final_losses"].append(loss_history[-1])
-    grad_metrics["evaluation_scores"].append(evaluate_sgd_classification(iris_model, test_dataloader))
+    metrics_list[3]["losses"].append(loss_history)
+    metrics_list[3]["training_times"].append(training_time)
+    metrics_list[3]["final_losses"].append(loss_history[-1])
+    metrics_list[3]["evaluation_scores"].append(evaluate_sgd_classification(iris_model, test_dataloader))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-metrics_list = [astar_metrics, grad_metrics]
-labels_list = ["A-star", "SGD"]
-DATASET_NAME = "Iris"
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
 
 generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
 
@@ -194,6 +263,456 @@ generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
 plot_classification_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
 
+
+# =========================================================================================================================================================
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------- MEDIUM NET -------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+# =========================================================================================================================================================
+
+TEST_NAME = "medium_net_iris_SGD_vs_A-star"
+
+# Neural Network Settings
+HIDDEN_SIZE_1 = 64
+HIDDEN_SIZE_2 = 32
+HIDDEN_SIZE_3 = 16
+
+# Parameter for single Kernel Neighbors Generation
+WEIGHT_KERNEL = [4,4]
+BIAS_KERNEL = [4]
+X_STRIDE = 3
+Y_STRIDE = 3
+
+# Parameters for Layer-Wise Kernels Neighbors Generation
+WEIGHT_KERNELS = [[4,4], [4,4], [4,4], [1,4]]
+BIAS_KERNELS = [[4], [4], [4], [1]]
+WEIGHT_STRIDES = [[3,3], [3,3], [3,3], [3,1]]      # Format: list of [x_stride, y_stride] per layer
+BIAS_STRIDES = [[3], [3], [3], [1]]                # Format: list of [stride] per layer
+
+
+# Parameters for Random Sampling Neighbors Generation
+PERTURBATION_RATIO = 0.01        # 1% of the parameters will be perturbed per each neighbor
+SEARCH_COVERAGE_RATIO = 0.05     # 5% of the total number of parameters in the model will be the number of neighbors generated per each state
+
+metrics_list = [
+    {
+        "losses": [],
+        "training_times": [],
+        "final_losses": [],
+        "evaluation_scores": []
+    } for _ in range(len(labels_list))
+]
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            )
+
+
+    trainer = Trainer(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[0]["losses"].append(trainer.loss_history)
+    metrics_list[0]["training_times"].append(trainer.training_time)
+    metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------- LAYER-WISE KERNELS NEIGHBORS GENERATION ----------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            )
+
+
+    trainer = TrainerLayerWiseKernel(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernels = WEIGHT_KERNELS, bias_kernels = BIAS_KERNELS, weight_strides=WEIGHT_STRIDES, bias_strides=BIAS_STRIDES, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[1]["losses"].append(trainer.loss_history)
+    metrics_list[1]["training_times"].append(trainer.training_time)
+    metrics_list[1]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------- RANDOM SAMPLING NEIGHBORS GENERATION -------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, OUTPUT_SIZE),
+            )
+    
+    trainer = TrainerRandomSampling(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            perturbation_ratio=PERTURBATION_RATIO, search_coverage_ratio=SEARCH_COVERAGE_RATIO,
+                            delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_random_sampling_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[2]["losses"].append(trainer.loss_history)
+    metrics_list[2]["training_times"].append(trainer.training_time)
+    metrics_list[2]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------- GRADIENT BASE TRAINING ---------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    
+    iris_model = IrisMLP(hidden_layers=[HIDDEN_SIZE_1, HIDDEN_SIZE_2, HIDDEN_SIZE_3])
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(iris_model.parameters(), lr=LEARNING_RATE)
+
+    loss_history = []
+
+    start_time = time.perf_counter()
+
+    print(f"\n--- Gradient Training Run {run + 1} ---\n")
+
+    for epoch in range(EPOCHS):
+        total_loss = 0
+        for x_batch, y_batch in train_dataloader:        
+            optimizer.zero_grad()
+            predictions = iris_model(x_batch)
+            loss = criterion(predictions, y_batch)              
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        loss_history.append(loss.item())
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{EPOCHS}], Loss: {total_loss / len(train_dataloader):.6f}')
+
+    end_time = time.perf_counter()
+    training_time = end_time - start_time
+
+    metrics_list[3]["losses"].append(loss_history)
+    metrics_list[3]["training_times"].append(training_time)
+    metrics_list[3]["final_losses"].append(loss_history[-1])
+    metrics_list[3]["evaluation_scores"].append(evaluate_sgd_classification(iris_model, test_dataloader))
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
 
 save_metrics(all_results, TEST_NAME)
+
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
+
+generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+
+plot_classification_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+
+
+# =========================================================================================================================================================
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------- BIG NET ----------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+# =========================================================================================================================================================
+
+TEST_NAME = "big_net_iris_SGD_vs_A-star"
+
+# Neural Network Settings
+HIDDEN_SIZE_1 = 128
+HIDDEN_SIZE_2 = 64
+HIDDEN_SIZE_3 = 32
+HIDDEN_SIZE_4 = 16
+
+# Parameter for single Kernel Neighbors Generation
+WEIGHT_KERNEL = [6,6]
+BIAS_KERNEL = [6]
+X_STRIDE = 5
+Y_STRIDE = 5
+
+# Parameters for Layer-Wise Kernels Neighbors Generation
+WEIGHT_KERNELS = [[6,2], [6,6], [4,4], [4,4], [1,2]]
+BIAS_KERNELS = [[6], [6], [4], [2], [1]]
+WEIGHT_STRIDES = [[1,5], [5,5], [3,3], [3,3], [1,1]]      # Format: list of [x_stride, y_stride] per layer
+BIAS_STRIDES = [[5], [5], [3], [1], [1]]                  # Format: list of [stride] per layer
+
+# Parameters for Random Sampling Neighbors Generation
+PERTURBATION_RATIO = 0.1         # 10% of the parameters will be perturbed per each neighbor
+SEARCH_COVERAGE_RATIO = 0.05     # 5% of the total number of parameters in the model will be the number of neighbors generated per each state
+
+metrics_list = [
+    {
+        "losses": [],
+        "training_times": [],
+        "final_losses": [],
+        "dynamic_quantization_iterations": [],
+        "dynamic_kernel_reshaping_iterations": [],
+        "evaluation_scores": []
+    } for _ in range(len(labels_list))
+]        
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, HIDDEN_SIZE_4),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_4, OUTPUT_SIZE),
+            )
+
+    trainer = Trainer(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[0]["losses"].append(trainer.loss_history)
+    metrics_list[0]["training_times"].append(trainer.training_time)
+    metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------- LAYER-WISE KERNELS NEIGHBORS GENERATION ----------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, HIDDEN_SIZE_4),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_4, OUTPUT_SIZE),
+            )
+
+    trainer = TrainerLayerWiseKernel(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            weight_kernels = WEIGHT_KERNELS, bias_kernels = BIAS_KERNELS, weight_strides=WEIGHT_STRIDES, bias_strides=BIAS_STRIDES, delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #-----------------------------------------------------------------------------------
+                            dynamic_kernel_reshaping=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[1]["losses"].append(trainer.loss_history)
+    metrics_list[1]["training_times"].append(trainer.training_time)
+    metrics_list[1]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------- RANDOM SAMPLING NEIGHBORS GENERATION -------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling BEAM SEARCH ASTAR Training Run {run + 1} ---\n")
+
+    model = nn.Sequential(
+            nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_1, HIDDEN_SIZE_2),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_2, HIDDEN_SIZE_3),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_3, HIDDEN_SIZE_4),
+            nn.ReLU(),
+            nn.Linear(HIDDEN_SIZE_4, OUTPUT_SIZE),
+            )
+    
+    trainer = TrainerRandomSampling(model=model,
+                            loss_fn=nn.CrossEntropyLoss(),
+                            quantization_factor=QUANTIZATION_FACTOR,
+                            parameter_range=PARAMETER_RANGE,
+                            debug_mlp=False,
+                            #----------------------------------------------------------------------------------
+                            perturbation_ratio=PERTURBATION_RATIO, search_coverage_ratio=SEARCH_COVERAGE_RATIO,
+                            delta_abs=DELTA_ABS,
+                            #----------------------------------------------------------------------------------
+                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
+                            #----------------------------------------------------------------------------------
+                            dynamic_quantization=False,
+                            #----------------------------------------------------------------------------------
+                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
+                            #----------------------------------------------------------------------------------
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_random_sampling_astar_run_{run + 1}'
+                            )
+
+    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    metrics_list[2]["losses"].append(trainer.loss_history)
+    metrics_list[2]["training_times"].append(trainer.training_time)
+    metrics_list[2]["final_losses"].append(trainer.best_node.h_val)
+    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_classification(trainer, (X_test, Y_test)))
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------- GRADIENT BASE TRAINING ---------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for run in range(RUNS):
+    
+    iris_model = IrisMLP(hidden_layers=[HIDDEN_SIZE_1, HIDDEN_SIZE_2, HIDDEN_SIZE_3, HIDDEN_SIZE_4])
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(iris_model.parameters(), lr=LEARNING_RATE)
+
+    loss_history = []
+
+    start_time = time.perf_counter()
+
+    print(f"\n--- Gradient Training Run {run + 1} ---\n")
+
+    for epoch in range(EPOCHS):
+        total_loss = 0
+        for x_batch, y_batch in train_dataloader:        
+            optimizer.zero_grad()
+            predictions = iris_model(x_batch)
+            loss = criterion(predictions, y_batch)              
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        loss_history.append(loss.item())
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{EPOCHS}], Loss: {total_loss / len(train_dataloader):.6f}')
+
+    end_time = time.perf_counter()
+    training_time = end_time - start_time
+
+    metrics_list[3]["losses"].append(loss_history)
+    metrics_list[3]["training_times"].append(training_time)
+    metrics_list[3]["final_losses"].append(loss_history[-1])
+    metrics_list[3]["evaluation_scores"].append(evaluate_sgd_classification(iris_model, test_dataloader))
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+all_results = {label: metric for label, metric in zip(labels_list, metrics_list)}
+
+save_metrics(all_results, TEST_NAME)
+
+generate_evaluation_statistical_summary(metrics_list,labels_list, TEST_NAME)
+
+generate_plots(metrics_list, labels_list, TEST_NAME, DATASET_NAME)
+
+plot_classification_statistics(metrics_list, labels_list, TEST_NAME, DATASET_NAME)

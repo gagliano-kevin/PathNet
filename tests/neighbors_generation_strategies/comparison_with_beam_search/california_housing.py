@@ -87,7 +87,7 @@ metrics_list = [
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -132,7 +132,7 @@ for run in range(RUNS):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
             nn.ReLU(),
@@ -176,7 +176,7 @@ for run in range(RUNS):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
             nn.ReLU(),
@@ -276,7 +276,7 @@ metrics_list = [
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -322,7 +322,7 @@ for run in range(RUNS):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -369,7 +369,7 @@ for run in range(RUNS):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -471,7 +471,7 @@ metrics_list = [
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -502,7 +502,7 @@ for run in range(RUNS):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_vanilla_astar_run_{run + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar_run_{run + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
@@ -520,7 +520,7 @@ for run in range(RUNS):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  
@@ -569,7 +569,7 @@ for run in range(RUNS):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for run in range(RUNS):
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling Neighbors Generation \t Vanilla ASTAR Training Run {run + 1} ---\n")
+    print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling Neighbors Generation \t Beam Search ASTAR Training Run {run + 1} ---\n")
 
     model = nn.Sequential(
             nn.Linear(INPUT_SIZE, HIDDEN_SIZE_1),  

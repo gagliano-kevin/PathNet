@@ -16,8 +16,8 @@ from source.utils.evaluation_utils import evaluate_pathnet_regression, evaluate_
 from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
 from source.utils.models import SinusoidalMLP
 
-ITERATIONS = 2000
-RUNS = 10
+ITERATIONS = 1000
+RUNS = 5
 
 MODEL_NAME_PREFIX = "sine_model"
 DATASET_NAME = "Noisy Sine Function"

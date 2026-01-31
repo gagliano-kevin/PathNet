@@ -14,8 +14,8 @@ from source.utils.plot_utils import generate_plots, save_metrics, generate_evalu
 from source.utils.evaluation_utils import evaluate_sgd_classification, evaluate_pathnet_classification
 from source.utils.models import WineMLP
 
-ITERATIONS = 2000
-RUNS = 10
+ITERATIONS = 1000
+RUNS = 5
 
 MODEL_NAME_PREFIX = "wine_model"
 DATASET_NAME = "Wine Quality"

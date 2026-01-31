@@ -31,6 +31,11 @@ LOSS_IMPROVEMENT_THRESHOLD = 1e-3
 PARAMETER_RANGE = (-10, 10)
 QUANTIZATION_FACTOR = 10
 
+X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
+print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
+print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
+print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
+
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,11 +94,6 @@ for kernel_size in range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1):
 labels_list = [f"Dyn. KS=[{MAX_WEIGHT_KERNEL[0]}x{MAX_WEIGHT_KERNEL[1]}-{MIN_WEIGHT_KERNEL[0]}x{MIN_WEIGHT_KERNEL[1]}]"]
 for kernel_size in range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1):
     labels_list.append(f"Stat. KS={kernel_size}x{kernel_size}")
-                       
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
-print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
-print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DYNAMIC ASTAR TRAINING ---------------------------------------------------------
@@ -140,7 +140,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -253,11 +253,6 @@ for kernel_size in range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1):
 labels_list = [f"Dyn. KS=[{MAX_WEIGHT_KERNEL[0]}x{MAX_WEIGHT_KERNEL[1]}-{MIN_WEIGHT_KERNEL[0]}x{MIN_WEIGHT_KERNEL[1]}]"]
 for kernel_size in range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1):
     labels_list.append(f"Stat. KS={kernel_size}x{kernel_size}")
-                       
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
-print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
-print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DYNAMIC ASTAR TRAINING ---------------------------------------------------------
@@ -306,7 +301,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -351,7 +346,7 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -421,11 +416,6 @@ labels_list = [f"Dyn. KS=[{MAX_WEIGHT_KERNEL[0]}x{MAX_WEIGHT_KERNEL[1]}-{MIN_WEI
 for kernel_size in range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNEL[0] - 1, -1):
     labels_list.append(f"Stat. KS={kernel_size}x{kernel_size}")
                        
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
-print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
-print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DYNAMIC ASTAR TRAINING ---------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -475,7 +465,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -522,7 +512,7 @@ for index, kernel_size in enumerate(range(MAX_WEIGHT_KERNEL[0], MIN_WEIGHT_KERNE
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------

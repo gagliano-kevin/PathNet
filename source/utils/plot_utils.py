@@ -43,13 +43,14 @@ def save_metrics(metrics_dict, filename):
 
 
 
-def load_metrics(filename):
+def load_metrics(filename, directory=""):
     """
     Loads metrics from a JSON file inside the specified directory.
     :param filename: Directory name
     :return: Dictionary containing the loaded data or None if failed
     """
-    file_path = os.path.join(filename, f"{filename}.json")
+    #file_path = os.path.join(filename, f"{filename}.json")
+    file_path = os.path.join(directory, filename, f"{filename}.json")
     
     if not os.path.exists(file_path):
         print(f"File {file_path} not found.")
@@ -79,7 +80,7 @@ def plot_mean_loss_with_std(labels, mean_losses, std_losses, runs, filename="mea
     Plots the mean loss with shaded standard deviation.
     Legend includes the sigma description but is placed outside to avoid overlap.
     """
-    plt.figure(figsize=(12, 6)) 
+    plt.figure(figsize=(14, 6)) #(12,6) is the old size 
     colors = plt.cm.tab10(np.linspace(0, 1, len(labels))) 
 
     for i, (label, mean, std) in enumerate(zip(labels, mean_losses, std_losses)):
@@ -110,7 +111,7 @@ def plot_mean_loss_with_std(labels, mean_losses, std_losses, runs, filename="mea
 
 def plot_final_loss_distribution(labels, final_losses_list, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
     """final_losses_list: list of np.arrays containing final losses for each run"""
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(14, 6))     #(10,6) is the old size
     
     bplot = plt.boxplot(final_losses_list, vert=True, patch_artist=True, labels=labels, 
                         medianprops=dict(color='darkred'))
@@ -389,7 +390,7 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
     eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
     num_metrics = len(eval_keys)
     
-    fig, axes = plt.subplots(1, num_metrics, figsize=(5 * num_metrics, 6))
+    fig, axes = plt.subplots(1, num_metrics, figsize=(7 * num_metrics, 6))  #(5 * num_metrics, 6) is the old size
     if num_metrics == 1: axes = [axes]
 
     for i, metric in enumerate(eval_keys):
@@ -409,7 +410,7 @@ def plot_regression_statistics(data_dicts, labels, filename, dataset_name="Datas
     plt.close()
 
     # Mean Loss Convergence Plot
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(14, 6)) #(10,6) is the old size
     for d, label in zip(data_dicts, labels):
         # Calculate max length and pad
         max_len = max(len(run) for run in d["losses"])
@@ -442,7 +443,7 @@ def plot_classification_statistics(data_dicts, labels, filename, dataset_name="D
     eval_keys = list(data_dicts[0]["evaluation_scores"][0].keys())
     num_metrics = len(eval_keys)
     
-    fig, axes = plt.subplots(1, num_metrics, figsize=(5 * num_metrics, 6))
+    fig, axes = plt.subplots(1, num_metrics, figsize=(7 * num_metrics, 6))  #(5 * num_metrics, 6) is the old size
     if num_metrics == 1: axes = [axes]
 
     for i, metric in enumerate(eval_keys):
@@ -463,7 +464,7 @@ def plot_classification_statistics(data_dicts, labels, filename, dataset_name="D
     plt.close()
 
     # Training Loss Convergence (Classification)
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(14, 6)) #(10,6) is the old size
     for d, label in zip(data_dicts, labels):
         # Calculate max length and pad
         max_len = max(len(run) for run in d["losses"])

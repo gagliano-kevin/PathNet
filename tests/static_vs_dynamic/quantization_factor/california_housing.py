@@ -31,6 +31,10 @@ E_S_PATIENCE = 200
 LOSS_IMPROVEMENT_THRESHOLD = 1e-3
 PARAMETER_RANGE = (-10, 10)
 
+X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
+print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
+print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
+print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -85,11 +89,6 @@ for qf_exp in range(start_exp, end_exp + 1):
 labels_list = ["Dynamic QF [1e1-1e4]"]
 for qf_exp in range(start_exp, end_exp + 1):
     labels_list.append(f"Static QF=1e{int(qf_exp)}")
-                       
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
-print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
-print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DYNAMIC ASTAR TRAINING ---------------------------------------------------------
@@ -134,7 +133,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -179,7 +178,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -241,7 +240,6 @@ labels_list = ["Dynamic QF [1e1-1e4]"]
 for qf_exp in range(start_exp, end_exp + 1):
     labels_list.append(f"Static QF=1e{int(qf_exp)}")
 
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DYNAMIC ASTAR TRAINING ---------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -286,7 +284,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -333,7 +331,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -396,7 +394,6 @@ labels_list = ["Dynamic QF [1e1-1e4]"]
 for qf_exp in range(start_exp, end_exp + 1):
     labels_list.append(f"Static QF=1e{int(qf_exp)}")
 
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- DYNAMIC ASTAR TRAINING ---------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -444,7 +441,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -494,7 +491,7 @@ for index, exponent in enumerate(range(start_exp, end_exp + 1)):
         metrics_list[index + 1]["losses"].append(trainer.loss_history)
         metrics_list[index + 1]["training_times"].append(trainer.training_time)
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------

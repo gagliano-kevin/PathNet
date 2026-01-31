@@ -17,7 +17,7 @@ import torch.nn as nn
 from source.PathNet import Trainer, TrainerLayerWiseKernel, TrainerRandomSampling
 from source.utils.dataset_utils.housing_utils import get_california_housing_data
 from source.utils.evaluation_utils import evaluate_pathnet_regression
-from source.utils.plot_utils import generate_plots, format_sci,  save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
+from source.utils.plot_utils import generate_plots, format_sci, save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics
 
 ITERATIONS = 2000
 RUNS = 5
@@ -30,6 +30,10 @@ LOSS_IMPROVEMENT_THRESHOLD = 1e-3
 PARAMETER_RANGE = (-10, 10)
 BEAM_WIDTH = 1e3
 
+X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
+print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
+print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
+print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -78,11 +82,6 @@ metrics_list = [
     } for _ in range(len(labels_list))
 ]
 
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
-print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
-print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -125,7 +124,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -169,7 +168,7 @@ for run in range(RUNS):
     metrics_list[1]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[1]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[1]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -211,7 +210,7 @@ for run in range(RUNS):
     metrics_list[2]["training_times"].append(trainer.training_time)
     metrics_list[2]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[2]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
-    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -315,7 +314,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -362,7 +361,7 @@ for run in range(RUNS):
     metrics_list[1]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[1]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[1]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -407,7 +406,7 @@ for run in range(RUNS):
     metrics_list[2]["training_times"].append(trainer.training_time)
     metrics_list[2]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[2]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
-    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
@@ -513,7 +512,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -562,7 +561,7 @@ for run in range(RUNS):
     metrics_list[1]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[1]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[1]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -609,7 +608,7 @@ for run in range(RUNS):
     metrics_list[2]["training_times"].append(trainer.training_time)
     metrics_list[2]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[2]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
-    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[2]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------

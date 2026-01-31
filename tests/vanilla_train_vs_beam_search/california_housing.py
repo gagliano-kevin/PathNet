@@ -34,6 +34,11 @@ PARAMETER_RANGE = (-10, 10)
 
 BEAM_WIDTHS = [1e2, 1e3, 1e4]
 
+X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
+print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
+print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
+print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
+
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -84,11 +89,6 @@ for beam_width in BEAM_WIDTHS:
 labels_list = ["Standard A*"]
 for beam_width in BEAM_WIDTHS:
     labels_list.append(f"Beam Search BW={format_sci(beam_width)}")
-                       
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
-print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
-print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- VANILLA ASTAR TRAINING ---------------------------------------------------------
@@ -132,7 +132,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ for index, beam_width in enumerate(BEAM_WIDTHS):
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
         metrics_list[index + 1]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
         metrics_list[index + 1]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -244,7 +244,6 @@ labels_list = ["Standard A*"]
 for beam_width in BEAM_WIDTHS:
     labels_list.append(f"Beam Search BW={format_sci(beam_width)}")
 
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- VANILLA ASTAR TRAINING ---------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -288,7 +287,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -337,7 +336,7 @@ for index, beam_width in enumerate(BEAM_WIDTHS):
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
         metrics_list[index + 1]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
         metrics_list[index + 1]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -402,7 +401,6 @@ labels_list = ["Standard A*"]
 for beam_width in BEAM_WIDTHS:
     labels_list.append(f"Beam Search BW={format_sci(beam_width)}")
 
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- VANILLA ASTAR TRAINING ---------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -449,7 +447,7 @@ for run in range(RUNS):
     metrics_list[0]["final_losses"].append(trainer.best_node.h_val)
     metrics_list[0]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
     metrics_list[0]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+    metrics_list[0]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -501,7 +499,7 @@ for index, beam_width in enumerate(BEAM_WIDTHS):
         metrics_list[index + 1]["final_losses"].append(trainer.best_node.h_val)
         metrics_list[index + 1]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
         metrics_list[index + 1]["dynamic_kernel_reshaping_iterations"].append(trainer.dynamic_adjustments_log["dynamic_kernel_reshaping_iterations"])
-        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+        metrics_list[index + 1]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------

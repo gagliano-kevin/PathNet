@@ -33,6 +33,10 @@ DELTA_ABS = None
 PERTURBATION_RATIOS = [0.01, 0.05, 0.1]       # [1%, 5%, 10%]: percentage of the random sampled parameters (per each layer) that will be perturbed per each neighbor
 SEARCH_COVERAGE_RATIOS = [0.05, 0.1, 0.2]     # [5%, 10%, 20%]: percentage of per layer params that determines the total number of neighbors generated per layer.
 
+X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
+print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
+print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
+print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 # =========================================================================================================================================================
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,11 +67,6 @@ metrics_list = [
         "evaluation_scores": []
     } for _ in range(len(PERTURBATION_RATIOS) * len(SEARCH_COVERAGE_RATIOS))
 ]
-
-X_train, Y_train, X_val, Y_val, X_test, Y_test = get_california_housing_data()
-print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-print(f"Validation Data Shape: {X_val.shape}, {Y_val.shape}")
-print(f"Testing Data Shape: {X_test.shape}, {Y_test.shape}\n")
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -112,7 +111,7 @@ for p_idx, perturbation_ratio in enumerate(PERTURBATION_RATIOS):
             metrics_list[idx]["training_times"].append(trainer.training_time)
             metrics_list[idx]["final_losses"].append(trainer.best_node.h_val)
             metrics_list[idx]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
-            metrics_list[idx]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+            metrics_list[idx]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -202,7 +201,7 @@ for p_idx, perturbation_ratio in enumerate(PERTURBATION_RATIOS):
             metrics_list[idx]["training_times"].append(trainer.training_time)
             metrics_list[idx]["final_losses"].append(trainer.best_node.h_val)
             metrics_list[idx]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
-            metrics_list[idx]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+            metrics_list[idx]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
@@ -294,7 +293,7 @@ for p_idx, perturbation_ratio in enumerate(PERTURBATION_RATIOS):
             metrics_list[idx]["training_times"].append(trainer.training_time)
             metrics_list[idx]["final_losses"].append(trainer.best_node.h_val)
             metrics_list[idx]["dynamic_quantization_iterations"].append(trainer.dynamic_adjustments_log["dynamic_quantization_iterations"])
-            metrics_list[idx]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_test, Y_test)))
+            metrics_list[idx]["evaluation_scores"].append(evaluate_pathnet_regression(trainer, (X_val, Y_val)))
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------

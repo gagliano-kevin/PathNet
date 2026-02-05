@@ -1,0 +1,44 @@
+\chapter{Results Visualization and Statistical Evaluation}
+\label{chap:plot_logic}
+
+To ensure a rigorous comparative analysis between the proposed $A^*$ search framework and the Adam optimizer, we utilize a dual-plotting methodology. This approach allows us to observe not only the average performance but also the reliability and variance of the training processes across multiple independent trials. As Adam represents the state-of-the-art in adaptive gradient-based optimization, it serves as the primary benchmark for evaluating the effectiveness of the $A^*$ approach in the weight space.
+\section{Convergence Analysis: Mean Loss and Variance}
+The first visualization focuses on the temporal evolution of the training process. By plotting the loss as a function of iterations, we observe the convergence velocity and the stability of the optimization path.
+
+\subsection{Mean Loss Trajectory ($\bar{L}$)}
+The primary indicator in this plot is the solid line representing the average loss across $N$ independent runs. This trajectory reveals the global behavior of the optimizer:
+\begin{itemize}
+    \item \textbf{Convergence Speed:} The slope of the curve indicates how rapidly the algorithm minimizes error.
+    \item \textbf{Plateau Level:} The terminal value of the line represents the average expected performance upon reaching $I_{\text{max}}$.
+\end{itemize}
+
+\subsection{Standard Deviation Shading ($\pm 1\sigma$)}
+The shaded region surrounding the mean line represents the standard deviation ($\sigma$). This area is a critical metric for \textbf{algorithmic robustness}:
+\begin{itemize}
+    \item \textbf{High Consistency (Narrow Band):} A narrow band suggests that the algorithm is insensitive to initial weight configurations and consistently follows a similar optimization path.
+    \item \textbf{High Volatility (Wide Band):} A wide band indicates that the search outcome is highly dependent on initialization, suggesting that the algorithm may frequently encounter diverse local minima.
+\end{itemize}
+
+
+
+\section{Distributional Analysis: Final Loss Box Plots}
+While convergence plots show the "how," box plots provide a definitive "what" regarding the final state of the models. These plots summarize the statistical distribution of the terminal loss values achieved at the end of training.
+
+\subsection{Component Interpretation}
+The box plot provides a five-number summary of the terminal results:
+\begin{itemize}
+    \item \textbf{The Median:} The central horizontal line represents the 50th percentile. This is our primary metric for "typical" performance, as it remains unaffected by isolated training failures.
+    \item \textbf{The Interquartile Range (IQR):} The vertical box spans from the 25th ($Q_1$) to the 75th ($Q_3$) percentile. A smaller IQR indicates that the algorithm's results are highly clustered.
+    \item \textbf{Whiskers:} These represent the spread of the data excluding extreme cases, providing a view of the reliable range of the optimizer.
+\end{itemize}
+
+
+
+\subsection{Formal Identification of Outliers}
+To maintain statistical integrity, we utilize a standardized method for identifying anomalous runs (outliers). This prevents rare, failed training attempts from skewing the interpretation of the algorithm's general capability.
+
+The length of the whiskers is determined by the $IQR$, where $IQR = Q_3 - Q_1$. Any data point $L_{final}$ is considered an \textbf{outlier} if it falls outside the following boundaries:
+$$ \text{Lower Boundary} = Q_1 - 1.5 \times IQR $$
+$$ \text{Upper Boundary} = Q_3 + 1.5 \times IQR $$
+
+In our analysis, outliers appearing above the upper whisker are particularly noteworthy, as they represent runs where the search failed to escape high-loss regions of the parameter space.

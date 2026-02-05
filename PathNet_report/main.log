@@ -1,0 +1,1030 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.11.7)  5 FEB 2026 23:34
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/home/kevin/Desktop/PathNet_report/main.tex
+(/home/kevin/Desktop/PathNet_report/main.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-22>
+(/usr/share/texlive/texmf-dist/tex/latex/base/report.cls
+Document Class: report 2023/05/17 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count187
+\c@chapter=\count188
+\c@section=\count189
+\c@subsection=\count190
+\c@subsubsection=\count191
+\c@paragraph=\count192
+\c@subparagraph=\count193
+\c@figure=\count194
+\c@table=\count195
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\bibindent=\dimen140
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen141
+\Gin@req@width=\dimen142
+) (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+ (/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+ (/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+))
+\Gm@cnth=\count196
+\Gm@cntv=\count197
+\c@Gm@tempcnt=\count198
+\Gm@bindingoffset=\dimen143
+\Gm@wd@mp=\dimen144
+\Gm@odd@mp=\dimen145
+\Gm@even@mp=\dimen146
+\Gm@layoutwidth=\dimen147
+\Gm@layoutheight=\dimen148
+\Gm@layouthoffset=\dimen149
+\Gm@layoutvoffset=\dimen150
+\Gm@dimlist=\toks18
+) (/usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2022/12/04 v6.7b set line spacing
+) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2023/05/13 v2.17o AMS math features
+\@mathmargin=\skip50
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+ (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks19
+\ex@=\dimen151
+)) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen152
+) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count199
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count266
+\leftroot@=\count267
+LaTeX Info: Redefining \overline on input line 399.
+LaTeX Info: Redefining \colon on input line 410.
+\classnum@=\count268
+\DOTSCASE@=\count269
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box51
+\strutbox@=\box52
+LaTeX Info: Redefining \big on input line 722.
+LaTeX Info: Redefining \Big on input line 723.
+LaTeX Info: Redefining \bigg on input line 724.
+LaTeX Info: Redefining \Bigg on input line 725.
+\big@size=\dimen153
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count270
+LaTeX Info: Redefining \bmod on input line 905.
+LaTeX Info: Redefining \pmod on input line 910.
+LaTeX Info: Redefining \smash on input line 940.
+LaTeX Info: Redefining \relbar on input line 970.
+LaTeX Info: Redefining \Relbar on input line 971.
+\c@MaxMatrixCols=\count271
+\dotsspace@=\muskip16
+\c@parentequation=\count272
+\dspbrk@lvl=\count273
+\tag@help=\toks20
+\row@=\count274
+\column@=\count275
+\maxfields@=\count276
+\andhelp@=\toks21
+\eqnshift@=\dimen154
+\alignsep@=\dimen155
+\tagshift@=\dimen156
+\tagwidth@=\dimen157
+\totwidth@=\dimen158
+\lineht@=\dimen159
+\@envbody=\toks22
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+) (/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+\pgfutil@everybye=\toks24
+\pgfutil@tempdima=\dimen160
+\pgfutil@tempdimb=\dimen161
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+\pgfutil@abb=\box53
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex (/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)
+Package: pgfrcs 2023-01-15 v3.1.10 (3.1.10)
+))
+Package: pgf 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks25
+\pgfkeys@temptoks=\toks26
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfiltered.code.tex
+\pgfkeys@tmptoks=\toks27
+))
+\pgf@x=\dimen162
+\pgf@y=\dimen163
+\pgf@xa=\dimen164
+\pgf@ya=\dimen165
+\pgf@xb=\dimen166
+\pgf@yb=\dimen167
+\pgf@xc=\dimen168
+\pgf@yc=\dimen169
+\pgf@xd=\dimen170
+\pgf@yd=\dimen171
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count277
+\c@pgf@countb=\count278
+\c@pgf@countc=\count279
+\c@pgf@countd=\count280
+\t@pgf@toka=\toks28
+\t@pgf@tokb=\toks29
+\t@pgf@tokc=\toks30
+\pgf@sys@id@count=\count281
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
+File: pgf.cfg 2023-01-15 v3.1.10 (3.1.10)
+)
+Driver file for pgf: pgfsys-pdftex.def
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+File: pgfsys-pdftex.def 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def
+File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
+))) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfsyssoftpath@smallbuffer@items=\count282
+\pgfsyssoftpath@bigbuffer@items=\count283
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
+File: pgfsysprotocol.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1350.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1354.
+Package xcolor Info: Model `RGB' extended on input line 1366.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1368.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen172
+\pgfmath@count=\count284
+\pgfmath@box=\box54
+\pgfmath@toks=\toks31
+\pgfmath@stack@operand=\toks32
+\pgfmath@stack@operation=\toks33
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometric.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarithmetics.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count285
+)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
+File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@picminx=\dimen173
+\pgf@picmaxx=\dimen174
+\pgf@picminy=\dimen175
+\pgf@picmaxy=\dimen176
+\pgf@pathminx=\dimen177
+\pgf@pathmaxx=\dimen178
+\pgf@pathminy=\dimen179
+\pgf@pathmaxy=\dimen180
+\pgf@xx=\dimen181
+\pgf@xy=\dimen182
+\pgf@yx=\dimen183
+\pgf@yy=\dimen184
+\pgf@zx=\dimen185
+\pgf@zy=\dimen186
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@path@lastx=\dimen187
+\pgf@path@lasty=\dimen188
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex
+File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@shorten@end@additional=\dimen189
+\pgf@shorten@start@additional=\dimen190
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfpic=\box55
+\pgf@hbox=\box56
+\pgf@layerbox@main=\box57
+\pgf@picture@serial@count=\count286
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgflinewidth=\dimen191
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex
+File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@pt@x=\dimen192
+\pgf@pt@y=\dimen193
+\pgf@pt@temp=\dimen194
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+File: pgfcorequick.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex
+File: pgfcoreobjects.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex
+File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowsep=\dimen195
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@max=\dimen196
+\pgf@sys@shading@range@num=\count287
+\pgf@shadingcount=\count288
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
+File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfexternal@startupbox=\box58
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex
+File: pgfcoretransparency.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
+File: pgfcorepatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex
+File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodeparttextbox=\box59
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
+Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
+\pgf@nodesepstart=\dimen197
+\pgf@nodesepend=\dimen198
+) (/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
+Package: pgfcomp-version-1-18 2023-01-15 v3.1.10 (3.1.10)
+)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
+\pgffor@iter=\dimen199
+\pgffor@skip=\dimen256
+\pgffor@stack=\toks34
+\pgffor@toks=\toks35
+)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+Package: tikz 2023-01-15 v3.1.10 (3.1.10)
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@plot@mark@count=\count289
+\pgfplotmarksize=\dimen257
+)
+\tikz@lastx=\dimen258
+\tikz@lasty=\dimen259
+\tikz@lastxsaved=\dimen260
+\tikz@lastysaved=\dimen261
+\tikz@lastmovetox=\dimen262
+\tikz@lastmovetoy=\dimen263
+\tikzleveldistance=\dimen264
+\tikzsiblingdistance=\dimen265
+\tikz@figbox=\box60
+\tikz@figbox@bg=\box61
+\tikz@tempbox=\box62
+\tikz@tempbox@bg=\box63
+\tikztreelevel=\count290
+\tikznumberofchildren=\count291
+\tikznumberofcurrentchild=\count292
+\tikz@fig@count=\count293
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfmatrixcurrentrow=\count294
+\pgfmatrixcurrentcolumn=\count295
+\pgf@matrix@numberofcolumns=\count296
+)
+\tikz@expandcount=\count297
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))) (/usr/share/texlive/texmf-dist/tex/latex/tools/bm.sty
+Package: bm 2023/07/08 v1.2f Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup4
+\symboldletters=\mathgroup5
+\symboldsymbols=\mathgroup6
+Package bm Info: No bold for \OMX/cmex/m/n, using \pmb.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 149.
+) (/usr/share/texlive/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2023/03/30 v1.9f multicolumn formatting (FMi)
+\c@tracingmulticols=\count298
+\mult@box=\box64
+\multicol@leftmargin=\dimen266
+\c@unbalance=\count299
+\c@collectmore=\count300
+\doublecol@number=\count301
+\multicoltolerance=\count302
+\multicolpretolerance=\count303
+\full@width=\dimen267
+\page@free=\dimen268
+\premulticols=\dimen269
+\postmulticols=\dimen270
+\multicolsep=\skip53
+\multicolbaselineskip=\skip54
+\partial@page=\box65
+\last@line=\box66
+\mc@boxedresult=\box67
+\maxbalancingoverflow=\dimen271
+\mult@rightbox=\box68
+\mult@grightbox=\box69
+\mult@firstbox=\box70
+\mult@gfirstbox=\box71
+\@tempa=\box72
+\@tempa=\box73
+\@tempa=\box74
+\@tempa=\box75
+\@tempa=\box76
+\@tempa=\box77
+\@tempa=\box78
+\@tempa=\box79
+\@tempa=\box80
+\@tempa=\box81
+\@tempa=\box82
+\@tempa=\box83
+\@tempa=\box84
+\@tempa=\box85
+\@tempa=\box86
+\@tempa=\box87
+\@tempa=\box88
+\@tempa=\box89
+\@tempa=\box90
+\@tempa=\box91
+\@tempa=\box92
+\@tempa=\box93
+\@tempa=\box94
+\@tempa=\box95
+\@tempa=\box96
+\@tempa=\box97
+\@tempa=\box98
+\@tempa=\box99
+\@tempa=\box100
+\@tempa=\box101
+\@tempa=\box102
+\@tempa=\box103
+\@tempa=\box104
+\@tempa=\box105
+\@tempa=\box106
+\@tempa=\box107
+\c@minrows=\count304
+\c@columnbadness=\count305
+\c@finalcolumnbadness=\count306
+\last@try=\dimen272
+\multicolovershoot=\dimen273
+\multicolundershoot=\dimen274
+\mult@nat@firstbox=\box108
+\colbreak@box=\box109
+\mc@col@check@num=\count307
+) (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count308
+\lst@gtempboxa=\box110
+\lst@token=\toks36
+\lst@length=\count309
+\lst@currlwidth=\dimen275
+\lst@column=\count310
+\lst@pos=\count311
+\lst@lostspace=\dimen276
+\lst@width=\dimen277
+\lst@newlines=\count312
+\lst@lineno=\count313
+\lst@maxwidth=\dimen278
+ (/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
+\c@lstnumber=\count314
+\lst@skipnumbers=\count315
+\lst@framebox=\box111
+) (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2023/02/27 1.9 listings configuration
+))
+Package: listings 2023/02/27 1.9 (Carsten Heinz)
+ (/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
+ (/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+ (/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen279
+\captionmargin=\dimen280
+\caption@leftmargin=\dimen281
+\caption@rightmargin=\dimen282
+\caption@width=\dimen283
+\caption@indent=\dimen284
+\caption@parindent=\dimen285
+\caption@hangindent=\dimen286
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count316
+\c@continuedfloat=\count317
+Package caption Info: listings package is loaded.
+)
+Package caption Info: New subtype `subfigure' on input line 238.
+\c@subfigure=\count318
+Package caption Info: New subtype `subtable' on input line 238.
+\c@subtable=\count319
+) (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup7
+\symAMSb=\mathgroup8
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (/usr/share/texlive/texmf-dist/tex/latex/tocloft/tocloft.sty
+Package: tocloft 2017/08/31 v2.3i parameterised ToC, etc., typesetting
+Package tocloft Info: The document has chapter divisions on input line 51.
+\cftparskip=\skip55
+\cftbeforetoctitleskip=\skip56
+\cftaftertoctitleskip=\skip57
+\cftbeforepartskip=\skip58
+\cftpartnumwidth=\skip59
+\cftpartindent=\skip60
+\cftbeforechapskip=\skip61
+\cftchapindent=\skip62
+\cftchapnumwidth=\skip63
+\cftbeforesecskip=\skip64
+\cftsecindent=\skip65
+\cftsecnumwidth=\skip66
+\cftbeforesubsecskip=\skip67
+\cftsubsecindent=\skip68
+\cftsubsecnumwidth=\skip69
+\cftbeforesubsubsecskip=\skip70
+\cftsubsubsecindent=\skip71
+\cftsubsubsecnumwidth=\skip72
+\cftbeforeparaskip=\skip73
+\cftparaindent=\skip74
+\cftparanumwidth=\skip75
+\cftbeforesubparaskip=\skip76
+\cftsubparaindent=\skip77
+\cftsubparanumwidth=\skip78
+\cftbeforeloftitleskip=\skip79
+\cftafterloftitleskip=\skip80
+\cftbeforefigskip=\skip81
+\cftfigindent=\skip82
+\cftfignumwidth=\skip83
+\c@lofdepth=\count320
+\c@lotdepth=\count321
+\cftbeforelottitleskip=\skip84
+\cftafterlottitleskip=\skip85
+\cftbeforetabskip=\skip86
+\cfttabindent=\skip87
+\cfttabnumwidth=\skip88
+) (/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count322
+\float@exts=\toks37
+\float@box=\box112
+\@float@everytoks=\toks38
+\@floatcapt=\box113
+) (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count323
+\l__pdf_internal_box=\box114
+) (./main.aux)
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+ (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count324
+\scratchdimen=\dimen287
+\scratchbox=\box115
+\nofMPsegments=\count325
+\nofMParguments=\count326
+\everyMPshowfont=\toks39
+\MPscratchCnt=\count327
+\MPscratchDim=\dimen288
+\MPnumerator=\count328
+\makeMPintoPDFobject=\count329
+\everyMPtoPDFconversion=\toks40
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(92.14519pt, 430.00462pt, 92.14519pt)
+* v-part:(T,H,B)=(95.39737pt, 556.47656pt, 143.09605pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=430.00462pt
+* \textheight=556.47656pt
+* \oddsidemargin=19.8752pt
+* \evensidemargin=19.8752pt
+* \topmargin=-13.87262pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=44.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+\c@lstlisting=\count330
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
+Package caption Info: End \AtBeginDocument code.
+(./title.tex
+*geometry* verbose mode - [ newgeometry ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(56.9055pt, 500.484pt, 56.9055pt)
+* v-part:(T,H,B)=(56.9055pt, 681.15898pt, 56.9055pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=500.484pt
+* \textheight=681.15898pt
+* \oddsidemargin=-15.36449pt
+* \evensidemargin=-15.36449pt
+* \topmargin=-52.36449pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=44.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+<figures/LOGO_UNISI_VERTICALE_NERO_0.pdf, id=4, 623.75833pt x 639.06552pt>
+File: figures/LOGO_UNISI_VERTICALE_NERO_0.pdf Graphic file (type pdf)
+<use figures/LOGO_UNISI_VERTICALE_NERO_0.pdf>
+Package pdftex.def Info: figures/LOGO_UNISI_VERTICALE_NERO_0.pdf  used on input line 5.
+(pdftex.def)             Requested size: 150.14671pt x 153.82741pt.
+ [1
+
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./figures/LOGO_UNISI_VERTICALE_NERO_0.pdf>]) (./main.toc
+LaTeX Font Info:    Trying to load font information for U+msa on input line 1.
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 1.
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) [1] [2] [3] [4])
+\tf@toc=\write4
+\openout4 = `main.toc'.
+
+ [5] (./chapters/chapter_1.tex
+Chapter 1.
+[1
+
+] [2{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] [3] [4]) (./chapters/chapter_2.tex [5]
+Chapter 2.
+[6
+
+] [7]) (./chapters/chapter_3.tex [8] [9]
+Chapter 3.
+[10
+
+]
+Overfull \hbox (23.21313pt too wide) in paragraph at lines 28--28
+[]\OT1/cmr/bx/n/17.28 Selected Gradient-Based Bench-mark: The Adam
+ []
+
+[11]) (./chapters/chapter_4.tex [12]
+Chapter 4.
+[13
+
+] [14]
+<figures/layer/matrix_1.jpg, id=109, 1069.9975pt x 381.425pt>
+File: figures/layer/matrix_1.jpg Graphic file (type jpg)
+<use figures/layer/matrix_1.jpg>
+Package pdftex.def Info: figures/layer/matrix_1.jpg  used on input line 59.
+(pdftex.def)             Requested size: 301.00192pt x 107.29878pt.
+ [15]
+<figures/layer/layer_1.jpg, id=113, 1049.9225pt x 1045.9075pt>
+File: figures/layer/layer_1.jpg Graphic file (type jpg)
+<use figures/layer/layer_1.jpg>
+Package pdftex.def Info: figures/layer/layer_1.jpg  used on input line 67.
+(pdftex.def)             Requested size: 301.00192pt x 299.84225pt.
+ [16 <./figures/layer/matrix_1.jpg> <./figures/layer/layer_1.jpg>] [17] [18] [19] [20] [21]) (./chapters/chapter_5.tex [22]
+Chapter 5.
+<figures/sine_tests/sine_dataset.png, id=136, 505.89pt x 361.35pt>
+File: figures/sine_tests/sine_dataset.png Graphic file (type png)
+<use figures/sine_tests/sine_dataset.png>
+Package pdftex.def Info: figures/sine_tests/sine_dataset.png  used on input line 22.
+(pdftex.def)             Requested size: 344.005pt x 245.72026pt.
+[23
+
+] [24 <./figures/sine_tests/sine_dataset.png>]) (./chapters/chapter_6.tex [25]
+Chapter 6.
+[26
+
+] [27]) (./chapters/chapter_7.tex [28]
+Chapter 7.
+[29
+
+] [30]) (./chapters/chapter_8.tex [31]
+Chapter 8.
+[32
+
+] [33] [34] [35]
+<figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_convergence.png, id=180, 722.7pt x 433.62pt>
+File: figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_convergence.png Graphic file (type png)
+<use figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_convergence.png>
+Package pdftex.def Info: figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_convergence.png  used on input line 97.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [36 <./figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_convergence.png>]
+<figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_final_loss.png, id=185, 578.16pt x 433.62pt>
+File: figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_final_loss.png Graphic file (type png)
+<use figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_final_loss.png>
+Package pdftex.def Info: figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_final_loss.png  used on input line 110.
+(pdftex.def)             Requested size: 365.50655pt x 274.1282pt.
+ [37 <./figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_final_loss.png>]
+<figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_metrics_distribution.png, id=191, 1445.4pt x 433.62pt>
+File: figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_metrics_distribution.png Graphic file (type png)
+<use figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_metrics_distribution.png>
+Package pdftex.def Info: figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_metrics_distribution.png  used on input line 122.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [38 <./figures/results/small_net_dynamic_kernels_reshaping/small_net_dynamic_kernels_reshaping_metrics_distribution.png>]
+<figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png, id=197, 722.7pt x 433.62pt>
+File: figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png Graphic file (type png)
+<use figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png>
+Package pdftex.def Info: figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png  used on input line 168.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [39 <./figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png>]
+<figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_final_loss.png, id=203, 578.16pt x 433.62pt>
+File: figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_final_loss.png Graphic file (type png)
+<use figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_final_loss.png>
+Package pdftex.def Info: figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_final_loss.png  used on input line 181.
+(pdftex.def)             Requested size: 365.50655pt x 274.1282pt.
+ [40 <./figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_final_loss.png>]
+<figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_metrics_distribution.png, id=208, 1445.4pt x 433.62pt>
+File: figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_metrics_distribution.png Graphic file (type png)
+<use figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_metrics_distribution.png>
+Package pdftex.def Info: figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_metrics_distribution.png  used on input line 194.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [41 <./figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_metrics_distribution.png>]
+<figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_convergence.png, id=213, 722.7pt x 433.62pt>
+File: figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_convergence.png Graphic file (type png)
+<use figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_convergence.png>
+Package pdftex.def Info: figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_convergence.png  used on input line 240.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [42 <./figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_convergence.png>]
+<figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_final_loss.png, id=218, 867.24pt x 433.62pt>
+File: figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_final_loss.png Graphic file (type png)
+<use figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_final_loss.png>
+Package pdftex.def Info: figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_final_loss.png  used on input line 251.
+(pdftex.def)             Requested size: 365.50655pt x 182.75433pt.
+ [43 <./figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_final_loss.png>]
+<figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_metrics_distribution.png, id=224, 1445.4pt x 433.62pt>
+File: figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_metrics_distribution.png Graphic file (type png)
+<use figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_metrics_distribution.png>
+Package pdftex.def Info: figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_metrics_distribution.png  used on input line 264.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [44 <./figures/results/big_net_dynamic_kernels_reshaping/big_net_dynamic_kernels_reshaping_metrics_distribution.png>] [45] [46]
+<figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_convergence.png, id=235, 722.7pt x 433.62pt>
+File: figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_convergence.png Graphic file (type png)
+<use figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_convergence.png>
+Package pdftex.def Info: figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_convergence.png  used on input line 344.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [47 <./figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_convergence.png>]
+<figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_final_loss.png, id=240, 578.16pt x 433.62pt>
+File: figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_final_loss.png Graphic file (type png)
+<use figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_final_loss.png>
+Package pdftex.def Info: figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_final_loss.png  used on input line 357.
+(pdftex.def)             Requested size: 365.50655pt x 274.1282pt.
+ [48 <./figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_final_loss.png>]
+<figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_metrics_distribution.png, id=245, 1445.4pt x 433.62pt>
+File: figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_metrics_distribution.png Graphic file (type png)
+<use figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_metrics_distribution.png>
+Package pdftex.def Info: figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_metrics_distribution.png  used on input line 369.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [49 <./figures/results/small_net_dynamic_quantization_factor/small_net_dynamic_quantization_factor_metrics_distribution.png>]
+<figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_convergence.png, id=251, 722.7pt x 433.62pt>
+File: figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_convergence.png Graphic file (type png)
+<use figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_convergence.png>
+Package pdftex.def Info: figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_convergence.png  used on input line 416.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [50 <./figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_convergence.png>]
+<figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_final_loss.png, id=256, 578.16pt x 433.62pt>
+File: figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_final_loss.png Graphic file (type png)
+<use figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_final_loss.png>
+Package pdftex.def Info: figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_final_loss.png  used on input line 428.
+(pdftex.def)             Requested size: 365.50655pt x 274.1282pt.
+ [51 <./figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_final_loss.png>]
+<figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_metrics_distribution.png, id=261, 1445.4pt x 433.62pt>
+File: figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_metrics_distribution.png Graphic file (type png)
+<use figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_metrics_distribution.png>
+Package pdftex.def Info: figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_metrics_distribution.png  used on input line 440.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [52 <./figures/results/medium_net_dynamic_quantization_factor/medium_net_dynamic_quantization_factor_metrics_distribution.png>]
+<figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_convergence.png, id=266, 722.7pt x 433.62pt>
+File: figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_convergence.png Graphic file (type png)
+<use figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_convergence.png>
+Package pdftex.def Info: figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_convergence.png  used on input line 487.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [53 <./figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_convergence.png>]
+<figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_final_loss.png, id=271, 578.16pt x 433.62pt>
+File: figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_final_loss.png Graphic file (type png)
+<use figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_final_loss.png>
+Package pdftex.def Info: figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_final_loss.png  used on input line 498.
+(pdftex.def)             Requested size: 365.50655pt x 274.1282pt.
+ [54 <./figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_final_loss.png>]
+<figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_metrics_distribution.png, id=276, 1445.4pt x 433.62pt>
+File: figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_metrics_distribution.png Graphic file (type png)
+<use figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_metrics_distribution.png>
+Package pdftex.def Info: figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_metrics_distribution.png  used on input line 510.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [55 <./figures/results/big_net_dynamic_quantization_factor/big_net_dynamic_quantization_factor_metrics_distribution.png>] [56] [57]
+<figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_convergence.png, id=288, 1011.78pt x 433.62pt>
+File: figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_convergence.png Graphic file (type png)
+<use figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_convergence.png>
+Package pdftex.def Info: figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_convergence.png  used on input line 585.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [58 <./figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_convergence.png>]
+<figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_final_loss.png, id=293, 1011.78pt x 433.62pt>
+File: figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_final_loss.png Graphic file (type png)
+<use figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_final_loss.png>
+Package pdftex.def Info: figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_final_loss.png  used on input line 599.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [59 <./figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_final_loss.png>]
+<figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_metrics_distribution.png, id=298, 2023.56pt x 433.62pt>
+File: figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_metrics_distribution.png Graphic file (type png)
+<use figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_metrics_distribution.png>
+Package pdftex.def Info: figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_metrics_distribution.png  used on input line 613.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [60 <./figures/results/small_net_random_sampling_grid_search/small_net_random_sampling_grid_search_metrics_distribution.png>] [61]
+<figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_convergence.png, id=307, 1011.78pt x 433.62pt>
+File: figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_convergence.png Graphic file (type png)
+<use figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_convergence.png>
+Package pdftex.def Info: figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_convergence.png  used on input line 678.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [62 <./figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_convergence.png>]
+<figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_final_loss.png, id=312, 1011.78pt x 433.62pt>
+File: figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_final_loss.png Graphic file (type png)
+<use figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_final_loss.png>
+Package pdftex.def Info: figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_final_loss.png  used on input line 691.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [63 <./figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_final_loss.png>]
+<figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_metrics_distribution.png, id=317, 2023.56pt x 433.62pt>
+File: figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_metrics_distribution.png Graphic file (type png)
+<use figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_metrics_distribution.png>
+Package pdftex.def Info: figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_metrics_distribution.png  used on input line 704.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [64 <./figures/results/medium_net_random_sampling_grid_search/medium_net_random_sampling_grid_search_metrics_distribution.png>] [65]
+<figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_convergence.png, id=325, 1011.78pt x 433.62pt>
+File: figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_convergence.png Graphic file (type png)
+<use figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_convergence.png>
+Package pdftex.def Info: figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_convergence.png  used on input line 770.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [66 <./figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_convergence.png>]
+<figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_final_loss.png, id=330, 1011.78pt x 433.62pt>
+File: figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_final_loss.png Graphic file (type png)
+<use figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_final_loss.png>
+Package pdftex.def Info: figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_final_loss.png  used on input line 783.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [67 <./figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_final_loss.png>]
+<figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_metrics_distribution.png, id=336, 2023.56pt x 433.62pt>
+File: figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_metrics_distribution.png Graphic file (type png)
+<use figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_metrics_distribution.png>
+Package pdftex.def Info: figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_metrics_distribution.png  used on input line 796.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [68 <./figures/results/big_net_random_sampling_grid_search/big_net_random_sampling_grid_search_metrics_distribution.png>] [69] [70]
+<figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_convergence.png, id=347, 1011.78pt x 433.62pt>
+File: figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_convergence.png Graphic file (type png)
+<use figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_convergence.png>
+Package pdftex.def Info: figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_convergence.png  used on input line 892.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [71 <./figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_convergence.png>]
+<figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png, id=352, 1011.78pt x 433.62pt>
+File: figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png Graphic file (type png)
+<use figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png>
+Package pdftex.def Info: figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png  used on input line 904.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [72 <./figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png>]
+<figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png, id=357, 2023.56pt x 433.62pt>
+File: figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png Graphic file (type png)
+<use figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png>
+Package pdftex.def Info: figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png  used on input line 917.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [73 <./figures/results/small_net_neighbors_generation_strategies_comparison_no_BS/small_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png>]
+<figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_convergence.png, id=363, 1011.78pt x 433.62pt>
+File: figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_convergence.png Graphic file (type png)
+<use figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_convergence.png>
+Package pdftex.def Info: figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_convergence.png  used on input line 967.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [74 <./figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_convergence.png>]
+<figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png, id=368, 1011.78pt x 433.62pt>
+File: figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png Graphic file (type png)
+<use figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png>
+Package pdftex.def Info: figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png  used on input line 980.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [75 <./figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png>]
+<figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png, id=373, 2023.56pt x 433.62pt>
+File: figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png Graphic file (type png)
+<use figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png>
+Package pdftex.def Info: figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png  used on input line 993.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [76 <./figures/results/medium_net_neighbors_generation_strategies_comparison_no_BS/medium_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png>]
+<figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_convergence.png, id=378, 1011.78pt x 433.62pt>
+File: figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_convergence.png Graphic file (type png)
+<use figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_convergence.png>
+Package pdftex.def Info: figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_convergence.png  used on input line 1044.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [77 <./figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_convergence.png>]
+<figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png, id=383, 1011.78pt x 433.62pt>
+File: figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png Graphic file (type png)
+<use figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png>
+Package pdftex.def Info: figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png  used on input line 1057.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [78 <./figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_final_loss.png>]
+<figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png, id=388, 2023.56pt x 433.62pt>
+File: figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png Graphic file (type png)
+<use figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png>
+Package pdftex.def Info: figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png  used on input line 1072.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [79 <./figures/results/big_net_neighbors_generation_strategies_comparison_no_BS/big_net_neighbors_generation_strategies_comparison_no_BS_metrics_distribution.png>] [80] [81]
+<figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_convergence.png, id=400, 722.7pt x 433.62pt>
+File: figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_convergence.png Graphic file (type png)
+<use figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_convergence.png>
+Package pdftex.def Info: figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_convergence.png  used on input line 1145.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [82 <./figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_convergence.png>]
+<figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_final_loss.png, id=405, 578.16pt x 433.62pt>
+File: figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_final_loss.png Graphic file (type png)
+<use figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_final_loss.png>
+Package pdftex.def Info: figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_final_loss.png  used on input line 1158.
+(pdftex.def)             Requested size: 365.50655pt x 274.1282pt.
+ [83 <./figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_final_loss.png>]
+<figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_metrics_distribution.png, id=410, 1445.4pt x 433.62pt>
+File: figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_metrics_distribution.png Graphic file (type png)
+<use figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_metrics_distribution.png>
+Package pdftex.def Info: figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_metrics_distribution.png  used on input line 1171.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [84 <./figures/results/small_net_vanilla_train_vs_beam_search/small_net_vanilla_train_vs_beam_search_metrics_distribution.png>]
+<figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_convergence.png, id=415, 722.7pt x 433.62pt>
+File: figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_convergence.png Graphic file (type png)
+<use figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_convergence.png>
+Package pdftex.def Info: figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_convergence.png  used on input line 1218.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [85 <./figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_convergence.png>]
+<figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_final_loss.png, id=421, 722.7pt x 433.62pt>
+File: figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_final_loss.png Graphic file (type png)
+<use figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_final_loss.png>
+Package pdftex.def Info: figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_final_loss.png  used on input line 1229.
+(pdftex.def)             Requested size: 365.50655pt x 219.30388pt.
+ [86 <./figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_final_loss.png>]
+<figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_metrics_distribution.png, id=426, 1445.4pt x 433.62pt>
+File: figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_metrics_distribution.png Graphic file (type png)
+<use figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_metrics_distribution.png>
+Package pdftex.def Info: figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_metrics_distribution.png  used on input line 1242.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [87 <./figures/results/medium_net_vanilla_train_vs_beam_search/medium_net_vanilla_train_vs_beam_search_metrics_distribution.png>]
+<figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_convergence.png, id=431, 722.7pt x 433.62pt>
+File: figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_convergence.png Graphic file (type png)
+<use figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_convergence.png>
+Package pdftex.def Info: figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_convergence.png  used on input line 1289.
+(pdftex.def)             Requested size: 387.00153pt x 232.19945pt.
+ [88 <./figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_convergence.png>]
+<figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_final_loss.png, id=436, 722.7pt x 433.62pt>
+File: figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_final_loss.png Graphic file (type png)
+<use figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_final_loss.png>
+Package pdftex.def Info: figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_final_loss.png  used on input line 1300.
+(pdftex.def)             Requested size: 365.50655pt x 219.30388pt.
+ [89 <./figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_final_loss.png>]
+<figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_metrics_distribution.png, id=442, 1445.4pt x 433.62pt>
+File: figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_metrics_distribution.png Graphic file (type png)
+<use figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_metrics_distribution.png>
+Package pdftex.def Info: figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_metrics_distribution.png  used on input line 1313.
+(pdftex.def)             Requested size: 430.00462pt x 129.00189pt.
+ [90 <./figures/results/big_net_vanilla_train_vs_beam_search/big_net_vanilla_train_vs_beam_search_metrics_distribution.png>] [91] [92]
+<figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_convergence.png, id=454, 1011.78pt x 433.62pt>
+File: figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_convergence.png Graphic file (type png)
+<use figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_convergence.png>
+Package pdftex.def Info: figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_convergence.png  used on input line 1391.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [93 <./figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_convergence.png>]
+<figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png, id=459, 1011.78pt x 433.62pt>
+File: figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png Graphic file (type png)
+<use figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png>
+Package pdftex.def Info: figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png  used on input line 1404.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [94 <./figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png>]
+<figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png, id=464, 2023.56pt x 433.62pt>
+File: figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png Graphic file (type png)
+<use figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png>
+Package pdftex.def Info: figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png  used on input line 1417.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [95 <./figures/results/small_net_neighbors_generation_strategies_comparison_with_BS/small_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png>] [96]
+<figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_convergence.png, id=472, 1011.78pt x 433.62pt>
+File: figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_convergence.png Graphic file (type png)
+<use figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_convergence.png>
+Package pdftex.def Info: figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_convergence.png  used on input line 1471.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [97 <./figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_convergence.png>]
+<figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png, id=478, 1011.78pt x 433.62pt>
+File: figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png Graphic file (type png)
+<use figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png>
+Package pdftex.def Info: figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png  used on input line 1484.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [98 <./figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png>]
+<figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png, id=483, 2023.56pt x 433.62pt>
+File: figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png Graphic file (type png)
+<use figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png>
+Package pdftex.def Info: figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png  used on input line 1499.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+ [99 <./figures/results/medium_net_neighbors_generation_strategies_comparison_with_BS/medium_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png>] [100]
+<figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_convergence.png, id=491, 1011.78pt x 433.62pt>
+File: figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_convergence.png Graphic file (type png)
+<use figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_convergence.png>
+Package pdftex.def Info: figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_convergence.png  used on input line 1551.
+(pdftex.def)             Requested size: 387.00153pt x 165.8558pt.
+ [101 <./figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_convergence.png>]
+<figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png, id=496, 1011.78pt x 433.62pt>
+File: figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png Graphic file (type png)
+<use figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png>
+Package pdftex.def Info: figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png  used on input line 1564.
+(pdftex.def)             Requested size: 365.50655pt x 156.64563pt.
+ [102 <./figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_final_loss.png>]
+<figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png, id=501, 2023.56pt x 433.62pt>
+File: figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png Graphic file (type png)
+<use figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png>
+Package pdftex.def Info: figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png  used on input line 1579.
+(pdftex.def)             Requested size: 430.00462pt x 92.14137pt.
+) [103 <./figures/results/big_net_neighbors_generation_strategies_comparison_with_BS/big_net_neighbors_generation_strategies_comparison_with_BS_metrics_distribution.png>] (./main.aux)
+ ***********
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-22>
+ ***********
+ ) 
+Here is how much of TeX's memory you used:
+ 17620 strings out of 474222
+ 382731 string characters out of 5748733
+ 1935975 words of memory out of 5000000
+ 39564 multiletter control sequences out of 15000+600000
+ 577579 words of font info for 107 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 84i,10n,93p,745b,368s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on main.pdf (109 pages, 3452624 bytes).
+PDF statistics:
+ 576 PDF objects out of 1000 (max. 8388607)
+ 303 compressed objects within 4 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 303 words of extra memory for PDF output out of 10000 (max. 10000000)
+

@@ -1,0 +1,52 @@
+\chapter{Evaluation Metrics}
+\label{chap:metrics}
+
+To rigorously assess the efficacy of the A* search algorithm as a neural network optimizer, we employ two distinct suites of evaluation metrics tailored to regression and classification tasks. For every experiment, performance is measured on the validation and test sets to ensure generalization capability.
+
+Due to the stochastic nature of the initialization and the search trajectories, each experiment is repeated across multiple independent runs. For all metrics defined below, we report the \textbf{Mean}, \textbf{Standard Deviation}, \textbf{Minimum}, and \textbf{Maximum} values to capture the stability and potential peak performance of the training process.
+
+
+\section{Regression Performance Metrics}
+In regression tasks, specifically the Noisy Sine and California Housing benchmarks, the objective is to minimize the deviation between the predicted continuous values $\hat{y}$ and the ground-truth values $y$. We employ four primary metrics:
+
+\begin{itemize}
+    \item \textbf{Mean Squared Error (MSE):} Measures the average of the squares of the errors. It is highly sensitive to outliers due to the squaring of the residuals.
+    $$ \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 $$
+    
+    \item \textbf{Root Mean Squared Error (RMSE):} The square root of the MSE, providing an error metric in the same units as the target variable.
+    $$ \text{RMSE} = \sqrt{\text{MSE}} $$
+
+    \item \textbf{Mean Absolute Error (MAE):} Represents the average of the absolute differences between predictions and actual observations, providing a linear measure of error.
+    $$ \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i| $$
+
+    \item \textbf{Coefficient of Determination ($R^2$):} 
+    This metric quantifies the proportion of the variance in the dependent variable ($y$) that is predictable from the independent variables ($x$) via the neural network. It acts as a comparison between the model's error and the variance of a simple mean-based baseline.
+    
+    The formula is defined as:
+    \[ R^2 = 1 - \frac{SS_{res}}{SS_{tot}} = 1 - \frac{\sum (y_i - \hat{y}_i)^2}{\sum (y_i - \bar{y})^2} \]
+    
+    Where $SS_{res}$ is the sum of squared residuals (unexplained variance) and $SS_{tot}$ is the total sum of squares (total variance in the data). 
+    An $R^2$ of 1.0 indicates that the model perfectly accounts for all variability in the target data. An $R^2$ of 0 implies the model is no more informative than the mean of the observed data, while an $R^2 < 0$ indicates that the  model provides a worse fit than a horizontal line representing the mean, typically due to a severe overfitting or underfitting.
+\end{itemize}
+
+
+\section{Classification Performance Metrics}
+For classification tasks (Iris and Wine Quality), performance is evaluated based on the model's ability to correctly assign categorical labels. The following metrics are derived from the Confusion Matrix (True Positives $TP$, True Negatives $TN$, False Positives $FP$, and False Negatives $FN$):
+
+\begin{itemize}
+    \item \textbf{Accuracy:} The ratio of correctly predicted observations to the total observations.
+    $$ \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN} $$
+
+    \item \textbf{Precision:} The ability of the classifier not to label as positive a sample that is negative.
+    $$ \text{Precision} = \frac{TP}{TP + FP} $$
+
+    \item \textbf{Recall (Sensitivity):} The ability of the classifier to find all the positive samples.
+    $$ \text{Recall} = \frac{TP}{TP + FN} $$
+
+    \item \textbf{F1-Score:} The harmonic mean of Precision and Recall, providing a balanced metric particularly useful in the presence of class imbalance.
+    $$ \text{F1} = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}} $$
+\end{itemize}
+
+
+\section{Statistical Aggregation}
+For both regression and classification, the reporting of \textbf{Standard Deviation} is critical to our analysis. It serves as a proxy for the \textit{reliability} of the A* search under different kernel and quantization configurations. A low standard deviation across runs indicates that the search logic is consistently finding similar basins of attraction in the weight space, regardless of the random initialization.

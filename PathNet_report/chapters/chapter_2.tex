@@ -1,0 +1,79 @@
+\chapter{A* Cost Function Adaptation for Training}
+
+The successful application of A* to optimization relies entirely on correctly defining the cost components $g(n)$ and $h(n)$ in the context of neural network training.
+
+\section{Heuristic Function $h(n)$: Current State Loss}
+In this formulation, the heuristic $h(n)$ directly represents the network's performance at node $n$ and it is defined as the current loss value evaluated on the training data:
+
+$$h(n) = L(n)$$
+
+This heuristic prioritizes configurations that minimize the objective function, guiding the search toward lower-cost states in the weight landscape.
+
+\section{Path Cost $g(n)$: Accumulated Loss Differential}
+The cost-to-come, $g(n)$, represents the cumulative cost of the path taken from the initial configuration to the current node $n$. The cost of each transition (edge) is defined by the improvement or degradation in loss between the parent and the child node $n$.
+
+The step cost $\Delta g$ is defined as:
+
+$$\Delta g = L(\text{n}) - L(\text{parent})$$
+
+The total path cost is then updated iteratively:
+
+$$g(n) = g(\text{parent}) + \Delta g$$
+
+By defining $\Delta g$ in terms of the loss differential, the path cost effectively tracks the total variation in loss encountered during the traversal of the search space.
+
+\section{Total Evaluation Function $f(n)$}
+The combined evaluation function $f(n)$ determines the priority of nodes in the search queue:
+
+$$f(n) = g(n) + h(n) = \left( g(\text{parent}) + (L(n) - L(\text{parent})) \right) + L(n)$$
+
+By selecting the node with the minimum $f(n)$, the algorithm seeks a path that minimizes both the absolute error of the current state $L(n)$ and the cumulative change in loss required to reach that state $g(n)$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Admissibility Analysis}
+
+In standard A* search, a heuristic $h(n)$ is admissible if it never overestimates the true cost to reach the goal, i.e., $h(n) \le h^*(n)$. In this revised framework, the "goal" is implicitly the global minimum of the loss landscape ($L=0$), and the cost is measured in units of loss differential.
+
+\begin{enumerate}
+    \item \textbf{Definition:} Both the heuristic $h(n) = L(n)$ and the true cost $h^*(n)$ are expressed in the same units (loss). The true cost $h^*(n)$ represents the cumulative sum of loss differentials required to reach the global minimum starting from node $n$.
+    \item \textbf{The Admissibility Challenge:} For $h(n)$ to be admissible, the condition $h(n) \le h^*(n)$ must hold. Under the current definitions, $h(n) = L(n)$, which is a non-negative value (the loss), while the true cost $h^*(n)$ is the sum of loss differentials: $h^*(n) = \sum_{n}^{goal} \Delta g$.
+
+In any scenario where the path toward the goal is monotonically improving, every step cost $\Delta g = L(n') - L(n)$ is strictly negative. Consequently, the true cost-to-go $h^*(n)$ becomes a summation of negative terms, yielding a negative total value. Because $L(n) \ge 0$, the inequality $L(n) \le h^*(n)$ is fundamentally violated in every improving step of the training process. 
+
+This implies that the heuristic is never admissible during a standard training descent. It provides a positive value ($L$) for a trajectory that accumulation a negative total cost ($\sum \Delta g$). Admissibility could only be restored if the search moved ``uphill'' into regions of significantly higher loss; however, since the primary goal is loss minimization, this violation is a permanent structural feature of the search design rather than an error.
+\end{enumerate}
+
+\section{Consistency Analysis}
+\label{sec:consistency_analysis}
+
+A heuristic is consistent if $h(n) \le c(n, n') + h(n')$, where $c(n, n')$ is the cost of the transition. With our new definitions:
+\begin{itemize}
+    \item $h(n) = L(n)$
+    \item $c(n, n') = \Delta g = L(n') - L(n)$
+    \item $h(n') = L(n')$
+\end{itemize}
+
+Substituting these into the consistency inequality:
+
+$$L(n) \le (L(n') - L(n)) + L(n') \implies L(n) \le 2L(n') - L(n) \implies 2L(n) \le 2L(n')$$
+
+Simplifying this, the \textbf{Consistency Condition} becomes:
+
+$$L(n) \le L(n')$$
+
+\noindent \textbf{Analysis of Scenarios w.r.t. Consistency}
+
+Unlike the previous version, consistency is now tied directly to the direction of the loss change $\Delta L$:
+
+\begin{enumerate}
+    \item \textbf{Scenario 1: Loss Decrease ($\Delta L < 0$):}
+    When the sliding window update improves the model, $L(n') < L(n)$. In this case, the consistency condition $L(n) \le L(n')$ is \textbf{violated}. This is a mathematically interesting result: every "good" step in training (one that reduces loss) technically violates the A* consistency property under these definitions.
+    
+    \item \textbf{Scenario 2: Loss Increase ($\Delta L > 0$):}
+    If the update moves into a worse region of the landscape, $L(n') > L(n)$. Here, the consistency condition is \textbf{satisfied}. This implies that the search is only "consistent" when it is moving away from the solution.
+    
+    \item \textbf{Scenario 3: Stationary Loss ($\Delta L = 0$):}
+    In plateaus where $L(n') = L(n)$, the heuristic is perfectly consistent.
+\end{enumerate}
+
+
+%===========================================================================================================================================================

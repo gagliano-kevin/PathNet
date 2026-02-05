@@ -1,0 +1,52 @@
+\chapter{The Multilayer Perceptron and Traditional Training Methods}
+\label{chap:mlp_intro}
+
+\section{Multilayer Perceptron (MLP) Architecture}
+The Multilayer Perceptron (MLP) is a fundamental class of feed-forward artificial neural networks. It is distinguished by having one or more \textit{hidden layers} between the input layer and the output layer, which allows the network to learn complex, non-linear relationships between inputs and outputs.
+
+\subsection{Neuron Structure and Function}
+The basic unit of the MLP is the artificial neuron, which receives a set of inputs, each associated with a synaptic weight. The neuron performs two main operations:
+\begin{enumerate}
+    \item \textbf{Weighted Aggregation:} It calculates the weighted sum of the inputs, to which a \textit{bias} ($\beta$) is added:
+    $$z = \left(\sum_{i=1}^{m} w_i x_i\right) + \beta$$
+    where $x_i$ are the inputs, $w_i$ are the weights, and $m$ is the number of inputs.
+    \item \textbf{Activation Function:} It applies a non-linear activation function ($\sigma$) to the aggregated result to produce the neuron's output ($a$):
+    $$a = \sigma(z)$$
+\end{enumerate}
+
+\subsection{The Loss Function}
+Training an MLP is an optimization problem that aims to minimize the error between the network's predicted output and the desired target output. This error is quantified by the loss function $E$.
+
+\section{The Standard Training Method: Backpropagation}
+Traditionally, the MLP is trained using the \textbf{Backpropagation} algorithm, which utilizes the gradient of the loss function to update the network's weights.
+
+\subsection{Theoretical Basis: Gradient Descent}
+The most basic iterative algorithm for weight adjustment is \textit{Gradient Descent}. It moves the weights in the direction of the steepest descent of the cost function:
+$$w_{t+1} = w_t - \eta \cdot g_t$$
+where $\eta$ is the \textit{learning rate} and $g_t = \nabla E(w_t)$. While this "Stochastic" Gradient Descent (SGD) forms the historical basis of neural network training, it often suffers from slow convergence and sensitivity to the choice of $\eta$.
+
+\section{Selected Gradient-Based Benchmark: The Adam Optimizer}
+\label{sec:adam_choice}
+In this study, rather than utilizing standard SGD, we employ the \textbf{Adam (Adaptive Moment Estimation)} optimizer as the representative gradient-based benchmark. Adam is chosen due to its status as the current state-of-the-art for training deep architectures, providing a more robust and efficient baseline for comparison against the proposed A* method.
+
+\subsection{Mathematical Formulation}
+Adam optimizes training by maintaining moving averages of both the gradients $m_t$ and the squared gradients $v_t$:
+$$m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t$$
+$$v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2$$
+To ensure the estimates are unbiased during the initial steps, bias-correction is applied:
+$$\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}$$
+The resulting update rule is:
+$$w_{t+1} = w_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t$$
+This adaptive mechanism allows for a more reliable descent in complex loss landscapes compared to fixed-rate methods.
+
+
+
+\section{Motivation for the A* Approach}
+Despite the sophistication of adaptive optimizers like Adam, gradient-based methods possess intrinsic limitations that motivate the exploration of informed search algorithms like A*:
+
+\begin{itemize}
+    \item \textbf{Local Minima and Saddle Points:} Even with the momentum and scaling features of Adam, gradient-based methods are susceptible to stalling in saddle points or becoming trapped in local minima where the local gradient is zero.
+    \item \textbf{Local Nature:} Adam remains a \textit{local} optimizer. It relies entirely on the derivative at the current point $w_t$ and its immediate history. It lacks the global "vision" or heuristic foresight of the cost surface that an informed search algorithm like A* can provide by exploring multiple potential paths in the weight space.
+\end{itemize}
+
+This study proposes to frame the MLP training not as a continuous descent problem, but as a pathfinding problem in a quantized weight space. By utilizing a heuristic function $h(n)$ to estimate the distance to the global minimum, A* can potentially navigate the weight space with greater global awareness than the backpropagation-based methods described in this chapter.

@@ -1,0 +1,336 @@
+\relax 
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}The A* Search Algorithm}{1}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:astar_intro}{{1}{1}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.1}Overview and Context}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.2}The Evaluation Function $f(n)$}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.1}Path Cost ($g(n)$)}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.2}Heuristic Estimate ($h(n)$)}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Consistency}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}Algorithm Mechanics}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}Properties of A*}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.5}Tree Search vs. Graph Search}{4}{}\protected@file@percent }
+\newlabel{sec:tree_vs_graph}{{1.5}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5.1}Tree Search A*}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5.2}Graph Search A*}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5.3}Implementation Choice}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}A* Cost Function Adaptation for Training}{6}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Heuristic Function $h(n)$: Current State Loss}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Path Cost $g(n)$: Accumulated Loss Differential}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Total Evaluation Function $f(n)$}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Admissibility Analysis}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Consistency Analysis}{8}{}\protected@file@percent }
+\newlabel{sec:consistency_analysis}{{2.5}{8}{}{}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}The Multilayer Perceptron and Traditional Training Methods}{10}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:mlp_intro}{{3}{10}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Multilayer Perceptron (MLP) Architecture}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Neuron Structure and Function}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}The Loss Function}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}The Standard Training Method: Backpropagation}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Theoretical Basis: Gradient Descent}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Selected Gradient-Based Benchmark: The Adam Optimizer}{11}{}\protected@file@percent }
+\newlabel{sec:adam_choice}{{3.3}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Mathematical Formulation}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Motivation for the A* Approach}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}The A* Search Framework for MLP Training}{13}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:astar_framework}{{4}{13}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Discretization of the Weight Space}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Quantized State Definition}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}State Representation and Hashing}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}The Search Node}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Defining Transitions: Neighborhood Generation Strategies}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Strategy 1: Single-Kernel Transition}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Strategy 2: Layer-Wise Kernel Specification}{15}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Visualization of a $3 \times 3$ kernel at position (1,1) in a quantized weight matrix.}}{16}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Connections within the MLP architecture specifically affected by a localized kernel update.}}{16}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}Dynamic Kernel Reshaping and Scaling}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{2D Weight Matrices}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{1D Bias Vectors}{17}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Strategy 3: Random Sampling Neighborhoods}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}Mathematical Comparison of Branching Factors}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.6}Comparative Analysis: Structured vs. Stochastic Exploration}{19}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Comparison of Neighbor Generation Strategies}}{20}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:strategy_comparison}{{4.1}{20}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Memory Optimization: Beam Search Integration}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Periodic Set Pruning and Memory Regulation}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Impact on Training Longevity}{21}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}The A* Training Loop Implementation}{22}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Benchmark Datasets}{23}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:datasets}{{5}{23}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Regression Datasets}{23}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Noisy Sine Function}{23}{}\protected@file@percent }
+\newlabel{sec:ds_sine}{{5.1.1}{23}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Plot of the noisy sine dataset}}{24}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}California Housing}{24}{}\protected@file@percent }
+\newlabel{sec:ds_california}{{5.1.2}{24}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Classification Datasets}{24}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Iris Flower}{24}{}\protected@file@percent }
+\newlabel{sec:ds_iris}{{5.2.1}{24}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Wine Quality (Red)}{25}{}\protected@file@percent }
+\newlabel{sec:ds_wine}{{5.2.2}{25}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Summary of Dataset Characteristics}{25}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Summary of Benchmark Datasets}}{25}{}\protected@file@percent }
+\newlabel{tab:dataset_summary}{{5.1}{25}{}{}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Evaluation Metrics}{26}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:metrics}{{6}{26}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Regression Performance Metrics}{26}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Classification Performance Metrics}{27}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Statistical Aggregation}{28}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {7}Results Visualization and Statistical Evaluation}{29}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:plot_logic}{{7}{29}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7.1}Convergence Analysis: Mean Loss and Variance}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.1}Mean Loss Trajectory ($\bar  {L}$)}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.2}Standard Deviation Shading ($\pm 1\sigma $)}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.2}Distributional Analysis: Final Loss Box Plots}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.1}Component Interpretation}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.2}Formal Identification of Outliers}{31}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {8}Preliminary Study for Hyperparameters Tuning}{32}{}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:hyperparameters_tuning}{{8}{32}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8.1}Experimental Setup}{33}{}\protected@file@percent }
+\newlabel{sec:experimental_setup}{{8.1}{33}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.1}Benchmark Dataset and Network Architectures}{33}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.2}Evaluation Metrics and Baseline Constants}{33}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.1}{\ignorespaces Default hyperparameters and baseline constraints.}}{34}{}\protected@file@percent }
+\newlabel{tab:default_params}{{8.1}{34}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.3}Categorization of Neighbor Generation Strategies}{34}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.4}Specific Tuning Experiments}{34}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.2}Dynamic Kernels Reshaping Results}{35}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.1}Small Net Results}{35}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{36}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.1}{\ignorespaces Training convergence comparison on a logarithmic scale.}}{36}{}\protected@file@percent }
+\newlabel{fig:small_net_convergence}{{8.1}{36}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.2}{\ignorespaces Distribution of Final Loss over 5 runs.}}{37}{}\protected@file@percent }
+\newlabel{fig:small_net_final_loss}{{8.2}{37}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.3}{\ignorespaces Boxplots for MSE, RMSE, MAE, and $R^2$ across all tested configurations.}}{38}{}\protected@file@percent }
+\newlabel{fig:small_net_metrics_dist}{{8.3}{38}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{38}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.2}{\ignorespaces Average performance summary for Small Net.}}{38}{}\protected@file@percent }
+\newlabel{tab:small_net_results}{{8.2}{38}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.2}Medium Net Results}{39}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{39}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.4}{\ignorespaces Training convergence comparison for the Medium Net on a logarithmic scale.}}{39}{}\protected@file@percent }
+\newlabel{fig:medium_net_convergence}{{8.4}{39}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.5}{\ignorespaces Distribution of Final Loss over 5 runs for the Medium Net.}}{40}{}\protected@file@percent }
+\newlabel{fig:medium_net_final_loss}{{8.5}{40}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.6}{\ignorespaces Boxplots for MSE, RMSE, MAE, and $R^2$ across all Medium Net configurations.}}{41}{}\protected@file@percent }
+\newlabel{fig:medium_net_metrics_dist}{{8.6}{41}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{41}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.3}{\ignorespaces Average performance summary for the Medium Net architecture.}}{41}{}\protected@file@percent }
+\newlabel{tab:medium_net_results}{{8.3}{41}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.3}Big Net Results}{42}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{42}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.7}{\ignorespaces Training convergence comparison for the Big Net on a logarithmic scale.}}{42}{}\protected@file@percent }
+\newlabel{fig:big_net_convergence}{{8.7}{42}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.8}{\ignorespaces Distribution of Final Loss over 5 runs for the Big Net.}}{43}{}\protected@file@percent }
+\newlabel{fig:big_net_final_loss}{{8.8}{43}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.9}{\ignorespaces Boxplots for MSE, RMSE, MAE, and $R^2$ across all Big Net configurations.}}{44}{}\protected@file@percent }
+\newlabel{fig:big_net_metrics_dist}{{8.9}{44}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{44}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.4}{\ignorespaces Average performance summary for the Big Net architecture.}}{44}{}\protected@file@percent }
+\newlabel{tab:big_net_results}{{8.4}{44}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.4}Final Considerations on Dynamic Kernel Reshaping}{45}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Performance and Adaptability}{45}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Operational Efficiency and Parameter Tuning}{45}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.3}Dynamic Quantization Factor Results}{46}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.1}Small Net Results}{46}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{47}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.10}{\ignorespaces Training convergence comparison for various Quantization Factors (Log Scale).}}{47}{}\protected@file@percent }
+\newlabel{fig:small_net_quant_convergence}{{8.10}{47}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.11}{\ignorespaces Distribution of Final Loss over 5 runs for Quantization Factor tests.}}{48}{}\protected@file@percent }
+\newlabel{fig:small_net_quant_final_loss}{{8.11}{48}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.12}{\ignorespaces Regression metrics distribution (MSE, RMSE, MAE, and $R^2$) for Quantization Factor configurations.}}{49}{}\protected@file@percent }
+\newlabel{fig:small_net_quant_metrics_dist}{{8.12}{49}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{49}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.5}{\ignorespaces Average performance summary for Small Net (Quantization Factor Study).}}{49}{}\protected@file@percent }
+\newlabel{tab:small_net_quant_results}{{8.5}{49}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.2}Medium Net Results}{49}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{50}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.13}{\ignorespaces Training convergence comparison for Medium Net (Log Scale).}}{50}{}\protected@file@percent }
+\newlabel{fig:medium_net_quant_convergence}{{8.13}{50}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.14}{\ignorespaces Distribution of Final Loss for Medium Net configurations.}}{51}{}\protected@file@percent }
+\newlabel{fig:medium_net_quant_final_loss}{{8.14}{51}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.15}{\ignorespaces Regression metrics distribution for Medium Net configurations.}}{52}{}\protected@file@percent }
+\newlabel{fig:medium_net_quant_metrics_dist}{{8.15}{52}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{52}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.6}{\ignorespaces Average performance summary for Medium Net (Quantization Factor Study).}}{52}{}\protected@file@percent }
+\newlabel{tab:medium_net_quant_results}{{8.6}{52}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.3}Big Net Results}{52}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{53}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.16}{\ignorespaces Training convergence comparison for Big Net (Log Scale).}}{53}{}\protected@file@percent }
+\newlabel{fig:big_net_quant_convergence}{{8.16}{53}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.17}{\ignorespaces Distribution of Final Loss for Big Net configurations.}}{54}{}\protected@file@percent }
+\newlabel{fig:big_net_quant_final_loss}{{8.17}{54}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.18}{\ignorespaces Regression metrics distribution for Big Net configurations.}}{55}{}\protected@file@percent }
+\newlabel{fig:big_net_quant_metrics_dist}{{8.18}{55}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{55}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.7}{\ignorespaces Average performance summary for Big Net (Quantization Factor Study).}}{55}{}\protected@file@percent }
+\newlabel{tab:big_net_quant_results}{{8.7}{55}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.4}Conclusion on Dynamic Quantization Factor Study}{55}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.4}Random Neighbors Generation: Grid Search on Sampling Parameters}{57}{}\protected@file@percent }
+\newlabel{sec:random_sampling_study}{{8.4}{57}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4.1}Small Net Results}{57}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Convergence and Loss Distribution}{58}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.19}{\ignorespaces Training convergence for Small Net using various Random Sampling configurations (Log Scale).}}{58}{}\protected@file@percent }
+\newlabel{fig:small_net_random_convergence}{{8.19}{58}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.20}{\ignorespaces Distribution of Final Loss over 5 runs across the grid search space.}}{59}{}\protected@file@percent }
+\newlabel{fig:small_net_random_final_loss}{{8.20}{59}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.21}{\ignorespaces Distribution of MSE, RMSE, MAE, and $R^2$ for the Random Sampling Grid Search.}}{60}{}\protected@file@percent }
+\newlabel{fig:small_net_random_metrics_dist}{{8.21}{60}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{60}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.8}{\ignorespaces Average statistical metrics for Small Net Random Sampling (Part 1).}}{60}{}\protected@file@percent }
+\newlabel{tab:small_net_random_part1}{{8.8}{60}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8.9}{\ignorespaces Average statistical metrics for Small Net Random Sampling (Part 2).}}{61}{}\protected@file@percent }
+\newlabel{tab:small_net_random_part2}{{8.9}{61}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4.2}Medium Net Results}{61}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Convergence and Loss Distribution}{62}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.22}{\ignorespaces Training convergence for Medium Net using various Random Sampling configurations (Log Scale).}}{62}{}\protected@file@percent }
+\newlabel{fig:medium_net_random_convergence}{{8.22}{62}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.23}{\ignorespaces Distribution of Final Loss over 5 runs across the grid search space for Medium Net.}}{63}{}\protected@file@percent }
+\newlabel{fig:medium_net_random_final_loss}{{8.23}{63}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.24}{\ignorespaces Distribution of MSE, RMSE, MAE, and $R^2$ for the Medium Net Random Sampling Grid Search.}}{64}{}\protected@file@percent }
+\newlabel{fig:medium_net_random_metrics_dist}{{8.24}{64}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{64}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.10}{\ignorespaces Average statistical metrics for Medium Net Random Sampling (Part 1).}}{64}{}\protected@file@percent }
+\newlabel{tab:medium_net_random_part1}{{8.10}{64}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8.11}{\ignorespaces Average statistical metrics for Medium Net Random Sampling (Part 2).}}{65}{}\protected@file@percent }
+\newlabel{tab:medium_net_random_part2}{{8.11}{65}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4.3}Big Net Results}{65}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Convergence and Loss Distribution}{66}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.25}{\ignorespaces Training convergence for Big Net using various Random Sampling configurations (Log Scale).}}{66}{}\protected@file@percent }
+\newlabel{fig:big_net_random_convergence}{{8.25}{66}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.26}{\ignorespaces Distribution of Final Loss over 5 runs across the grid search space for Big Net.}}{67}{}\protected@file@percent }
+\newlabel{fig:big_net_random_final_loss}{{8.26}{67}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.27}{\ignorespaces Distribution of MSE, RMSE, MAE, and $R^2$ for the Big Net Random Sampling Grid Search.}}{68}{}\protected@file@percent }
+\newlabel{fig:big_net_random_metrics_dist}{{8.27}{68}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{68}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.12}{\ignorespaces Average statistical metrics for Big Net Random Sampling (Part 1).}}{68}{}\protected@file@percent }
+\newlabel{tab:big_net_random_part1}{{8.12}{68}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8.13}{\ignorespaces Average statistical metrics for Big Net Random Sampling (Part 2).}}{69}{}\protected@file@percent }
+\newlabel{tab:big_net_random_part2}{{8.13}{69}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4.4}Conclusion on Random Neighbors Generation Study}{69}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.5}Neighbors Generation Strategies Comparison}{70}{}\protected@file@percent }
+\newlabel{sec:strategies_comparison}{{8.5}{70}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5.1}Small Net Results}{70}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{71}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.28}{\ignorespaces Training convergence comparison between Single Kernel, Layer-wise, and Random strategies (Log Scale).}}{71}{}\protected@file@percent }
+\newlabel{fig:small_net_comp_convergence}{{8.28}{71}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.29}{\ignorespaces Distribution of Final Loss for the three generation strategies on Small Net.}}{72}{}\protected@file@percent }
+\newlabel{fig:small_net_comp_final_loss}{{8.29}{72}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.30}{\ignorespaces Regression metrics distribution (MSE, RMSE, MAE, $R^2$) across generation strategies.}}{73}{}\protected@file@percent }
+\newlabel{fig:small_net_comp_metrics_dist}{{8.30}{73}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{73}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.14}{\ignorespaces Average statistical comparison of generation strategies for Small Net.}}{73}{}\protected@file@percent }
+\newlabel{tab:small_net_comp_results_fixed}{{8.14}{73}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5.2}Medium Net Results}{73}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{74}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.31}{\ignorespaces Training convergence comparison for Medium Net (Log Scale).}}{74}{}\protected@file@percent }
+\newlabel{fig:medium_net_comp_convergence}{{8.31}{74}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.32}{\ignorespaces Distribution of Final Loss for Medium Net generation strategies.}}{75}{}\protected@file@percent }
+\newlabel{fig:medium_net_comp_final_loss}{{8.32}{75}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.33}{\ignorespaces Regression metrics distribution across strategies for Medium Net.}}{76}{}\protected@file@percent }
+\newlabel{fig:medium_net_comp_metrics_dist}{{8.33}{76}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{76}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.15}{\ignorespaces Average statistical comparison of generation strategies for Medium Net.}}{76}{}\protected@file@percent }
+\newlabel{tab:medium_net_comp_results}{{8.15}{76}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5.3}Big Net Results}{76}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{77}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.34}{\ignorespaces Training convergence comparison for Big Net (Log Scale).}}{77}{}\protected@file@percent }
+\newlabel{fig:big_net_comp_convergence}{{8.34}{77}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.35}{\ignorespaces Distribution of Final Loss for Big Net generation strategies.}}{78}{}\protected@file@percent }
+\newlabel{fig:big_net_comp_final_loss}{{8.35}{78}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.36}{\ignorespaces Regression metrics distribution across strategies for Big Net.}}{79}{}\protected@file@percent }
+\newlabel{fig:big_net_comp_metrics_dist}{{8.36}{79}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{79}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.16}{\ignorespaces Average statistical comparison of generation strategies for Big Net.}}{79}{}\protected@file@percent }
+\newlabel{tab:big_net_comp_results}{{8.16}{79}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5.4}Conclusion on Neighbors Generation Strategies}{79}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.6}Beam Search Optimization Study}{81}{}\protected@file@percent }
+\newlabel{sec:beam_search_study}{{8.6}{81}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6.1}Small Net Results}{81}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{82}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.37}{\ignorespaces Training convergence comparison: Standard A* vs. various Beam Widths (Log Scale).}}{82}{}\protected@file@percent }
+\newlabel{fig:small_net_bs_convergence}{{8.37}{82}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.38}{\ignorespaces Distribution of Final Loss for Standard A* and Beam Search configurations.}}{83}{}\protected@file@percent }
+\newlabel{fig:small_net_bs_final_loss}{{8.38}{83}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.39}{\ignorespaces Regression metrics distribution across Beam Search configurations for Small Net.}}{84}{}\protected@file@percent }
+\newlabel{fig:small_net_bs_metrics_dist}{{8.39}{84}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{84}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.17}{\ignorespaces Average statistical comparison: Standard A* vs. Beam Search for Small Net.}}{84}{}\protected@file@percent }
+\newlabel{tab:small_net_bs_results}{{8.17}{84}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6.2}Medium Net Results}{85}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{85}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.40}{\ignorespaces Training convergence comparison for Medium Net: Standard A* vs. various Beam Widths (Log Scale).}}{85}{}\protected@file@percent }
+\newlabel{fig:medium_net_bs_convergence}{{8.40}{85}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.41}{\ignorespaces Distribution of Final Loss for Medium Net across Beam Search configurations.}}{86}{}\protected@file@percent }
+\newlabel{fig:medium_net_bs_final_loss}{{8.41}{86}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.42}{\ignorespaces Regression metrics distribution across Beam Search configurations for Medium Net.}}{87}{}\protected@file@percent }
+\newlabel{fig:medium_net_bs_metrics_dist}{{8.42}{87}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{87}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.18}{\ignorespaces Average statistical comparison: Standard A* vs. Beam Search for Medium Net.}}{87}{}\protected@file@percent }
+\newlabel{tab:medium_net_bs_results}{{8.18}{87}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6.3}Big Net Results}{88}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{88}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.43}{\ignorespaces Training convergence comparison for Big Net: Standard A* vs. various Beam Widths (Log Scale).}}{88}{}\protected@file@percent }
+\newlabel{fig:big_net_bs_convergence}{{8.43}{88}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.44}{\ignorespaces Distribution of Final Loss for Big Net across Beam Search configurations.}}{89}{}\protected@file@percent }
+\newlabel{fig:big_net_bs_final_loss}{{8.44}{89}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.45}{\ignorespaces Regression metrics distribution across Beam Search configurations for Big Net.}}{90}{}\protected@file@percent }
+\newlabel{fig:big_net_bs_metrics_dist}{{8.45}{90}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{90}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.19}{\ignorespaces Average statistical comparison: Standard A* vs. Beam Search for Big Net.}}{90}{}\protected@file@percent }
+\newlabel{tab:big_net_bs_results}{{8.19}{90}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6.4}Conclusion on Beam Search Optimization Study}{91}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.7}Neighbors Generation Strategies Comparison with Beam Search}{92}{}\protected@file@percent }
+\newlabel{sec:strategies_comparison_bs}{{8.7}{92}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.7.1}Small Net Results}{92}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{93}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.46}{\ignorespaces Training convergence comparison for Small Net with Beam Search (Log Scale).}}{93}{}\protected@file@percent }
+\newlabel{fig:small_net_comp_bs_convergence}{{8.46}{93}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.47}{\ignorespaces Distribution of Final Loss with Beam Search for Small Net.}}{94}{}\protected@file@percent }
+\newlabel{fig:small_net_comp_bs_final_loss}{{8.47}{94}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.48}{\ignorespaces Regression metrics distribution across strategies for Small Net with Beam Search.}}{95}{}\protected@file@percent }
+\newlabel{fig:small_net_comp_bs_metrics_dist}{{8.48}{95}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{95}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.20}{\ignorespaces Average statistical comparison of generation strategies with Beam Search for Small Net.}}{95}{}\protected@file@percent }
+\newlabel{tab:small_net_comp_bs_results}{{8.20}{95}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.7.2}Medium Net Results}{96}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{97}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.49}{\ignorespaces Confronto della convergenza per Medium Net con Beam Search (Scala Logaritmica).}}{97}{}\protected@file@percent }
+\newlabel{fig:medium_net_comp_bs_convergence}{{8.49}{97}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.50}{\ignorespaces Distribuzione della Loss Finale con Beam Search per Medium Net.}}{98}{}\protected@file@percent }
+\newlabel{fig:medium_net_comp_bs_final_loss}{{8.50}{98}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Metrics Distribution and Predictive Performance}{99}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.51}{\ignorespaces Distribuzione delle metriche di regressione con Beam Search per Medium Net.}}{99}{}\protected@file@percent }
+\newlabel{fig:medium_net_comp_bs_metrics_dist}{{8.51}{99}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{99}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.21}{\ignorespaces Confronto statistico medio delle strategie con Beam Search per Medium Net.}}{99}{}\protected@file@percent }
+\newlabel{tab:medium_net_comp_bs_results}{{8.21}{99}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.7.3}Big Net Results}{99}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Visual Analysis of Training and Stability}{101}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.52}{\ignorespaces Confronto della convergenza per Big Net con Beam Search (Scala Logaritmica).}}{101}{}\protected@file@percent }
+\newlabel{fig:big_net_comp_bs_convergence}{{8.52}{101}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.53}{\ignorespaces Distribuzione della Loss Finale con Beam Search per Big Net.}}{102}{}\protected@file@percent }
+\newlabel{fig:big_net_comp_bs_final_loss}{{8.53}{102}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Metrics Distribution and Predictive Performance}{103}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8.54}{\ignorespaces Distribuzione delle metriche di regressione con Beam Search per Big Net.}}{103}{}\protected@file@percent }
+\newlabel{fig:big_net_comp_bs_metrics_dist}{{8.54}{103}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Summary Statistics}{103}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8.22}{\ignorespaces Confronto statistico medio delle strategie con Beam Search per Big Net.}}{103}{}\protected@file@percent }
+\newlabel{tab:big_net_comp_bs_results}{{8.22}{103}{}{}{}}
+\gdef \@abspage@last{109}

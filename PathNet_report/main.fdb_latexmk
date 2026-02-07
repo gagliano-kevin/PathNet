@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1770420670.00702 "/home/kevin/Desktop/PathNet/PathNet_report/main.tex" "main.pdf" "main" 1770420677.95104 0
+["pdflatex"] 1770463904.94652 "/home/kevin/Desktop/PathNet/PathNet_report/main.tex" "main.pdf" "main" 1770463914.25908 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/kevin/Desktop/PathNet/PathNet_report/main.tex" 1770418378.86689 1248 bc7ca44bcab6f4195cc658fcfebe8ece ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -174,7 +174,7 @@
   "chapters/chapter_7.tex" 1770307223.55939 3755 a6fa88e66f7039b88b81a92da466de79 ""
   "chapters/chapter_8.tex" 1770330854.59976 107605 02a1a6a780f4bdb197682356f370aa53 ""
   "chapters/chapter_9.tex" 1770418193.39205 62540 fc07b10493c13a72065ebecb56c63981 ""
-  "chapters/conclusions.tex" 1770420669.73203 9152 a87d091fbec272b08a57f1505099a6fc ""
+  "chapters/conclusions.tex" 1770463904.70854 9311 d99b4f144496a22ba0b74fd3206c4b78 ""
   "figures/LOGO_UNISI_VERTICALE_NERO_0.pdf" 1769598090.93147 317420 0fd7c19e2c74e4b82b58ccf968648f7e ""
   "figures/layer/layer_1.jpg" 1769598090.94847 172802 d535b5ffee2ea5a4d782000b2424afc2 ""
   "figures/layer/matrix_1.jpg" 1769598090.95347 51022 3423fe3b4f9db37bcbba12029cb4b6f4 ""
@@ -269,9 +269,9 @@
   "figures/results/small_net_wine_Adam_vs_A-star/small_net_wine_Adam_vs_A-star_final_loss.png" 1770309721.56527 32071 3a661262adfc08e548843e709a2aaccb ""
   "figures/results/small_net_wine_Adam_vs_A-star/small_net_wine_Adam_vs_A-star_loss_convergence.png" 1770309723.05527 97599 686c8e5036c224fc9d16c268cc598ca3 ""
   "figures/sine_tests/sine_dataset.png" 1769598090.97447 66142 9072df00841f73c0cc91d8ac823a3b7e ""
-  "main.aux" 1770420677.80009 56129 46f3332e985b7adb9649bdd7c04de3b3 "pdflatex"
+  "main.aux" 1770463914.03876 56129 774360a074a7b21e809bd238aea570bd "pdflatex"
   "main.tex" 1770418378.86689 1248 bc7ca44bcab6f4195cc658fcfebe8ece ""
-  "main.toc" 1770420677.80464 16146 179908ab706440df19ddc15ed030cb85 "pdflatex"
+  "main.toc" 1770463914.04376 16146 179908ab706440df19ddc15ed030cb85 "pdflatex"
   "title.tex" 1770305895.7182 760 0e726c8938c8ad23e21e7c6dc3b81bd8 ""
   (generated)
   "main.aux"

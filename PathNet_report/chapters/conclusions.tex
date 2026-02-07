@@ -1,18 +1,18 @@
 \chapter{Conclusions and Future Work}
 \label{chap:conclusions}
 
-This thesis presented a comprehensive investigation into the application of the $A^*$ search algorithm for the optimization of Multi-Layer Perceptrons. By transitioning from a discretized state-space exploration to structured neighbor generation, we established a framework that challenges the traditional reliance on gradient-based methods for specialized neural architectures.
+This project presented a comprehensive investigation into the application of the $A^*$ search algorithm for the optimization of Multi-Layer Perceptrons. By transitioning from a discretized state-space exploration to structured neighbor generation, we established a framework that challenges the traditional reliance on gradient-based methods for specialized neural architectures.
 
 \section{Summary of Findings}
 
-The experimental campaign, spanning from preliminary hyperparameter tuning to large-scale benchmarks, has yielded several critical insights:
+The experimental setup, spanning from preliminary hyperparameter tuning to large-scale benchmarks, has yielded several insights:
 
 \begin{itemize}
     \item \textbf{Optimal Search Configuration:} Preliminary studies in Chapter \ref{chap:hyperparameters_tuning} demonstrated that a vanilla $A^*$ approach is insufficient for deep architectures. The introduction of \textbf{Beam Search} and \textbf{Layer-Wise Kernel Reshaping} proved essential to mitigate the curse of dimensionality, providing a balance between computational feasibility and convergence depth.
     
-    \item \textbf{High-Precision Convergence:} Across the Iris Flower and Noisy Sine benchmarks, the $A^*$ framework, specifically the kernel-based variants, consistently achieved training losses several orders of magnitude lower than the Adam baseline. In the Iris task, the framework reached absolute zero training loss, demonstrating a level of parameter refinement that gradient-based plateaus often prevent.
+    \item \textbf{High-Precision Convergence:} Across the Iris Flower, the $A^*$ framework, specifically the kernel-based variants, consistently achieved training losses several orders of magnitude lower than the Adam baseline. In the Iris task, the framework reached absolute zero training loss, demonstrating a level of parameter refinement that gradient-based plateaus often prevent.
     
-    \item \textbf{The Crossover Law of Generalization:} A significant finding of this research is the "crossover" effect observed as network complexity increases. While Adam remains superior in speed, the \textbf{Layer-Wise $A^*$ strategy} began to outperform Adam in test-set accuracy on larger architectures (e.g., Iris Big Net), suggesting that structured search identifies weight configurations with superior generalization margins.
+    \item \textbf{Generalization:} A significant finding of this research is the "crossover" effect observed as network complexity increases. While Adam remains superior in speed, the \textbf{Layer-Wise $A^*$ strategy} began to outperform Adam in test-set accuracy on larger architectures (e.g., Iris Big Net and Noisy Sine Big Net), suggesting that structured search identifies weight configurations with superior generalization margins.
     
     \item \textbf{Robustness and Stability:} Unlike Adam, which exhibited oscillations in non-linear regression tasks, the $A^*$ framework provided a smooth and deterministic-like descent. Even in complex classification tasks like Wine Quality, where Adam achieved deeper training minima, the $A^*$ strategies demonstrated significantly lower variance across independent runs, indicating a lower sensitivity to initial weight distributions.
 \end{itemize}
@@ -25,10 +25,10 @@ While the results validate the potential of search-based optimization, the follo
 
 \begin{itemize}
 \item \textbf{High-Performance Computing via Asynchronous and Parallel Search:} 
-The most significant barrier to the widespread adoption of search-based optimization is the ``wall-clock time'' bottleneck inherent in evaluating massive candidate sets. Current implementations are largely sequential, evaluating one neighbor at a time. Future research will explore the transition to a high-performance computing (HPC) architecture through two primary vectors:
+The most significant barrier to the widespread adoption of search-based optimization is the ``wall-clock time'' bottleneck inherent in evaluating massive candidate sets. Our current implementation is completely sequential, evaluating one neighbor at a time. Future works will focus on transitioning the framework to a high-performance computing paradigm through the following two vectors:
 
 \begin{itemize}
-    \item \textbf{Parallel Expansion:} By utilizing multi-GPU clusters, the framework can evaluate thousands of potential weight perturbations (the Open Set) simultaneously. This involves distributing the forward pass of the neural network across different CUDA cores, allowing the algorithm to assess the heuristic cost of an entire neighborhood in a single clock cycle.
+    \item \textbf{Parallel Expansion:} Leveraging multi-GPU clusters enables the framework to perform parallel evaluation of thousands of weight perturbations within the Open Set simultaneously. By distributing the individual forward passes of each candidate network across discrete CUDA cores, the algorithm can compute the heuristic cost of an entire neighborhood within a single, high-concurrency operation. This approach effectively bypasses the sequential time-penalties of traditional search, drastically accelerating the exploration of the weight space and reducing the temporal footprint of each search expansion.
     
     \item \textbf{Asynchronous Coordination:} Traditional parallel search often suffers from "synchronization lag," where fast processors sit idle waiting for the slowest core to finish. An asynchronous $A^*$ implementation would decouple the search threads, allowing worker nodes to expand and push new candidates to a shared "Open Set" independently of one another. 
 \end{itemize}
@@ -38,33 +38,31 @@ Implementing these strategies would shift the $A^*$ MLP framework from a CPU-bou
 \item \textbf{Hybrid Neuro-Search Optimization Paradigms:} 
 A significant avenue for future research lies in the synthesis of gradient-based efficiency and search-based precision through a multi-stage hybrid optimizer. While the Adam optimizer demonstrates unparalleled velocity in traversing the initial, high-loss regions of the parameter space, it frequently encounters "precision plateaus" where gradients become vanishingly small or noisy, preventing the model from reaching the absolute global minimum. 
 
-Future work will investigate a "Hand-off" protocol:
+Future work will investigate a sequential multi-stage protocol:
 \begin{itemize}
     \item \textbf{Gradient-Driven Warm-up:} The optimization process begins with Adam to perform the "heavy lifting," rapidly descending the macro-features of the loss landscape and navigating toward a promising local basin.
-    \item \textbf{Search-Based Refinement:} Upon detecting a plateau in the gradient norm or a stagnation in validation loss, the optimizer transitions to a \textbf{Layer-Wise $A^*$ Search}. This stage utilizes the $A^*$ framework to perform high-precision micro-adjustments within a discretized neighborhood of the current weights—effectively acting as a "magnifying glass" to refine parameters in regions where backpropagation lacks the numerical resolution to continue.
+    \item \textbf{Search-Based Refinement:} Upon detecting a plateau in the gradient norm or a stagnation in validation loss, the optimizer transitions to a $A^*$ Search. In this stage, the $A^*$ framework performs high-resolution adjustments within a discrete search space. This enables the fine-tuning of weight configurations in regions of the loss landscape where gradient signals become too weak or noisy for backpropagation to effectively navigate.
 \end{itemize}
 
 
 
 This dual-stage approach seeks to eliminate the high computational cost of running $A^*$ from initialization while simultaneously bypassing the convergence limits of standard backpropagation, potentially establishing a new benchmark for high-precision neural training.        
 \item \textbf{Generalization to Spatial and Temporal Architectures:} 
-While this research focused on the dense connectivity of Multi-Layer Perceptrons, the search-based optimization paradigm offers significant potential for more specialized neural structures. Future work should investigate the extension of the \textbf{Layer-Wise Kernel} logic to non-linear and structured weight arrangements:
+While this research focused on the dense connectivity of Multi-Layer Perceptrons, the search-based optimization paradigm offers significant potential for more specialized neural structures. Future work should investigate the extension of the A* framework to more complex architectures:
 
 \begin{itemize}
-    \item \textbf{Convolutional Neural Networks (CNNs):} Applying $A^*$ search to convolutional filters would require a specialized neighbor generation strategy that preserves spatial locality. Instead of perturbing individual weights, the search could operate on entire 3D filter kernels, exploring discrete "kernel-states" to identify spatial features without the risk of gradient vanishing/explosion in deep residual branches. This would clarify whether the observed stability of search-based methods translates to the complex feature extraction required for computer vision.
-    
-    \item \textbf{Recurrent Neural Networks (RNNs and LSTMs):} Recurrent units are notoriously difficult to train due to the temporal dependencies that lead to vanishing gradients. A search-based approach, which is inherently gradient-free, could explore the recursive weight matrices using a "Temporal-Aware Heuristic." This would allow the algorithm to maintain stability over long sequences by treating temporal steps as a discrete search depth, potentially offering a more robust alternative for time-series forecasting where traditional BPTT (Backpropagation Through Time) fails.
+    \item \textbf{Convolutional Neural Networks:} Applying $A^*$ search to convolutional filters would require a specialized neighbor generation strategy that preserves spatial locality. Instead of perturbing individual weights, the search could operate on entire 3D filter kernels, exploring discrete "kernel-states" to identify spatial features without the risk of gradient vanishing/explosion in deep residual branches. This would clarify whether the observed stability of search-based methods translates to the more complex task of feature extraction.
+    \item \textbf{Recurrent Architectures and Temporal Stability:} 
+    Recurrent Neural Networks are notoriously difficult to optimize due to the vanishing gradient problem inherent in Backpropagation Through Time (BPTT). Because $A^*$ is gradient-free, it avoids the multiplicative chain of derivatives that typically causes signal degradation over long sequences. 
+    Future research could explore recursive weight matrices using a "Temporal-Aware Heuristic." By treating temporal steps as a discrete search depth rather than a differentiable chain, the algorithm could maintain numerical stability over extended sequences.
 \end{itemize}
 
-Testing $A^*$ in these domains would determine if the ``Crossover Law'' observed in this study—where search outperforms gradient descent in specific high-dimensional regimes—holds true for spatial and temporal feature extraction.\end{itemize}
+\end{itemize}
 
 
 \section{Final Remarks}
 
 In conclusion, this research demonstrates that the $A^*$ search algorithm is far more than a theoretical curiosity in the context of neural network training; it represents a viable, high-precision optimization paradigm capable of navigating weight spaces that traditional gradient-based methods find challenging. By reframing neural training as a state-space exploration problem rather than a purely differentiable calculus task, we have unlocked a methodology that prioritizes numerical precision and descent stability.
 
-The empirical evidence suggests that when the search is properly constrained specifically through the use of \textbf{Beam Search} to manage memory overhead and \textbf{Layer-Wise Kernels} to address the curse of dimensionality the $A^*$ framework offers a robust alternative to backpropagation. While gradient-based optimizers like Adam remain the standard for rapid, large-scale training, the search framework excels in scenarios where the depth of training, the stability of the convergence trajectory, and the final generalization margins are prioritized over raw execution velocity. 
-
-
-
-Ultimately, this study contributes to a broader understanding of non-gradient optimization in machine learning. It provides a foundational architecture for future "hybrid" systems that could potentially merge the intuitive spatial exploration of search with the temporal speed of gradients. As computational power continues to evolve through massively parallel architectures, the barriers to search-based optimization will likely diminish, paving the way for a new generation of high-precision, robust artificial intelligence.
+The empirical evidence demonstrates that by utilizing Beam Search to manage memory and Layer-Wise Kernels to mitigate the curse of dimensionality, the $A^*$ framework achieves performance levels that are highly competitive with the Adam optimizer. While Adam remains the industry standard for rapid training, the search-based approach excels by providing a remarkably stable convergence trajectory. A core advantage of the $A^*$ framework is its significantly lower variance in results across independent runs, making it a robust alternative for applications where consistency and high-precision training depth are prioritized over execution speed.
+Ultimately, this study advances the understanding of non-gradient optimization within the machine learning paradigm. It establishes a foundational architecture for future hybrid systems capable of merging the intuitive spatial exploration of search with the computational velocity of gradient-based methods. While search-based optimization currently faces temporal constraints, these are primarily software-level bottlenecks rather than algorithmic ones. As the framework evolves toward parallel implementations, the current barriers to execution speed will diminish, paving the way for a new generation of high-precision, robust artificial intelligence algorithms.

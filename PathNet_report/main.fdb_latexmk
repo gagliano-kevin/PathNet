@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1770463904.94652 "/home/kevin/Desktop/PathNet/PathNet_report/main.tex" "main.pdf" "main" 1770463914.25908 0
+["pdflatex"] 1770582540.94905 "/home/kevin/Desktop/PathNet/PathNet_report/main.tex" "main.pdf" "main" 1770582549.46418 0
   "/etc/texmf/web2c/texmf.cnf" 1762526924.98298 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/kevin/Desktop/PathNet/PathNet_report/main.tex" 1770418378.86689 1248 bc7ca44bcab6f4195cc658fcfebe8ece ""
+  "/home/kevin/Desktop/PathNet/PathNet_report/main.tex" 1770582524.71757 1248 bc7ca44bcab6f4195cc658fcfebe8ece ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1136768653 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm" 1246382020 1120 1e8878807317373affa7f7bba4cf2f6a ""
@@ -172,7 +172,7 @@
   "chapters/chapter_5.tex" 1769627510.50618 3797 12c719b2dd6af5874e83f6ed806cddf4 ""
   "chapters/chapter_6.tex" 1770306762.94688 4278 744cf9dc429fadab4fa99bb0f44fb6c6 ""
   "chapters/chapter_7.tex" 1770307223.55939 3755 a6fa88e66f7039b88b81a92da466de79 ""
-  "chapters/chapter_8.tex" 1770330854.59976 107605 02a1a6a780f4bdb197682356f370aa53 ""
+  "chapters/chapter_8.tex" 1770582474.47547 113004 fec9eb99ef1676a50fe11378f42eb2b1 ""
   "chapters/chapter_9.tex" 1770418193.39205 62540 fc07b10493c13a72065ebecb56c63981 ""
   "chapters/conclusions.tex" 1770463904.70854 9311 d99b4f144496a22ba0b74fd3206c4b78 ""
   "figures/LOGO_UNISI_VERTICALE_NERO_0.pdf" 1769598090.93147 317420 0fd7c19e2c74e4b82b58ccf968648f7e ""
@@ -269,9 +269,9 @@
   "figures/results/small_net_wine_Adam_vs_A-star/small_net_wine_Adam_vs_A-star_final_loss.png" 1770309721.56527 32071 3a661262adfc08e548843e709a2aaccb ""
   "figures/results/small_net_wine_Adam_vs_A-star/small_net_wine_Adam_vs_A-star_loss_convergence.png" 1770309723.05527 97599 686c8e5036c224fc9d16c268cc598ca3 ""
   "figures/sine_tests/sine_dataset.png" 1769598090.97447 66142 9072df00841f73c0cc91d8ac823a3b7e ""
-  "main.aux" 1770463914.03876 56129 774360a074a7b21e809bd238aea570bd "pdflatex"
-  "main.tex" 1770418378.86689 1248 bc7ca44bcab6f4195cc658fcfebe8ece ""
-  "main.toc" 1770463914.04376 16146 179908ab706440df19ddc15ed030cb85 "pdflatex"
+  "main.aux" 1770582549.25753 56137 aed02a08709e85367814daad059e7019 "pdflatex"
+  "main.tex" 1770582524.71757 1248 bc7ca44bcab6f4195cc658fcfebe8ece ""
+  "main.toc" 1770582549.26253 16206 db41341d510cf05774c3845522de0281 "pdflatex"
   "title.tex" 1770305895.7182 760 0e726c8938c8ad23e21e7c6dc3b81bd8 ""
   (generated)
   "main.aux"

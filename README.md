@@ -218,7 +218,7 @@ python -m tests.neighbors_generation_strategies.comparison_with_beam_search.cali
 python -m tests.neighbors_generation_strategies.comparison_with_no_beam_search.california_housing
 ```
 
-**Grid Search vs Random Sampling:**
+**Grid Search on Random Sampling Method:**
 ```bash
 python -m tests.neighbors_generation_strategies.grid_search_random_sampling.california_housing
 ```
@@ -234,9 +234,8 @@ Results and training logs are automatically saved to the `results/` directory. O
 - Training loss curves
 - Convergence statistics
 - Comparison metrics (MSE, accuracy, training time)
-- Model checkpoints
-
-Each experiment folder may contain `*_output.txt` files with detailed performance metrics.
+- JSON training logs
+Each experiment folder may contain `*_output.txt` files with detailed training log.
 
 ---
 

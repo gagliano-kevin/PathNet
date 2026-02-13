@@ -351,6 +351,7 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmmib5.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam5.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm5.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti8.tfm
 INPUT ./figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png
 INPUT ./figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png
 INPUT ./figures/results/medium_net_dynamic_kernels_reshaping/medium_net_dynamic_kernels_reshaping_convergence.png
@@ -642,7 +643,6 @@ INPUT ./figures/results/small_net_california_housing_Adam_vs_A-star/small_net_ca
 INPUT ./figures/results/small_net_california_housing_Adam_vs_A-star/small_net_california_housing_Adam_vs_A-star_metrics_distribution.png
 INPUT ./figures/results/small_net_california_housing_Adam_vs_A-star/small_net_california_housing_Adam_vs_A-star_metrics_distribution.png
 INPUT ./figures/results/small_net_california_housing_Adam_vs_A-star/small_net_california_housing_Adam_vs_A-star_metrics_distribution.png
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti8.tfm
 INPUT ./figures/results/medium_net_california_housing_Adam_vs_A-star/medium_net_california_housing_Adam_vs_A-star_convergence.png
 INPUT ./figures/results/medium_net_california_housing_Adam_vs_A-star/medium_net_california_housing_Adam_vs_A-star_convergence.png
 INPUT ./figures/results/medium_net_california_housing_Adam_vs_A-star/medium_net_california_housing_Adam_vs_A-star_convergence.png

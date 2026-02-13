@@ -109,6 +109,7 @@ def plot_mean_loss_with_std(labels, mean_losses, std_losses, runs, filename="mea
     print(f"Saved plot: {filename}")
 
 
+
 def plot_final_loss_distribution(labels, final_losses_list, runs, filename="final_loss_boxplot.png", dataset_name="dataset"):
     """final_losses_list: list of np.arrays containing final losses for each run"""
     plt.figure(figsize=(14, 6))     #(10,6) is the old size

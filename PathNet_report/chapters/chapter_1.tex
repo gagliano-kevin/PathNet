@@ -16,11 +16,11 @@ The function $g(n)$ represents the actual cost of the path taken from the initia
 \subsection{Heuristic Estimate ($h(n)$)}
 The function $h(n)$ is the heuristic estimate of the cost from the current node $n$ to the final goal node. A heuristic is an educated guess that guides the search towards the most promising regions of the search space. The effectiveness and properties of the A* algorithm are highly dependent on the quality of this heuristic.
 
-The heuristic $h(n)$ must satisfy the following critical property to guarantee optimality:
+The heuristic $h(n)$ must satisfy the admissibility property to guarantee optimality.
 
-\begin{itemize}
-    \item \textbf{Admissibility:} A heuristic $h(n)$ is admissible if it never overestimates the true cost to reach the goal, meaning for all nodes $n$, $h(n) \le h^*(n)$, where $h^*(n)$ is the true minimum cost from $n$ to the goal.
-\end{itemize}
+\subsubsection{Admissibility}
+A heuristic $h(n)$ is admissible if it never overestimates the true cost to reach the goal, meaning for all nodes $n$, $h(n) \le h^*(n)$, where $h^*(n)$ is the true minimum cost from $n$ to the goal.
+
 If an admissible heuristic is used, A* is guaranteed to find the optimal (lowest-cost) path, provided a path exists.
 
 
@@ -32,9 +32,8 @@ The condition of consistency is a stronger requirement than admissibility. A heu
 $$\textbf{Consistency Condition: } h(n) \le c(n, n') + h(n')$$
 Consistency implies admissibility, provided $h(\text{goal}) = 0$. When a consistent heuristic is used, A* is guaranteed to find the optimal path without needing to re-open nodes (re-examine a node already in the Closed Set), because the $f$-cost along any optimal path is monotonically non-decreasing.
 
-\begin{itemize}
-    \item \textbf{Optimality Guarantee:} If the heuristic $h(n)$ is admissible (and edge costs are non-negative), A* is guaranteed to find the optimal (lowest-cost) path. If the heuristic is consistent, A* is also guaranteed to be optimal and more efficient, as it never needs to process a node more than once.
-\end{itemize}
+\subsubsection{Optimality Guarantee}
+If the heuristic $h(n)$ is admissible (and edge costs are non-negative), A* is guaranteed to find the optimal (lowest-cost) path. If the heuristic is consistent, A* is also guaranteed to be optimal and more efficient, as it never needs to process a node more than once.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -7,6 +7,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import tracemalloc
 
 from source.PathNet import Trainer, TrainerLayerWiseKernel, TrainerRandomSampling
 from source.utils.dataset_utils.sine_utils import generate_sinusoidal_tensor
@@ -79,6 +80,7 @@ metrics_list = [
     {
         "training_times": [],
         "number_of_parameters": [],
+        "memory_usage_mb": [],
     } for _ in range(len(labels_list))
 ]
 
@@ -119,11 +121,22 @@ for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar'
                             )
+    # Start tracing memory
+    tracemalloc.start()
 
     trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
 
+    # Capture peak memory and stop tracing
+    _, peak_mem = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+
+    # Convert bytes to Megabytes and save
+    peak_mem_mb = peak_mem / (1024 * 1024)
+
     metrics_list[0]["training_times"].append(trainer.training_time)
     metrics_list[0]["number_of_parameters"].append(num_params)
+    metrics_list[0]["memory_usage_mb"].append(peak_mem_mb)
+    
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------- LAYER-WISE KERNELS NEIGHBORS GENERATION ----------------------------------------------------
@@ -156,10 +169,21 @@ for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar'
                             )
 
+    # Start tracing memory
+    tracemalloc.start()
+
     trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    # Capture peak memory and stop tracing
+    _, peak_mem = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+
+    # Convert bytes to Megabytes and save
+    peak_mem_mb = peak_mem / (1024 * 1024)
 
     metrics_list[1]["training_times"].append(trainer.training_time)
     metrics_list[1]["number_of_parameters"].append(num_params)
+    metrics_list[1]["memory_usage_mb"].append(peak_mem_mb)
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------- RANDOM SAMPLING NEIGHBORS GENERATION -------------------------------------------------------
@@ -192,10 +216,21 @@ for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
                             max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_random_sampling_astar_run'
                             )
 
+    # Start tracing memory
+    tracemalloc.start()
+
     trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
+
+    # Capture peak memory and stop tracing
+    _, peak_mem = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+
+    # Convert bytes to Megabytes and save
+    peak_mem_mb = peak_mem / (1024 * 1024)
 
     metrics_list[2]["training_times"].append(trainer.training_time)
     metrics_list[2]["number_of_parameters"].append(num_params)
+    metrics_list[2]["memory_usage_mb"].append(peak_mem_mb)
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------- COMPARISON ---------------------------------------------------------------------
@@ -207,18 +242,36 @@ save_metrics(all_results, TEST_NAME)
 
 metrics = load_metrics(TEST_NAME)
 
+# --- TIME PLOTS ---
 plot_individual_algorithms(
     metrics, 
-    prefix=TEST_NAME, 
+    prefix=TEST_NAME + "_time", 
     directory=TEST_NAME, 
-    x_key="number_of_parameters", 
-    x_label="Number of Model Parameters"
+    x_key="number_of_parameters", x_label="Number of Model Parameters",
+    y_key="training_times", y_label="Training Time (s)"
 )
 
 plot_all_algorithms(
     metrics, 
-    output_filename=TEST_NAME + "_comparison.png", 
+    output_filename=TEST_NAME + "_time_comparison.png", 
     directory=TEST_NAME,
-    x_key="number_of_parameters", 
-    x_label="Number of Model Parameters"
+    x_key="number_of_parameters", x_label="Number of Model Parameters",
+    y_key="training_times", y_label="Training Time (s)"
+)
+
+# --- MEMORY PLOTS ---
+plot_individual_algorithms(
+    metrics, 
+    prefix=TEST_NAME + "_memory", 
+    directory=TEST_NAME, 
+    x_key="number_of_parameters", x_label="Number of Model Parameters",
+    y_key="memory_usage_mb", y_label="Peak Memory Usage (MB)"
+)
+
+plot_all_algorithms(
+    metrics, 
+    output_filename=TEST_NAME + "_memory_comparison.png", 
+    directory=TEST_NAME,
+    x_key="number_of_parameters", x_label="Number of Model Parameters",
+    y_key="memory_usage_mb", y_label="Peak Memory Usage (MB)"
 )

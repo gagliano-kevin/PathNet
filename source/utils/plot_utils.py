@@ -487,3 +487,82 @@ def plot_classification_statistics(data_dicts, labels, filename, dataset_name="D
     plt.grid(True, which="major", ls="-", alpha=0.5)
     plt.savefig(os.path.join(filename, f"{filename}_loss_convergence.png"))
     plt.close()
+
+
+def plot_individual_algorithms(data, prefix="individual", directory=""):
+    """
+    Creates and saves a separate scaling trend plot for each algorithm.
+    """
+    for algo_name, metrics in data.items():
+        # Safely extract data
+        samples = metrics.get("number_of_training_samples", [])
+        times = metrics.get("training_times", [])
+        
+        # Skip if no data is present
+        if not samples or not times:
+            continue
+            
+        # Robustness: Sort data by number of samples to ensure lines connect correctly
+        # in ascending order, even if the JSON data is unsorted.
+        sorted_pairs = sorted(zip(samples, times))
+        samples_sorted = [p[0] for p in sorted_pairs]
+        times_sorted = [p[1] for p in sorted_pairs]
+        
+        plt.clf() # Clear current plot state
+        plt.plot(samples_sorted, times_sorted, marker='o', linestyle='-', linewidth=2)
+        plt.title(f'Scaling Trend: {algo_name}')
+        plt.xlabel('Number of Training Samples')
+        plt.ylabel('Training Time (s)')
+        plt.grid(True)
+        plt.tight_layout()
+        
+        # Generate dynamic, safe filenames
+        clean_name = algo_name.replace(' ', '_').replace('-', '_').lower()
+        filename = f"{prefix}_{clean_name}.png"
+        #plt.savefig(filename)
+        save_path = os.path.join(directory, filename)
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(save_path)
+        plt.clf()
+
+def plot_all_algorithms(data, output_filename="all_algorithms_scaling.png", directory=""):
+    """
+    Creates and saves a single plot comparing all algorithms' scaling trends.
+    """
+    plt.clf()
+    for algo_name, metrics in data.items():
+        samples = metrics.get("number_of_training_samples", [])
+        times = metrics.get("training_times", [])
+        
+        if not samples or not times:
+            continue
+            
+        sorted_pairs = sorted(zip(samples, times))
+        samples_sorted = [p[0] for p in sorted_pairs]
+        times_sorted = [p[1] for p in sorted_pairs]
+        
+        # Add each algorithm to the same plot and label them
+        plt.plot(samples_sorted, times_sorted, marker='o', linestyle='-', linewidth=2, label=algo_name)
+        
+    plt.title('Scaling Comparison Across All Algorithms')
+    plt.xlabel('Number of Training Samples')
+    plt.ylabel('Training Time (s)')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    #plt.savefig(output_filename)
+    save_path = os.path.join(directory, output_filename)
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    plt.savefig(save_path)
+    plt.clf()
+
+# Example usage with your JSON file:
+if __name__ == "__main__":
+    with open('small_net_sine_data_scaling.json', 'r') as f:
+        data = json.load(f)
+        
+    # Generate the individual algorithm plots
+    plot_individual_algorithms(data)
+    
+    # Generate the combined comparison plot
+    plot_all_algorithms(data)

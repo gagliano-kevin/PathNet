@@ -158,6 +158,14 @@ def get_neighbors(search_node, X, Y, quantization_factor=None, weight_kernel=[2,
     parent_model = parent_mlp.model
     parent_parameter_list = list(parent_model.parameters())
 
+    # Ensure that kernel sizes are positive integers
+    weight_kernel = [max(1, k) for k in weight_kernel]
+    bias_kernel = [max(1, k) for k in bias_kernel]
+
+    # Ensure that strides are positive integers
+    x_stride = max(1, x_stride)
+    y_stride = max(1, y_stride)
+
     with torch.no_grad():
         #let's iterate over all parameters
         for tensor_index in range(len(parent_parameter_list)):
@@ -285,6 +293,24 @@ def get_neighbors_layer_wise(search_node, X, Y, quantization_factor=None,
     
     if weight_strides is None or bias_strides is None:
         raise ValueError("weight_strides and bias_strides must be provided as lists corresponding to the model layers.")
+    
+    # Ensure that the kernels are valid (positive integers)
+    for idx, kernel in enumerate(weight_kernels):
+        kernel = [max(1, k) for k in kernel]  # Ensure kernel dimensions are at least 1
+        weight_kernels[idx] = kernel
+
+    for idx, kernel in enumerate(bias_kernels):
+        kernel = [max(1, k) for k in kernel]  # Ensure kernel dimensions are at least 1
+        bias_kernels[idx] = kernel
+    
+    # Ensure that the strides are valid (positive integers)
+    for idx, stride in enumerate(weight_strides):
+        stride = [max(1, s) for s in stride]  # Ensure strides are at least 1
+        weight_strides[idx] = stride
+
+    for idx, stride in enumerate(bias_strides):
+        stride = [max(1, s) for s in stride]  # Ensure strides are at least 1
+        bias_strides[idx] = stride
 
     neighbors = []
     parent_mlp = search_node.quantized_mlp

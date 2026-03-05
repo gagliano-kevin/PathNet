@@ -50,31 +50,19 @@ TEST_NAME = "sine_parameter_scaling"
 # Architectures to test: List of tuples (HIDDEN_SIZE_1, HIDDEN_SIZE_2)
 # Scaling up the hidden dimensions will smoothly scale the total parameter count
 NETWORK_ARCHITECTURES = [
-    (8, 4),    
-    (16, 8),   
     (32, 16),  
     (64, 32),
     (128, 64),
-    (256, 128)
+    (128, 128),
+    (256, 128),
+    (256, 256)
 ]
 
-# Parameter for single Kernel Neighbors Generation
-WEIGHT_KERNEL = [2,2]
-BIAS_KERNEL = [2]
-X_STRIDE = 1
-Y_STRIDE = 1
-
-# Parameters for Layer-Wise Kernels Neighbors Generation
-# Note: This assumes 3 layers (Linear -> Linear -> Linear). 
-# If the number of layers changes, these lists must be adjusted.
-WEIGHT_KERNELS = [[2,2], [2,2], [1,2]]
-BIAS_KERNELS = [[2], [2], [1]]
-WEIGHT_STRIDES = [[1,1], [1,1], [1,1]]      
-BIAS_STRIDES = [[1], [1], [1]]              
+KERNEL_SCALE_FACTOR = 8         # This factor determines how the kernel sizes scale with the hidden layer sizes.
 
 # Parameters for Random Sampling Neighbors Generation
 PERTURBATION_RATIO = 0.01       
-SEARCH_COVERAGE_RATIO = 0.1     
+SEARCH_COVERAGE_RATIO = 0.05     
 
 metrics_list = [
     {
@@ -96,6 +84,13 @@ X_train, Y_train = generate_sinusoidal_tensor(num_samples=NUM_SAMPLES, min_angle
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
 
 for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
+
+    # Parameter for single Kernel Neighbors Generation
+    WEIGHT_KERNEL = [int(hidden_2/KERNEL_SCALE_FACTOR), int(hidden_2/KERNEL_SCALE_FACTOR)]
+    BIAS_KERNEL = [int(hidden_2/KERNEL_SCALE_FACTOR)]
+    X_STRIDE = int(hidden_2/KERNEL_SCALE_FACTOR)
+    Y_STRIDE = int(hidden_2/KERNEL_SCALE_FACTOR)
+
 
     print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel \t Hidden Sizes: ({hidden_1}, {hidden_2}) ---\n")
 
@@ -143,6 +138,13 @@ for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
+
+    # Parameters for Layer-Wise Kernels Neighbors Generation
+    # Note: This assumes 3 layers (Linear -> Linear -> Linear). 
+    WEIGHT_KERNELS = [[int(hidden_1/KERNEL_SCALE_FACTOR), INPUT_SIZE], [int(hidden_2/KERNEL_SCALE_FACTOR), int(hidden_1/KERNEL_SCALE_FACTOR)], [OUTPUT_SIZE, int(hidden_2/KERNEL_SCALE_FACTOR)]]
+    BIAS_KERNELS = [[int(hidden_1/KERNEL_SCALE_FACTOR)], [int(hidden_2/KERNEL_SCALE_FACTOR)], [OUTPUT_SIZE]]
+    WEIGHT_STRIDES = [[INPUT_SIZE, int(hidden_1/KERNEL_SCALE_FACTOR)], [int(hidden_1/KERNEL_SCALE_FACTOR), int(hidden_2/KERNEL_SCALE_FACTOR)], [int(hidden_2/KERNEL_SCALE_FACTOR), OUTPUT_SIZE]]      
+    BIAS_STRIDES = [[int(hidden_1/KERNEL_SCALE_FACTOR)], [int(hidden_2/KERNEL_SCALE_FACTOR)], [OUTPUT_SIZE]]
 
     print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels \t Hidden Sizes: ({hidden_1}, {hidden_2}) ---\n")
     

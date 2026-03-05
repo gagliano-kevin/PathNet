@@ -13,7 +13,7 @@ from source.PathNet import Trainer, TrainerLayerWiseKernel, TrainerRandomSamplin
 from source.utils.dataset_utils.sine_utils import generate_sinusoidal_tensor
 from source.utils.plot_utils import save_metrics, load_metrics, plot_individual_algorithms, plot_all_algorithms
 
-ITERATIONS = 1000
+ITERATIONS = 500
 
 MODEL_NAME_PREFIX = "sine_model"
 DATASET_NAME = "Noisy Sine Function"

@@ -13,7 +13,7 @@ from source.PathNet import Trainer, TrainerLayerWiseKernel, TrainerRandomSamplin
 from source.utils.dataset_utils.sine_utils import generate_sinusoidal_tensor
 from source.utils.plot_utils import save_metrics, load_metrics, plot_individual_algorithms, plot_all_algorithms
 
-ITERATIONS = 500
+ITERATIONS = 100
 
 MODEL_NAME_PREFIX = "sine_model"
 DATASET_NAME = "Noisy Sine Function"
@@ -29,7 +29,7 @@ QUANTIZATION_FACTOR = 10
 BEAM_WIDTH = 1e3
 
 # Parameters for synthetic Sine Dataset
-NUM_SAMPLES = 1000
+NUM_SAMPLES = 100
 MIN_ANGLE = 0
 MAX_ANGLE = 2 * np.pi
 NOISE_LEVEL = 0.1
@@ -50,19 +50,15 @@ TEST_NAME = "sine_parameter_scaling"
 # Architectures to test: List of tuples (HIDDEN_SIZE_1, HIDDEN_SIZE_2)
 # Scaling up the hidden dimensions will smoothly scale the total parameter count
 NETWORK_ARCHITECTURES = [
+    (16, 16),
     (32, 16),  
     (64, 32),
     (128, 64),
     (128, 128),
-    (256, 128),
-    (256, 256)
+    (256, 128)
 ]
 
-KERNEL_SCALE_FACTOR = 8         # This factor determines how the kernel sizes scale with the hidden layer sizes.
-
-# Parameters for Random Sampling Neighbors Generation
-PERTURBATION_RATIO = 0.01       
-SEARCH_COVERAGE_RATIO = 0.05     
+KERNEL_SCALE_FACTOR = 8         # This factor determines how the kernel sizes scale with the hidden layer sizes. 
 
 metrics_list = [
     {
@@ -192,6 +188,10 @@ for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
+
+    # Parameters for Random Sampling Neighbors Generation
+    PERTURBATION_RATIO = 0.05 / float(np.sqrt(hidden_1))      
+    SEARCH_COVERAGE_RATIO = 0.05 / float(np.sqrt(hidden_1))    
 
     print(f"\n--- TEST NAME: {TEST_NAME} \t Random Sampling \t Hidden Sizes: ({hidden_1}, {hidden_2}) ---\n")
 

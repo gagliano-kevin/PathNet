@@ -1,0 +1,38 @@
+{
+    "A-star Single Kernel": {
+        "training_times": [],
+        "number_of_parameters": [],
+        "memory_usage_mb": []
+    },
+    "A-star Layer-Wise Kernels": {
+        "training_times": [],
+        "number_of_parameters": [],
+        "memory_usage_mb": []
+    },
+    "A-star Random Sampling": {
+        "training_times": [
+            15.435019082999816,
+            29.38224739799989,
+            65.20874594199995,
+            159.7921010020002,
+            296.1993043709999,
+            209.55408418000002
+        ],
+        "number_of_parameters": [
+            4353,
+            8577,
+            16897,
+            33537,
+            66561,
+            132609
+        ],
+        "memory_usage_mb": [
+            190.66451168060303,
+            617.9953565597534,
+            2243.342303276062,
+            8703.539214134216,
+            24339.851130485535,
+            22714.2381772995
+        ]
+    }
+}

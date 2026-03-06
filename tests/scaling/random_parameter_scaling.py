@@ -50,18 +50,19 @@ labels_list = ["A-star Single Kernel", "A-star Layer-Wise Kernels", "A-star Rand
 # Architectures to test: List of tuples (HIDDEN_SIZE_1, HIDDEN_SIZE_2)
 # Scaling up the hidden dimensions will smoothly scale the total parameter count
 NETWORK_ARCHITECTURES = [
+    (16, 16),
+    (32, 16),
+    (32, 32),
+    (64, 32),
     (64, 64),
     (128, 64),
     (128, 128),
-    (256, 128),
-    (256, 256),
-    (512, 256),
-    (512, 512),
+    (256, 128)
 ]
 
 # Parameters for Random Sampling Neighbors Generation
 PERTURBATION_RATIO = 0.01       
-SEARCH_COVERAGE_RATIO = 0.05     
+SEARCH_COVERAGE_RATIO = 0.01     
 
 metrics_list = [
     {

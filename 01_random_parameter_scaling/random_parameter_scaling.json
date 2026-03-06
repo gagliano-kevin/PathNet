@@ -1,0 +1,29 @@
+{
+    "A-star Single Kernel": {
+        "training_times": [],
+        "number_of_parameters": [],
+        "memory_usage_mb": []
+    },
+    "A-star Layer-Wise Kernels": {
+        "training_times": [],
+        "number_of_parameters": [],
+        "memory_usage_mb": []
+    },
+    "A-star Random Sampling": {
+        "training_times": [
+            138.56400207000002,
+            265.085084886,
+            177.87038861299993
+        ],
+        "number_of_parameters": [
+            8577,
+            16897,
+            33537
+        ],
+        "memory_usage_mb": [
+            2931.4020566940308,
+            9922.464858055115,
+            9948.022070884705
+        ]
+    }
+}

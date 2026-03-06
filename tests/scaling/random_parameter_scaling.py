@@ -1,6 +1,6 @@
 #==============================================================================================================================================================
 #==============================================================================================================================================================
-#-------------------------------------------------- python -m tests.scaling.parameter_scaling ------------------------------------------------------
+#-------------------------------------------------- python -m tests.scaling.random_parameter_scaling ------------------------------------------------------
 #==============================================================================================================================================================
 #==============================================================================================================================================================
 
@@ -13,7 +13,9 @@ from source.PathNet import Trainer, TrainerLayerWiseKernel, TrainerRandomSamplin
 from source.utils.dataset_utils.sine_utils import generate_sinusoidal_tensor
 from source.utils.plot_utils import save_metrics, load_metrics, plot_individual_algorithms, plot_all_algorithms
 
-ITERATIONS = 500
+TEST_NAME = "random_parameter_scaling"
+
+ITERATIONS = 50
 
 MODEL_NAME_PREFIX = "sine_model"
 DATASET_NAME = "Noisy Sine Function"
@@ -29,7 +31,7 @@ QUANTIZATION_FACTOR = 10
 BEAM_WIDTH = 1e3
 
 # Parameters for synthetic Sine Dataset
-NUM_SAMPLES = 1000
+NUM_SAMPLES = 50
 MIN_ANGLE = 0
 MAX_ANGLE = 2 * np.pi
 NOISE_LEVEL = 0.1
@@ -45,20 +47,17 @@ labels_list = ["A-star Single Kernel", "A-star Layer-Wise Kernels", "A-star Rand
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 # =========================================================================================================================================================
 
-TEST_NAME = "sine_parameter_scaling"
-
 # Architectures to test: List of tuples (HIDDEN_SIZE_1, HIDDEN_SIZE_2)
 # Scaling up the hidden dimensions will smoothly scale the total parameter count
 NETWORK_ARCHITECTURES = [
-    (32, 16),  
-    (64, 32),
+    (64, 64),
     (128, 64),
     (128, 128),
     (256, 128),
-    (256, 256)
+    (256, 256),
+    (512, 256),
+    (512, 512),
 ]
-
-KERNEL_SCALE_FACTOR = 8         # This factor determines how the kernel sizes scale with the hidden layer sizes.
 
 # Parameters for Random Sampling Neighbors Generation
 PERTURBATION_RATIO = 0.01       
@@ -78,114 +77,6 @@ count_parameters = lambda model: sum(p.numel() for p in model.parameters() if p.
 # Generate dataset once for all models to ensure identical training conditions
 X_train, Y_train = generate_sinusoidal_tensor(num_samples=NUM_SAMPLES, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE, noise_level=NOISE_LEVEL)
 print(f"\nTraining Data Shape: {X_train.shape}, {Y_train.shape}")
-
-#----------------------------------------------------------------------------------------------------------------------------------------------------------
-#---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
-
-    # Parameter for single Kernel Neighbors Generation
-    WEIGHT_KERNEL = [int(hidden_2/KERNEL_SCALE_FACTOR), int(hidden_2/KERNEL_SCALE_FACTOR)]
-    BIAS_KERNEL = [int(hidden_2/KERNEL_SCALE_FACTOR)]
-    X_STRIDE = int(hidden_2/KERNEL_SCALE_FACTOR)
-    Y_STRIDE = int(hidden_2/KERNEL_SCALE_FACTOR)
-
-
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Single Kernel \t Hidden Sizes: ({hidden_1}, {hidden_2}) ---\n")
-
-    model = nn.Sequential(
-            nn.Linear(INPUT_SIZE, hidden_1),  
-            nn.ReLU(),
-            nn.Linear(hidden_1, hidden_2),
-            nn.ReLU(),
-            nn.Linear(hidden_2, OUTPUT_SIZE),
-            )
-            
-    num_params = count_parameters(model)
-
-    trainer = Trainer(model=model,
-                            loss_fn=nn.MSELoss(),
-                            quantization_factor=QUANTIZATION_FACTOR,
-                            parameter_range=PARAMETER_RANGE,
-                            debug_mlp=False,
-                            weight_kernel = WEIGHT_KERNEL, bias_kernel = BIAS_KERNEL, x_stride=X_STRIDE, y_stride=Y_STRIDE, delta_abs=DELTA_ABS,
-                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                            dynamic_quantization=False,
-                            dynamic_kernel_reshaping=False,
-                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar'
-                            )
-    # Start tracing memory
-    tracemalloc.start()
-
-    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
-
-    # Capture peak memory and stop tracing
-    _, peak_mem = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-
-    # Convert bytes to Megabytes and save
-    peak_mem_mb = peak_mem / (1024 * 1024)
-
-    metrics_list[0]["training_times"].append(trainer.training_time)
-    metrics_list[0]["number_of_parameters"].append(num_params)
-    metrics_list[0]["memory_usage_mb"].append(peak_mem_mb)
-    
-
-#----------------------------------------------------------------------------------------------------------------------------------------------------------
-#------------------------------------------------------------- LAYER-WISE KERNELS NEIGHBORS GENERATION ----------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-for hidden_1, hidden_2 in NETWORK_ARCHITECTURES:
-
-    # Parameters for Layer-Wise Kernels Neighbors Generation
-    # Note: This assumes 3 layers (Linear -> Linear -> Linear). 
-    WEIGHT_KERNELS = [[int(hidden_1/KERNEL_SCALE_FACTOR), INPUT_SIZE], [int(hidden_2/KERNEL_SCALE_FACTOR), int(hidden_1/KERNEL_SCALE_FACTOR)], [OUTPUT_SIZE, int(hidden_2/KERNEL_SCALE_FACTOR)]]
-    BIAS_KERNELS = [[int(hidden_1/KERNEL_SCALE_FACTOR)], [int(hidden_2/KERNEL_SCALE_FACTOR)], [OUTPUT_SIZE]]
-    WEIGHT_STRIDES = [[INPUT_SIZE, int(hidden_1/KERNEL_SCALE_FACTOR)], [int(hidden_1/KERNEL_SCALE_FACTOR), int(hidden_2/KERNEL_SCALE_FACTOR)], [int(hidden_2/KERNEL_SCALE_FACTOR), OUTPUT_SIZE]]      
-    BIAS_STRIDES = [[int(hidden_1/KERNEL_SCALE_FACTOR)], [int(hidden_2/KERNEL_SCALE_FACTOR)], [OUTPUT_SIZE]]
-
-    print(f"\n--- TEST NAME: {TEST_NAME} \t Layer-Wise Kernels \t Hidden Sizes: ({hidden_1}, {hidden_2}) ---\n")
-    
-    model = nn.Sequential(
-            nn.Linear(INPUT_SIZE, hidden_1),  
-            nn.ReLU(),
-            nn.Linear(hidden_1, hidden_2),
-            nn.ReLU(),
-            nn.Linear(hidden_2, OUTPUT_SIZE),
-            )
-
-    num_params = count_parameters(model)
-
-    trainer = TrainerLayerWiseKernel(model=model,
-                            loss_fn=nn.MSELoss(),
-                            quantization_factor=QUANTIZATION_FACTOR,
-                            parameter_range=PARAMETER_RANGE,
-                            debug_mlp=False,
-                            weight_kernels = WEIGHT_KERNELS, bias_kernels = BIAS_KERNELS, weight_strides=WEIGHT_STRIDES, bias_strides=BIAS_STRIDES, delta_abs=DELTA_ABS,
-                            early_stopping=EARLY_STOPPING, e_s_patience=E_S_PATIENCE,
-                            dynamic_quantization=False,
-                            dynamic_kernel_reshaping=False,
-                            loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar'
-                            )
-
-    # Start tracing memory
-    tracemalloc.start()
-
-    trainer.beam_search_opt_train(X_train, Y_train, BEAM_WIDTH)
-
-    # Capture peak memory and stop tracing
-    _, peak_mem = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-
-    # Convert bytes to Megabytes and save
-    peak_mem_mb = peak_mem / (1024 * 1024)
-
-    metrics_list[1]["training_times"].append(trainer.training_time)
-    metrics_list[1]["number_of_parameters"].append(num_params)
-    metrics_list[1]["memory_usage_mb"].append(peak_mem_mb)
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------- RANDOM SAMPLING NEIGHBORS GENERATION -------------------------------------------------------

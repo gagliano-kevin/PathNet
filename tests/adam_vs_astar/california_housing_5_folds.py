@@ -8,6 +8,7 @@ import torch
 import torch.nn as nn
 import time
 from sklearn.model_selection import KFold
+import os
 
 from source.PathNet2 import Trainer, TrainerLayerWiseKernel, TrainerRandomSampling
 from source.utils.dataset_utils.housing_utils import get_california_housing_data, create_dataloader
@@ -21,7 +22,7 @@ FOLDS = 5
 MODEL_NAME_PREFIX = "housing_model"
 DATASET_NAME = "California Housing"
 
-SAVE_TRAINED_MODEL = False
+SAVE_TRAINED_MODEL = True
 DELTA_ABS = None
 EARLY_STOPPING = False
 
@@ -88,6 +89,11 @@ metrics_list = [
         "evaluation_scores": []
     } for _ in range(len(labels_list))
 ]
+
+if SAVE_TRAINED_MODEL:
+    model_dir = TEST_NAME + "/models/"
+    os.makedirs(TEST_NAME, exist_ok=True)
+    os.makedirs(model_dir, exist_ok=True)
                        
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
@@ -123,7 +129,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'single_kernel_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -169,7 +175,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'layer_wise_kernels_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -213,7 +219,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_random_sampling_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'random_sampling_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -317,6 +323,11 @@ metrics_list = [
         "evaluation_scores": []
     } for _ in range(len(labels_list))
 ]
+
+if SAVE_TRAINED_MODEL:
+    model_dir = TEST_NAME + "/models/"
+    os.makedirs(TEST_NAME, exist_ok=True)
+    os.makedirs(model_dir, exist_ok=True)
                        
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
@@ -354,7 +365,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'single_kernel_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -402,7 +413,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'layer_wise_kernels_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -448,7 +459,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_random_sampling_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'random_sampling_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -557,6 +568,11 @@ metrics_list = [
     } for _ in range(len(labels_list))
 ]        
 
+if SAVE_TRAINED_MODEL:
+    model_dir = TEST_NAME + "/models/"
+    os.makedirs(TEST_NAME, exist_ok=True)
+    os.makedirs(model_dir, exist_ok=True)
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------- SINGLE KERNEL NEIGHBORS GENERATION ------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -596,7 +612,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_single_kernel_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'single_kernel_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -645,8 +661,8 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             dynamic_kernel_reshaping=False,
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
-                            #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_layer_wise_kernels_astar_fold_{fold + 1}'
+                            #----------------------------------------------------------------------------------EL
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'layer_wise_kernels_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -694,7 +710,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'_random_sampling_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'random_sampling_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)

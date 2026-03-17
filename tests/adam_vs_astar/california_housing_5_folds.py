@@ -9,7 +9,7 @@ import torch.nn as nn
 import time
 from sklearn.model_selection import KFold
 
-from source.PathNet import Trainer, TrainerLayerWiseKernel, TrainerRandomSampling
+from source.PathNet2 import Trainer, TrainerLayerWiseKernel, TrainerRandomSampling
 from source.utils.dataset_utils.housing_utils import get_california_housing_data, create_dataloader
 from source.utils.evaluation_utils import evaluate_pathnet_regression, evaluate_sgd_regression
 from source.utils.plot_utils import generate_plots, save_metrics, generate_evaluation_statistical_summary, plot_regression_statistics

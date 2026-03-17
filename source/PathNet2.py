@@ -26,7 +26,7 @@ TrainerRandomSampling
 """
 
 from __future__ import annotations
-
+from typing import Tuple, List
 import heapq
 import time
 from abc import ABC, abstractmethod
@@ -47,10 +47,8 @@ from source.utils.neighbors_utils import (
 # ---------------------------------------------------------------------------
 # Type aliases
 # ---------------------------------------------------------------------------
-
-StateHash = tuple[int, ...]
-NeighborList = list[tuple["QuantizedMLP", float]]
-
+StateHash = Tuple[int, ...]
+NeighborList = List[Tuple["QuantizedMLP", float]]
 
 # ---------------------------------------------------------------------------
 # QuantizedMLP

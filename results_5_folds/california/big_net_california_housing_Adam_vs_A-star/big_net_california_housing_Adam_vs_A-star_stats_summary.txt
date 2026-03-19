@@ -1,0 +1,61 @@
+==========================================================================================================================================
+==================================================== STATISTICAL SUMMARY over 5 Runs =====================================================
+| Metric                 | A-star Single Kernel      | A-star Layer-Wise Kernels | A-star Random Sampling    | Adam                      |
+|------------------------+---------------------------+---------------------------+---------------------------+---------------------------|
+| Avg Final Loss         | 0.459753                  | 0.356356                  | 0.382565                  | 0.230314                  |
+| Median Final Loss      | 0.454925                  | 0.353037                  | 0.381109                  | 0.231430                  |
+| Std Final Loss         | 0.026005                  | 0.006952                  | 0.007814                  | 0.003201                  |
+| Var Final Loss         | 0.000676                  | 0.000048                  | 0.000061                  | 0.000010                  |
+| Min Final Loss         | 0.432040                  | 0.347615                  | 0.373761                  | 0.224585                  |
+| Max Final Loss         | 0.507605                  | 0.366379                  | 0.396968                  | 0.233393                  |
+|------------------------+---------------------------+---------------------------+---------------------------+---------------------------|
+| Avg Time               | 5733.324868               | 9759.662512               | 7517.865144               | 184.045409                |
+|------------------------+---------------------------+---------------------------+---------------------------+---------------------------|
+| Avg MSE                | 0.466830                  | 0.366125                  | 0.385849                  | 0.282957                  |
+| Std MSE                | 0.022312                  | 0.016773                  | 0.016639                  | 0.007327                  |
+| Min MSE                | 0.444826                  | 0.340542                  | 0.369823                  | 0.275924                  |
+| Max MSE                | 0.505764                  | 0.391675                  | 0.413827                  | 0.296298                  |
+|------------------------+---------------------------+---------------------------+---------------------------+---------------------------|
+| Avg RMSE               | 0.683057                  | 0.604924                  | 0.621025                  | 0.531893                  |
+| Std RMSE               | 0.016205                  | 0.013867                  | 0.013299                  | 0.006846                  |
+| Min RMSE               | 0.666953                  | 0.583560                  | 0.608131                  | 0.525284                  |
+| Max RMSE               | 0.711171                  | 0.625840                  | 0.643294                  | 0.544333                  |
+|------------------------+---------------------------+---------------------------+---------------------------+---------------------------|
+| Avg MAE                | 0.491182                  | 0.424817                  | 0.439312                  | 0.358848                  |
+| Std MAE                | 0.012683                  | 0.010021                  | 0.010999                  | 0.005462                  |
+| Min MAE                | 0.479903                  | 0.407819                  | 0.426750                  | 0.349672                  |
+| Max MAE                | 0.514286                  | 0.436704                  | 0.452884                  | 0.365164                  |
+|------------------------+---------------------------+---------------------------+---------------------------+---------------------------|
+| Avg R2                 | 0.649317                  | 0.724796                  | 0.709819                  | 0.787351                  |
+| Std R2                 | 0.014870                  | 0.014739                  | 0.017657                  | 0.006963                  |
+| Min R2                 | 0.624187                  | 0.704201                  | 0.687471                  | 0.776231                  |
+| Max R2                 | 0.670151                  | 0.746957                  | 0.725199                  | 0.795467                  |
+==========================================================================================================================================
+
+Extra Details for A-star Single Kernel:
+ Run 1: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 2: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 3: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 4: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 5: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+
+Extra Details for A-star Layer-Wise Kernels:
+ Run 1: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 2: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 3: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 4: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 5: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+
+Extra Details for A-star Random Sampling:
+ Run 1: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 2: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 3: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 4: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 5: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+
+Extra Details for Adam:
+ Run 1: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 2: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 3: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 4: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A
+ Run 5: Dynamic Quantization Iterations: N/A | Dynamic Kernel Reshaping Iterations: N/A

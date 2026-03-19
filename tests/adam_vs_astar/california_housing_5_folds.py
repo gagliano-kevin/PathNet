@@ -459,7 +459,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'random_sampling_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'random_sampling_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)
@@ -710,7 +710,7 @@ for fold, (train_idx, test_idx) in enumerate(cv_folds):
                             #----------------------------------------------------------------------------------
                             loss_improvement_threshold=LOSS_IMPROVEMENT_THRESHOLD,
                             #----------------------------------------------------------------------------------
-                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=MODEL_NAME_PREFIX + f'random_sampling_astar_fold_{fold + 1}'
+                            max_iterations=ITERATIONS, log_freq=100, measure_time=True, save_trained_model=SAVE_TRAINED_MODEL, model_name=model_dir + f'random_sampling_astar_fold_{fold + 1}'
                             )
 
     trainer.beam_search_opt_train(X_train_fold, Y_train_fold, BEAM_WIDTH)

@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
-
+import os
 
 
 class SineDataset(Dataset):
@@ -22,7 +22,6 @@ class SineDataset(Dataset):
     def __getitem__(self, idx):
         # Returns x, sin(x), cos(x)
         return self.x_data[idx], self.sin_y_data[idx]
-    
 
 
 def generate_sinusoidal_tensor(num_samples, min_angle, max_angle, noise_level):
@@ -38,7 +37,6 @@ def generate_sinusoidal_tensor(num_samples, min_angle, max_angle, noise_level):
     return X, Y
 
 
-
 def plot_sine_data(X: torch.Tensor, Y: torch.Tensor, filename="sine_data.png"):
     """Plots the noisy sine data."""
     plt.figure(figsize=(7, 5))
@@ -50,11 +48,6 @@ def plot_sine_data(X: torch.Tensor, Y: torch.Tensor, filename="sine_data.png"):
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.savefig(filename)
 
-    
-
-import os
-import matplotlib.pyplot as plt
-import numpy as np
 
 def plot_sine_predictions(test_x_np: np.ndarray, 
                           predicted_sin_np: np.ndarray, 
@@ -97,4 +90,36 @@ def plot_sine_predictions(test_x_np: np.ndarray,
     
     print(f"Sine function plot saved in: {save_path}")
 
+
+def plot_sine_predictions_scatter(test_x_np: np.ndarray, 
+                          predicted_sin_np: np.ndarray, 
+                          true_sin_np: np.ndarray, 
+                          directory: str = "plots",
+                          filename: str = "sine_plot.png"):
     
+    os.makedirs(directory, exist_ok=True)
+    save_path = os.path.join(directory, filename)
+    
+    plt.figure(figsize=(7, 5))
+    
+    # 1. Use SCATTER for the shuffled, true noisy dataset (no connecting lines!)
+    plt.scatter(test_x_np, true_sin_np, label='True Data (Sine + Noise)', color='blue', alpha=0.5, s=15)
+    
+    # 2. Sort the values so the prediction line draws cleanly from left to right
+    sort_idx = np.argsort(test_x_np.flatten())
+    sorted_x = test_x_np[sort_idx]
+    sorted_pred = predicted_sin_np[sort_idx]
+    
+    # 3. Use PLOT for the sorted prediction
+    plt.plot(sorted_x, sorted_pred, '--', label='Model Prediction', color='red', linewidth=2.5)
+    
+    plt.title('Sine Function Regression Prediction')
+    plt.xlabel('Angle (x)')
+    plt.ylabel('Value')
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.6)
+    
+    plt.savefig(save_path)
+    plt.close() 
+    
+    print(f"Sine function plot saved in: {save_path}")
